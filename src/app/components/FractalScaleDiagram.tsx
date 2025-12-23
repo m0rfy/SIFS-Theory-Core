@@ -1,24 +1,20 @@
-import { useTranslation } from 'react-i18next';
-
 export function FractalScaleDiagram() {
-  const { t } = useTranslation();
-
   // Log-periodic oscillations data
   const scales = [
-    { scale: t('components.fractal_diagram.scales.planck.name'), size: '1.6 × 10⁻³⁵ m', S: 0, description: t('components.fractal_diagram.scales.planck.desc') },
-    { scale: t('components.fractal_diagram.scales.nucleon.name'), size: '10⁻¹⁵ m', S: 11, description: t('components.fractal_diagram.scales.nucleon.desc') },
-    { scale: t('components.fractal_diagram.scales.atomic.name'), size: '10⁻¹⁰ m', S: 16, description: t('components.fractal_diagram.scales.atomic.desc') },
-    { scale: t('components.fractal_diagram.scales.solar.name'), size: '10¹³ m', S: 20, description: t('components.fractal_diagram.scales.solar.desc') },
-    { scale: t('components.fractal_diagram.scales.galactic.name'), size: '10²¹ m', S: 24, description: t('components.fractal_diagram.scales.galactic.desc') },
-    { scale: t('components.fractal_diagram.scales.hubble.name'), size: '10²⁶ m', S: 28, description: t('components.fractal_diagram.scales.hubble.desc') }
+    { scale: 'Планковская', size: '1.6 × 10⁻³⁵ m', S: 0, description: 'Квантовая гравитация' },
+    { scale: 'Нуклонная', size: '10⁻¹⁵ m', S: 11, description: 'Протоны/нейтроны' },
+    { scale: 'Атомная', size: '10⁻¹⁰ m', S: 16, description: 'Боровский радиус' },
+    { scale: 'Солнечная система', size: '10¹³ m', S: 20, description: 'Калибровочный масштаб' },
+    { scale: 'Галактическая', size: '10²¹ m', S: 24, description: 'Млечный Путь' },
+    { scale: 'Хаббл', size: '10²⁶ m', S: 28, description: 'Наблюдаемая Вселенная' }
   ];
 
   return (
     <div className="space-y-4">
       <div className="p-4 bg-black/40 rounded-lg">
-        <h4 className="text-purple-400 mb-3">{t('components.fractal_diagram.title')}</h4>
+        <h4 className="text-purple-400 mb-3">Фрактальная иерархия масштабов</h4>
         <p className="text-gray-400 text-sm mb-4">
-          {t('components.fractal_diagram.subtitle')}
+          Принцип Уробороса: самоподобие от Планка до Хаббла
         </p>
         
         <div className="relative">
@@ -59,9 +55,9 @@ export function FractalScaleDiagram() {
 
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="p-4 bg-purple-950/30 border border-purple-500/30 rounded-lg">
-          <h5 className="text-purple-400 mb-2">{t('components.fractal_diagram.log_periodicity.title')}</h5>
+          <h5 className="text-purple-400 mb-2">Лог-периодичность</h5>
           <p className="text-gray-400 text-sm leading-relaxed">
-            {t('components.fractal_diagram.log_periodicity.text')}
+            ΔS ≈ const между естественными масштабами → самоподобие
           </p>
           <div className="mt-2 font-mono text-purple-300 text-xs">
             λ = λ₀ × exp(k|S|)
@@ -69,9 +65,9 @@ export function FractalScaleDiagram() {
         </div>
         
         <div className="p-4 bg-blue-950/30 border border-blue-500/30 rounded-lg">
-          <h5 className="text-blue-400 mb-2">{t('components.fractal_diagram.dimension.title')}</h5>
+          <h5 className="text-blue-400 mb-2">Фрактальная размерность</h5>
           <p className="text-gray-400 text-sm leading-relaxed">
-            {t('components.fractal_diagram.dimension.text')}
+            D_f ≈ 2 + δ, где δ → 0 на больших масштабах
           </p>
           <div className="mt-2 font-mono text-blue-300 text-xs">
             ⟨N(r)⟩ ∝ r^D_f
@@ -83,9 +79,10 @@ export function FractalScaleDiagram() {
         <div className="flex items-start gap-3">
           <div className="text-cyan-400 text-2xl mt-1">∞</div>
           <div>
-            <h5 className="text-cyan-400 mb-1">{t('components.fractal_diagram.infinity.title')}</h5>
+            <h5 className="text-cyan-400 mb-1">Бесконечная вложенность</h5>
             <p className="text-gray-300 text-sm leading-relaxed">
-              {t('components.fractal_diagram.infinity.text')}
+              Каждый масштаб содержит структуры меньших масштабов и является частью больших структур. 
+              Микро-ЧД на планковском уровне ↔ супермассивные ЧД в галактиках: одна геометрия.
             </p>
           </div>
         </div>

@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { SlideNavigation } from './components/SlideNavigation';
 import { SlideNavigationContext } from './contexts/SlideNavigationContext';
-import { LanguageSelector } from './components/LanguageSelector';
 import { Slide0About } from './components/slides/Slide0About';
 import { Slide1Abstract } from './components/slides/Slide1Abstract';
 import { Slide1bFractal } from './components/slides/Slide1bFractal';
@@ -14,7 +12,6 @@ import { Slide6References } from './components/slides/Slide6References';
 import { Slide7Conclusion } from './components/slides/Slide7Conclusion';
 
 export default function App() {
-  const { t } = useTranslation();
   const totalSlides = 9;
   const slideContainerRef = useRef<HTMLDivElement>(null);
   
@@ -154,12 +151,10 @@ export default function App() {
           onGoTo={handleGoTo}
         />
 
-        <LanguageSelector />
-
         {/* Instructions */}
-        <div className="fixed top-16 right-4 z-40 p-4 bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg text-sm text-gray-400 pointer-events-none">
-          <p className="mb-2">{t('instructions.nav')}</p>
-          <p className="text-xs">{t('instructions.home_end')}</p>
+        <div className="fixed top-8 right-8 z-40 p-4 bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg text-sm text-gray-400">
+          <p className="mb-2">← → или Space для навигации</p>
+          <p className="text-xs">Home/End для первого/последнего слайда</p>
         </div>
       </div>
     </SlideNavigationContext.Provider>
