@@ -20,6 +20,8 @@
 
 6. **López, C.A.** (1984). "Extended model of the electron in general relativity." *Phys. Rev. D* **30**, 313-316.
 
+7. **Haramein, N.** (2010). "The Schwarzschild Proton." *AIP Conference Proceedings* **1303**, 95-100. [DOI:10.1063/1.3527296](https://doi.org/10.1063/1.3527296) [URL](https://pubs.aip.org/aip/acp/article/1303/1/95/869984/The-Schwarzschild-Proton)
+
 ### Gordon Optical Metric
 
 7. **Gordon, W.** (1923). "Zur Lichtfortpflanzung nach der Relativitätstheorie." *Annalen der Physik* **377**(22), 421-456.

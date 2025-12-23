@@ -7,12 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2025-01-23)
+- **Полный каталог предсказаний** - Создана папка `docs/predictions/` с детальными предсказаниями:
+  - Индекс всех предсказаний с статусом проверки
+  - Детальные предсказания для коллайдеров (LHC/FCC)
+  - Предсказания для гравитационных волн
+  - Космологические предсказания (CMB, структурообразование)
+  - Астрофизические предсказания (компактные объекты, аккреция)
+  - Критерии фальсификации теории
+- **Уравнения движения** - Создан `docs/theory/equations-of-motion.md` с полными уравнениями движения
+- **Улучшенная математическая формализация** - Обновлён `docs/theory/mathematics.md` с более строгими формулировками
+- **Исправлены ссылки** - Добавлена ссылка на Haramein (AIP Conf. Proc. 1303, 95, 2010)
+- **Исправлен LaTeX синтаксис** - Заменены все ````latex` блоки на ````math` для корректного отображения на GitHub
+- **Обновлены даты** - Все даты обновлены на 2025-01-23
+
 ### Planned
 - Interactive 3D visualization of bulk-brane geometry
 - Numerical simulation tools for fractal dynamics
 - Export functionality for calculations
 - Multi-language support (English, Russian)
-- LaTeX equation rendering improvements
 
 ---
 

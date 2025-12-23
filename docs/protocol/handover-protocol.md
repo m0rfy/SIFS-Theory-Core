@@ -154,7 +154,7 @@ S(t, ψ) = S₀ + δS × cos(ωt + φ)
 
 ### А. Теория Шварцшильдовского Протона и Масштабирование
 
-- **Nassim Haramein:** Концепция протона как ЧД (критически переработана нами через RS-модель).
+- **Nassim Haramein:** Концепция протона как ЧД (критически переработана нами через RS-модель). [Haramein, N. (2010). "The Schwarzschild Proton." *AIP Conference Proceedings* **1303**, 95-100.](https://pubs.aip.org/aip/acp/article/1303/1/95/869984/The-Schwarzschild-Proton)
 
 ### Б. Керр-Ньюменовская модель электрона
 
