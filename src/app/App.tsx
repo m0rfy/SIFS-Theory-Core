@@ -13,8 +13,22 @@ import { Slide8Simulation } from './components/slides/Slide8Simulation';
 import { Slide9Applications } from './components/slides/Slide9Applications';
 import { Slide7Conclusion } from './components/slides/Slide7Conclusion';
 
+const SlideComponents = [
+  Slide0About,
+  Slide1Abstract,
+  Slide1bFractal,
+  Slide2Axioms,
+  Slide3Holographic,
+  Slide4Data,
+  Slide5Unification,
+  Slide6References,
+  Slide8Simulation,
+  Slide9Applications,
+  Slide7Conclusion
+];
+
 export default function App() {
-  const totalSlides = 11;
+  const totalSlides = SlideComponents.length;
   const slideContainerRef = useRef<HTMLDivElement>(null);
   
   // Initialize from URL parameter or default to 0
@@ -102,19 +116,13 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, handleGoTo, totalSlides]);
 
-  const slides = [
-    <Slide0About slideNumber={1} totalSlides={totalSlides} />,
-    <Slide1Abstract slideNumber={2} totalSlides={totalSlides} />,
-    <Slide1bFractal slideNumber={3} totalSlides={totalSlides} />,
-    <Slide2Axioms slideNumber={4} totalSlides={totalSlides} />,
-    <Slide3Holographic slideNumber={5} totalSlides={totalSlides} />,
-    <Slide4Data slideNumber={6} totalSlides={totalSlides} />,
-    <Slide5Unification slideNumber={7} totalSlides={totalSlides} />,
-    <Slide6References slideNumber={8} totalSlides={totalSlides} />,
-    <Slide8Simulation slideNumber={9} totalSlides={totalSlides} />,
-    <Slide9Applications slideNumber={10} totalSlides={totalSlides} />,
-    <Slide7Conclusion slideNumber={11} totalSlides={totalSlides} />
-  ];
+  const slides = SlideComponents.map((SlideComponent, index) => (
+    <SlideComponent
+      key={index}
+      slideNumber={index + 1}
+      totalSlides={totalSlides}
+    />
+  ));
 
   const navigationContextValue = {
     goToSlide: handleGoTo,
