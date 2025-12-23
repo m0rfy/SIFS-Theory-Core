@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // Base path for GitHub Pages deployment
-  base: process.env.NODE_ENV === 'production' ? '/SIFS-Theory-Core/' : '/',
+  // Base path for GitHub Pages deployment - using relative path to be agnostic of repo name
+  base: './',
   
   plugins: [
     // The React and Tailwind plugins are both required for Make, even if
