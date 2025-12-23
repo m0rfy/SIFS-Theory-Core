@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SlideNavigation } from './components/SlideNavigation';
+import { Slide0About } from './components/slides/Slide0About';
 import { Slide1Abstract } from './components/slides/Slide1Abstract';
 import { Slide1bFractal } from './components/slides/Slide1bFractal';
 import { Slide2Axioms } from './components/slides/Slide2Axioms';
@@ -11,7 +12,7 @@ import { Slide7Conclusion } from './components/slides/Slide7Conclusion';
 
 export default function App() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 8;
+  const totalSlides = 9;
 
   // Keyboard navigation
   useEffect(() => {
@@ -46,14 +47,15 @@ export default function App() {
   };
 
   const slides = [
-    <Slide1Abstract slideNumber={1} totalSlides={totalSlides} />,
-    <Slide1bFractal slideNumber={2} totalSlides={totalSlides} />,
-    <Slide2Axioms slideNumber={3} totalSlides={totalSlides} />,
-    <Slide3Holographic slideNumber={4} totalSlides={totalSlides} />,
-    <Slide4Data slideNumber={5} totalSlides={totalSlides} />,
-    <Slide5Unification slideNumber={6} totalSlides={totalSlides} />,
-    <Slide6References slideNumber={7} totalSlides={totalSlides} />,
-    <Slide7Conclusion slideNumber={8} totalSlides={totalSlides} />
+    <Slide0About slideNumber={1} totalSlides={totalSlides} />,
+    <Slide1Abstract slideNumber={2} totalSlides={totalSlides} />,
+    <Slide1bFractal slideNumber={3} totalSlides={totalSlides} />,
+    <Slide2Axioms slideNumber={4} totalSlides={totalSlides} />,
+    <Slide3Holographic slideNumber={5} totalSlides={totalSlides} />,
+    <Slide4Data slideNumber={6} totalSlides={totalSlides} />,
+    <Slide5Unification slideNumber={7} totalSlides={totalSlides} />,
+    <Slide6References slideNumber={8} totalSlides={totalSlides} />,
+    <Slide7Conclusion slideNumber={9} totalSlides={totalSlides} />
   ];
 
   return (
