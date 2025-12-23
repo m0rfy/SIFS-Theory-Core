@@ -10,10 +10,11 @@ import { Slide4Data } from './components/slides/Slide4Data';
 import { Slide5Unification } from './components/slides/Slide5Unification';
 import { Slide6References } from './components/slides/Slide6References';
 import { Slide8Simulation } from './components/slides/Slide8Simulation';
+import { Slide9Applications } from './components/slides/Slide9Applications';
 import { Slide7Conclusion } from './components/slides/Slide7Conclusion';
 
 export default function App() {
-  const totalSlides = 10;
+  const totalSlides = 11;
   const slideContainerRef = useRef<HTMLDivElement>(null);
   
   // Initialize from URL parameter or default to 0
@@ -111,7 +112,8 @@ export default function App() {
     <Slide5Unification slideNumber={7} totalSlides={totalSlides} />,
     <Slide6References slideNumber={8} totalSlides={totalSlides} />,
     <Slide8Simulation slideNumber={9} totalSlides={totalSlides} />,
-    <Slide7Conclusion slideNumber={10} totalSlides={totalSlides} />
+    <Slide9Applications slideNumber={10} totalSlides={totalSlides} />,
+    <Slide7Conclusion slideNumber={11} totalSlides={totalSlides} />
   ];
 
   const navigationContextValue = {
