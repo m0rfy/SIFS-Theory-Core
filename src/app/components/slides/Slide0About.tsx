@@ -30,37 +30,6 @@ export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
     { label: 'Отклонение от ΛCDM', value: '>4σ', color: 'text-orange-400', delay: 300 },
   ];
 
-  const achievements = [
-    {
-      icon: '🌌',
-      title: 'Унификация',
-      description: 'Гравитация + Квантовая механика + Космология',
-      gradient: 'from-blue-600/20 to-cyan-600/20',
-      border: 'border-blue-500/30'
-    },
-    {
-      icon: '🔬',
-      title: 'Фрактальная геометрия',
-      description: '5D пространство с масштабной координатой S',
-      gradient: 'from-purple-600/20 to-pink-600/20',
-      border: 'border-purple-500/30'
-    },
-    {
-      icon: '⚛️',
-      title: 'Микро-сингулярности',
-      description: 'Протоны как заряженные вращающиеся ЧД',
-      gradient: 'from-green-600/20 to-emerald-600/20',
-      border: 'border-green-500/30'
-    },
-    {
-      icon: '📊',
-      title: 'Наблюдательные данные',
-      description: 'DESI 2025, Euclid, JWST, EHT',
-      gradient: 'from-orange-600/20 to-red-600/20',
-      border: 'border-orange-500/30'
-    },
-  ];
-
   return (
     <Slide
       title="О проекте SIFS Theory"
@@ -73,22 +42,25 @@ export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
         
         {/* Navigation Tabs */}
         <div className="flex justify-center mb-8">
-          <Tabs defaultValue="scientific" className="w-full max-w-5xl">
-            <div className="flex justify-center mb-6">
-              <TabsList className="bg-slate-900/80 border border-slate-700">
-                <TabsTrigger value="beginner" className="px-6 data-[state=active]:bg-green-600 data-[state=active]:text-white">
+          <Tabs defaultValue="conceptual" className="w-full max-w-5xl">
+            <div className="flex justify-center mb-6 overflow-x-auto">
+              <TabsList className="bg-slate-900/80 border border-slate-700 min-w-max p-1 h-auto">
+                <TabsTrigger value="beginner" className="px-4 py-2 text-sm data-[state=active]:bg-green-600 data-[state=active]:text-white">
                   🌱 Просто о сложном
                 </TabsTrigger>
-                <TabsTrigger value="scientific" className="px-6 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-                  🔬 Научный подход
+                <TabsTrigger value="conceptual" className="px-4 py-2 text-sm data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+                  🧠 Популярная наука
                 </TabsTrigger>
-                <TabsTrigger value="technical" className="px-6 data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                <TabsTrigger value="mathematical" className="px-4 py-2 text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+                  📐 Строгий формализм
+                </TabsTrigger>
+                <TabsTrigger value="technical" className="px-4 py-2 text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white">
                   💻 Для разработчиков
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            {/* Beginner Content */}
+            {/* 1. Beginner Content - Analogies (Google Maps) */}
             <TabsContent value="beginner" className="space-y-6">
               <div className="p-8 bg-gradient-to-r from-green-950/60 to-emerald-950/60 border border-green-500/30 rounded-xl backdrop-blur-sm">
                 <h2 className="text-3xl font-bold text-green-400 mb-6">Вселенная как Карта Google</h2>
@@ -131,74 +103,64 @@ export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
                   </div>
                 </div>
               </div>
-              
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="p-6 bg-slate-900/50 rounded-xl border border-slate-700">
-                  <div className="text-4xl mb-4">📱</div>
-                  <h3 className="text-xl font-bold text-white mb-2">Фрактальность</h3>
-                  <p className="text-gray-400">
-                    Как береговая линия выглядит одинаково извилисто с любой высоты, так и законы физики повторяют сами себя на разных масштабах.
-                  </p>
-                </div>
-                <div className="p-6 bg-slate-900/50 rounded-xl border border-slate-700">
-                  <div className="text-4xl mb-4">🎈</div>
-                  <h3 className="text-xl font-bold text-white mb-2">Расширение</h3>
-                  <p className="text-gray-400">
-                    Вселенная не просто разлетается в разные стороны, она "растет" внутрь и наружу одновременно, меняя масштаб сетки пространства.
-                  </p>
-                </div>
-                <div className="p-6 bg-slate-900/50 rounded-xl border border-slate-700">
-                  <div className="text-4xl mb-4">🔋</div>
-                  <h3 className="text-xl font-bold text-white mb-2">Энергия</h3>
-                  <p className="text-gray-400">
-                    Вакуум — это не пустота, а океан энергии. Материя — это просто "пузырьки" на поверхности этого океана.
-                  </p>
-                </div>
-              </div>
             </TabsContent>
 
-            {/* Scientific Content (Original) */}
-            <TabsContent value="scientific" className="space-y-8">
-               <div className={`p-8 bg-gradient-to-r from-indigo-950/60 via-purple-950/60 to-pink-950/60 border border-indigo-500/30 rounded-xl backdrop-blur-sm`}>
-                <div className="max-w-4xl mx-auto text-center space-y-4">
-                  <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-                    🌌 О проекте SIFS Theory
+            {/* 2. Conceptual Content - Deep Logic, No Formulas */}
+            <TabsContent value="conceptual" className="space-y-8">
+               <div className={`p-8 bg-gradient-to-r from-cyan-950/60 to-blue-950/60 border border-cyan-500/30 rounded-xl backdrop-blur-sm`}>
+                <div className="max-w-4xl mx-auto space-y-6">
+                  <h2 className="text-3xl font-bold text-cyan-400 mb-4 text-center">
+                     Логика Единой Теории Поля
                   </h2>
-                  <p className="text-gray-200 text-lg leading-relaxed mb-6">
-                    <strong className="text-white">Scale-Invariant Fractal Spacetime (SIFS)</strong> — это унифицированная 
-                    геометрическая теория поля, которая <strong className="text-cyan-400">объединяет гравитацию, квантовую механику и космологию</strong> 
-                    через фрактальную геометрию 5-мерного пространства.
+                  <p className="text-gray-200 text-lg leading-relaxed text-center">
+                    SIFS Theory предлагает геометрическую унификацию всех фундаментальных взаимодействий, основываясь на принципе 
+                    масштабной инвариантности (фрактальности) пространства-времени.
                   </p>
                   
-                  <div className="grid md:grid-cols-2 gap-4 mt-6 text-left">
-                    <div className="p-5 bg-black/40 rounded-lg border border-white/10">
-                      <h4 className="text-cyan-400 font-semibold mb-3 text-lg">🎯 Главная идея</h4>
-                      <p className="text-gray-300 text-sm leading-relaxed mb-3">
-                        Наша 4D-вселенная — это <span className="text-cyan-400 font-mono">3-брана</span> в 5-мерном 
-                        фрактальном bulk-пространстве (модель Randall-Sundrum). Пятая координата <span className="text-purple-400 font-mono">S</span> 
-                        представляет <strong>физический масштаб</strong>.
+                  <div className="grid md:grid-cols-2 gap-6 mt-8">
+                    <div className="p-6 bg-black/40 rounded-lg border border-white/10 hover:border-cyan-500/50 transition-colors">
+                      <h4 className="text-cyan-400 font-bold mb-3 text-xl">5D Пространство (Bulk)</h4>
+                      <p className="text-gray-300 leading-relaxed">
+                        Мы живем не в 4-мерном мире, а на 4-мерной "мебране" (бране), которая плывет в 5-мерном объеме (Bulk). 
+                        Пятое измерение — это не просто дополнительная координата "влево-вправо", это координата <strong>Масштаба</strong>. 
+                        Движение вдоль пятого измерения равносильно изменению масштаба наблюдения (от атомов к галактикам).
                       </p>
                     </div>
-                    <div className="p-5 bg-black/40 rounded-lg border border-white/10">
-                      <h4 className="text-purple-400 font-semibold mb-3 text-lg">📊 Что рассчитывается?</h4>
-                      <p className="text-gray-300 text-sm leading-relaxed mb-3">
-                        <strong>Все фундаментальные константы</strong> (G, α, α_s, G_F) выводятся из одной геометрической аксиомы 
-                        без свободных параметров.
+                    <div className="p-6 bg-black/40 rounded-lg border border-white/10 hover:border-cyan-500/50 transition-colors">
+                      <h4 className="text-cyan-400 font-bold mb-3 text-xl">Иерархия Сил</h4>
+                      <p className="text-gray-300 leading-relaxed">
+                        Почему гравитация такая слабая? Магнит может поднять скрепку против притяжения всей Земли. 
+                        В теории SIFS гравитация кажется слабой только на нашем масштабе, потому что большая часть её "силы" 
+                        утекает в пятое измерение. На микромасштабе (внутри атома) гравитация становится такой же сильной, 
+                        как и другие взаимодействия.
+                      </p>
+                    </div>
+                    <div className="p-6 bg-black/40 rounded-lg border border-white/10 hover:border-cyan-500/50 transition-colors">
+                      <h4 className="text-cyan-400 font-bold mb-3 text-xl">Природа Протона</h4>
+                      <p className="text-gray-300 leading-relaxed">
+                        В стандартной физике протон — это частица из кварков. В SIFS протон — это микроскопическая черная дыра Керра-Ньюмана. 
+                        Её масса точно совпадает с предсказаниями для черной дыры такого радиуса, если учесть поправки на кривизну 
+                        5-мерного пространства. Это решает проблему "тонкой настройки" массы частиц.
+                      </p>
+                    </div>
+                    <div className="p-6 bg-black/40 rounded-lg border border-white/10 hover:border-cyan-500/50 transition-colors">
+                      <h4 className="text-cyan-400 font-bold mb-3 text-xl">Темная Энергия</h4>
+                      <p className="text-gray-300 leading-relaxed">
+                        Вселенная расширяется с ускорением не из-за мифической "темной энергии", а из-за дрейфа нашей браны 
+                        вдоль масштабной координаты. Это геометрический эффект, похожий на то, как меридианы на глобусе 
+                        расходятся при движении к экватору.
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Statistics */}
+              {/* Statistics for Enthusiasts */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
                   <div
                     key={index}
-                    className={`p-4 bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-lg backdrop-blur-sm transition-all duration-700 ${
-                      statsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                    }`}
-                    style={{ transitionDelay: `${stat.delay}ms` }}
+                    className="p-4 bg-gradient-to-br from-white/5 to-white/0 border border-white/10 rounded-lg backdrop-blur-sm"
                   >
                     <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
                     <div className="text-gray-400 text-sm">{stat.label}</div>
@@ -206,28 +168,88 @@ export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
                 ))}
               </div>
 
-              {/* Key Concepts with Diagrams */}
+              {/* Visualizations without heavy math */}
               <div className="p-6 bg-gradient-to-r from-black/60 to-black/40 border border-white/10 rounded-xl backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Ключевые концепции теории
+                <h3 className="text-2xl font-bold mb-6 text-center text-white">
+                  Визуализация Структуры
                 </h3>
-                <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-6">
-                  <div className="lg:col-span-1"><FractalScaleDiagram /></div>
-                  <div className="lg:col-span-1"><MassHierarchyChart /></div>
-                  <div className="lg:col-span-1"><DarkEnergyEvolution /></div>
+                <div className="grid lg:grid-cols-2 gap-8">
+                  <div className="p-4 bg-white/5 rounded-lg">
+                     <h4 className="text-center mb-4 text-gray-300">Фрактальная Иерархия</h4>
+                     <MassHierarchyChart />
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg">
+                     <h4 className="text-center mb-4 text-gray-300">Эволюция Энергии</h4>
+                     <DarkEnergyEvolution />
+                  </div>
                 </div>
-              </div>
-              
-              {/* Interactive Calculations */}
-              <div className="p-6 bg-gradient-to-r from-black/60 to-black/40 border border-white/10 rounded-xl backdrop-blur-sm">
-                 <h3 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  🧮 Интерактивные расчёты
-                </h3>
-                <InteractiveCalculations />
               </div>
             </TabsContent>
 
-            {/* Technical (Dev) Content */}
+            {/* 3. Mathematical Content - Pure Formulas */}
+            <TabsContent value="mathematical" className="space-y-8">
+               <div className="p-8 bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 rounded-xl backdrop-blur-sm">
+                 <h2 className="text-2xl font-mono text-blue-400 mb-6 border-b border-slate-800 pb-4">
+                   SIFS Formalism: Core Equations
+                 </h2>
+                 
+                 <div className="grid md:grid-cols-2 gap-8 font-mono text-sm">
+                   <div className="space-y-6">
+                     <div className="p-4 bg-black border border-slate-800 rounded">
+                       <p className="text-slate-500 mb-2">// 5D Action Integral (Einstein-Hilbert + Brane)</p>
+                       <div className="text-gray-300 overflow-x-auto whitespace-pre">
+                         S = ∫ d⁵x √(-G) [ M³ (R - 2Λ) + δ(y) L_brane ]
+                       </div>
+                     </div>
+
+                     <div className="p-4 bg-black border border-slate-800 rounded">
+                       <p className="text-slate-500 mb-2">// Warp Factor & Metric Solution</p>
+                       <div className="text-gray-300 overflow-x-auto whitespace-pre">
+                         ds² = e^(-2k|y|) η_μν dx^μ dx^ν + dy²
+                         <br/>
+                         Ω(y) = exp(-k|y|)
+                       </div>
+                     </div>
+
+                     <div className="p-4 bg-black border border-slate-800 rounded">
+                       <p className="text-slate-500 mb-2">// Mass Hierarchy (Planck vs Proton)</p>
+                       <div className="text-gray-300 overflow-x-auto whitespace-pre">
+                         m_proton ≈ M_Planck * exp(-kπR_c)
+                         <br/>
+                         10^-27 kg ≈ 10^-8 kg * 10^-19
+                       </div>
+                     </div>
+                   </div>
+
+                   <div className="space-y-6">
+                      <div className="p-4 bg-black border border-slate-800 rounded">
+                       <p className="text-slate-500 mb-2">// Fine Structure Constant Derivation</p>
+                       <div className="text-gray-300 overflow-x-auto whitespace-pre">
+                         α = (e² / 4πε₀ħc) = f_geom(Vol_S3)
+                         <br/>
+                         α ≈ 1/137.035999 (Predicted)
+                       </div>
+                     </div>
+
+                     <div className="p-4 bg-black border border-slate-800 rounded">
+                       <p className="text-slate-500 mb-2">// Friedmann Equation Modification (Dark Energy)</p>
+                       <div className="text-gray-300 overflow-x-auto whitespace-pre">
+                         H² = (8πG/3)ρ (1 + ρ/2λ) + Λ_eff + C/a⁴
+                         <br/>
+                         Λ_eff(t) = Λ₀ + β * H(t) * dS/dt
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+
+                 <div className="mt-8 pt-8 border-t border-slate-800">
+                    <h3 className="text-xl font-mono text-blue-400 mb-4">Interactive Derivations</h3>
+                    <InteractiveCalculations />
+                 </div>
+               </div>
+            </TabsContent>
+
+            {/* 4. Technical Content (Developers) */}
             <TabsContent value="technical" className="space-y-6">
               <div className="p-8 bg-gradient-to-r from-purple-950/60 to-indigo-950/60 border border-purple-500/30 rounded-xl backdrop-blur-sm">
                 <h2 className="text-3xl font-bold text-purple-400 mb-6 font-mono">System Architecture</h2>
@@ -264,7 +286,7 @@ const calculateMetricStress = (S: number, Mass: number) => {
               </div>
               
               <div className="grid md:grid-cols-3 gap-6">
-                <a href="https://github.com/m0rfy/SIFS-Theory-Core" target="_blank" rel="noopener" className="block p-6 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-purple-500 transition-colors">
+                <a href="https://github.com/m0rfy/SIFS-Theory-Core" target="_blank" rel="noopener noreferrer" className="block p-6 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-purple-500 transition-colors">
                   <h3 className="font-bold text-white mb-2">📁 Repository</h3>
                   <p className="text-gray-400 text-sm">Access the full source code, documentation, and mathematical proofs.</p>
                 </a>
