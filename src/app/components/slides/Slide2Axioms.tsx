@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Slide } from '../Slide';
 import { Atom, Zap, Orbit, Shield } from 'lucide-react';
 import { ProtonBlackHoleCalc } from '../ProtonBlackHoleCalc';
@@ -8,37 +9,39 @@ interface Slide2Props {
 }
 
 export function Slide2Axioms({ slideNumber, totalSlides }: Slide2Props) {
+  const { t } = useTranslation();
+
   const axioms = [
     {
       icon: Atom,
-      title: 'Микро-сингулярности',
-      description: 'Протон — Kerr-Newman ЧД (Burinskii), масса подавлена RS-warping (Randall-Sundrum)',
+      title: t('axioms_slide.items.micro.title'),
+      description: t('axioms_slide.items.micro.desc'),
       color: 'text-blue-400'
     },
     {
       icon: Shield,
-      title: 'Стабильность',
-      description: 'Замедление времени на эффективном горизонте (замороженная звезда). Заряд — топологический инвариант браны',
+      title: t('axioms_slide.items.stability.title'),
+      description: t('axioms_slide.items.stability.desc'),
       color: 'text-green-400'
     },
     {
       icon: Zap,
-      title: 'Сильное взаимодействие',
-      description: 'Градиент dn/dr → конфайнмент (оптическая аналогия). Резкое изменение показателя преломления вакуума',
+      title: t('axioms_slide.items.strong.title'),
+      description: t('axioms_slide.items.strong.desc'),
       color: 'text-purple-400'
     },
     {
       icon: Orbit,
-      title: 'Тёмная энергия',
-      description: 'Энтропийное натяжение браны, evolving Λ_eff (подтверждено DESI 2025)',
+      title: t('axioms_slide.items.dark_energy.title'),
+      description: t('axioms_slide.items.dark_energy.desc'),
       color: 'text-orange-400'
     }
   ];
 
   return (
     <Slide
-      title="Ключевые аксиомы и решенные парадоксы"
-      subtitle="Четыре фундаментальных принципа SIFS"
+      title={t('axioms_slide.title')}
+      subtitle={t('axioms_slide.subtitle')}
       backgroundImage="https://images.unsplash.com/photo-1759327847036-22d9bad214bf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibGFjayUyMGhvbGUlMjBldmVudCUyMGhvcml6b258ZW58MXx8fHwxNzY2NDcxMTEzfDA&ixlib=rb-4.1.0&q=80&w=1080"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
@@ -69,11 +72,9 @@ export function Slide2Axioms({ slideNumber, totalSlides }: Slide2Props) {
         </div>
 
         <div className="p-6 bg-gradient-to-r from-blue-950/50 to-purple-950/50 border border-blue-500/30 rounded-lg max-w-6xl">
-          <h3 className="mb-3 text-cyan-400 text-center">Braneworld RS2</h3>
+          <h3 className="mb-3 text-cyan-400 text-center">{t('axioms_slide.braneworld.title')}</h3>
           <p className="text-gray-300 text-center leading-relaxed">
-            Наша 4D-вселенная локализована на бране в 5-мерном Anti-de Sitter пространстве. 
-            Экспоненциальное warping метрики exp(−k|S|) естественно объясняет иерархию масс 
-            между планковским и электрослабым масштабами.
+            {t('axioms_slide.braneworld.text')}
           </p>
         </div>
 

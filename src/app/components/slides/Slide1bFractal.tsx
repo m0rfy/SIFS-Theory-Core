@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Slide } from '../Slide';
 import { FractalScaleDiagram } from '../FractalScaleDiagram';
 
@@ -7,10 +8,12 @@ interface Slide1bProps {
 }
 
 export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
+  const { t } = useTranslation();
+
   return (
     <Slide
-      title="Фрактальная структура пространства-времени"
-      subtitle="Принцип Уробороса: от Планка до Хаббла"
+      title={t('fractal_slide.title')}
+      subtitle={t('fractal_slide.subtitle')}
       backgroundImage="https://images.unsplash.com/photo-1728675437273-d83d4cfaf938?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmFjdGFsJTIwbWFuZGVsYnJvdCUyMHNldHxlbnwxfHx8fDE3NjY0NzExMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
@@ -29,8 +32,8 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent flex items-end p-4">
               <div>
-                <h5 className="text-white mb-1">Квантовый уровень</h5>
-                <p className="text-gray-400 text-sm">|S| ≈ 0-15</p>
+                <h5 className="text-white mb-1">{t('fractal_slide.images.quantum.title')}</h5>
+                <p className="text-gray-400 text-sm">{t('fractal_slide.images.quantum.desc')}</p>
               </div>
             </div>
           </div>
@@ -43,8 +46,8 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent flex items-end p-4">
               <div>
-                <h5 className="text-white mb-1">Космологический уровень</h5>
-                <p className="text-gray-400 text-sm">|S| ≈ 20-28</p>
+                <h5 className="text-white mb-1">{t('fractal_slide.images.cosmology.title')}</h5>
+                <p className="text-gray-400 text-sm">{t('fractal_slide.images.cosmology.desc')}</p>
               </div>
             </div>
           </div>
@@ -57,8 +60,8 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent flex items-end p-4">
               <div>
-                <h5 className="text-white mb-1">Гравитационные волны</h5>
-                <p className="text-gray-400 text-sm">Связь масштабов</p>
+                <h5 className="text-white mb-1">{t('fractal_slide.images.waves.title')}</h5>
+                <p className="text-gray-400 text-sm">{t('fractal_slide.images.waves.desc')}</p>
               </div>
             </div>
           </div>
@@ -66,10 +69,10 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
 
         {/* Mathematical Framework */}
         <div className="p-6 bg-gradient-to-r from-indigo-950/40 to-violet-950/40 border border-indigo-500/30 rounded-lg">
-          <h4 className="text-indigo-400 mb-4">Математическая формулировка</h4>
+          <h4 className="text-indigo-400 mb-4">{t('fractal_slide.math.title')}</h4>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="p-4 bg-black/40 rounded-lg">
-              <h5 className="text-cyan-400 text-sm mb-2">Масштабное преобразование</h5>
+              <h5 className="text-cyan-400 text-sm mb-2">{t('fractal_slide.math.transform')}</h5>
               <div className="font-mono text-xs text-gray-300 space-y-1">
                 <div>S → S + δS</div>
                 <div>λ → λ × exp(δS)</div>
@@ -78,7 +81,7 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
             </div>
             
             <div className="p-4 bg-black/40 rounded-lg">
-              <h5 className="text-purple-400 text-sm mb-2">Действие в bulk</h5>
+              <h5 className="text-purple-400 text-sm mb-2">{t('fractal_slide.math.action')}</h5>
               <div className="font-mono text-xs text-gray-300 space-y-1">
                 <div>S = ∫ d⁴x dS √|g| R</div>
                 <div>g_μν = exp(−2k|S|) η_μν</div>
@@ -90,11 +93,9 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
 
         {/* Key Insight */}
         <div className="p-6 bg-gradient-to-r from-purple-950/50 to-pink-950/50 border border-purple-500/30 rounded-lg">
-          <h4 className="text-purple-400 mb-3 text-center">Центральная идея SIFS</h4>
+          <h4 className="text-purple-400 mb-3 text-center">{t('fractal_slide.insight.title')}</h4>
           <p className="text-gray-300 text-center leading-relaxed max-w-3xl mx-auto">
-            Каждая "частица" — это не точка, а сингулярность в 5D-bulk, протянутая вдоль координаты S. 
-            То, что мы наблюдаем как массу и заряд, — это 4D-проекция глубинной 5D-геометрии. 
-            Масштаб не абстракция, а физическое измерение.
+            {t('fractal_slide.insight.text')}
           </p>
         </div>
       </div>
