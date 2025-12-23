@@ -357,9 +357,9 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 ## 📬 Contact
 
-**Author:** [Your Name]  
-**Email:** your.email@domain.com  
-**arXiv:** [physics.gen-ph/XXXX.XXXXX](https://arxiv.org)
+**Author:** Toha Vorobey  
+**Email:** nikelon@proton.me
+**arXiv:** [physics.gen-ph/XXXX.XXXXX](https://arxiv.org) (mb some else)
 
 ---
 
