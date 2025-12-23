@@ -8,9 +8,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/sifs-theory.git"
+    "url": "https://github.com/m0rfy/SIFS-Theory-Core.git"
   },
-  "homepage": "https://your-username.github.io/sifs-theory",
+  "homepage": "https://m0rfy.github.io/SIFS-Theory-Core",
   "keywords": [
     "physics",
     "theoretical-physics",

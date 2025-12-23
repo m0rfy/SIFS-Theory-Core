@@ -129,8 +129,8 @@
 ## 💬 Обсуждение
 
 Вопросы и обсуждения:
-- [GitHub Discussions](https://github.com/your-username/sifs-theory/discussions)
-- [Scientific Issues](https://github.com/your-username/sifs-theory/issues?q=label%3Ascience)
+- [GitHub Discussions](https://github.com/m0rfy/SIFS-Theory-Core/discussions)
+- [Scientific Issues](https://github.com/m0rfy/SIFS-Theory-Core/issues?q=label%3Ascience)
 
 ## ✨ Вклад в документацию
 

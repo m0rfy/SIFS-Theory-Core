@@ -76,4 +76,4 @@
 
 ---
 
-**Для вопросов об этом кодексе поведения:** [открыть Issue](https://github.com/your-username/sifs-theory/issues)
+**Для вопросов об этом кодексе поведения:** [открыть Issue](https://github.com/m0rfy/SIFS-Theory-Core/issues)

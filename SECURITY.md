@@ -166,8 +166,8 @@ const clean = DOMPurify.sanitize(userInput);
 
 ## Контакты
 
-- **Публичные вопросы:** [GitHub Issues](https://github.com/your-username/sifs-theory/issues)
-- **Приватные уязвимости:** [GitHub Security Advisory](https://github.com/your-username/sifs-theory/security/advisories)
+- **Публичные вопросы:** [GitHub Issues](https://github.com/m0rfy/SIFS-Theory-Core/issues)
+- **Приватные уязвимости:** [GitHub Security Advisory](https://github.com/m0rfy/SIFS-Theory-Core/security/advisories)
 - **Email:** security@yourdomain.com (опционально)
 
 ## Благодарности
