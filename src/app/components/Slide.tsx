@@ -25,8 +25,8 @@ export function Slide({ title, subtitle, children, backgroundImage, slideNumber,
       )}
       
       {/* Scrollable Content */}
-      <div className="relative z-10 flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
-        <div className="p-8 md:p-16 pb-32">
+      <div className="relative z-10 flex-1 flex flex-col overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.2) transparent' }}>
+        <div className="p-8 md:p-16 pb-32 min-h-full w-full max-w-full">
           {/* Header */}
           <div className="mb-8">
             <h1 className="mb-2">{title}</h1>
@@ -36,7 +36,7 @@ export function Slide({ title, subtitle, children, backgroundImage, slideNumber,
           </div>
           
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 w-full max-w-full">
             {children}
           </div>
           

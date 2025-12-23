@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Slide } from '../Slide';
+import { useSlideNavigation } from '../../contexts/SlideNavigationContext';
 import { FractalScaleDiagram } from '../FractalScaleDiagram';
 import { MassHierarchyChart } from '../MassHierarchyChart';
 import { DarkEnergyEvolution } from '../DarkEnergyEvolution';
@@ -10,6 +11,7 @@ interface Slide0Props {
 }
 
 export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
+  const { goToSlide } = useSlideNavigation();
   const [isVisible, setIsVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
 
@@ -241,24 +243,24 @@ export function Slide0About({ slideNumber, totalSlides }: Slide0Props) {
             Изучите документацию, расчёты, предсказания и наблюдательные данные, подтверждающие теорию
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="#"
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105"
+            <button
+              onClick={() => goToSlide(1)}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-white font-semibold hover:from-blue-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
               📚 Документация
-            </a>
-            <a
-              href="#"
-              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white font-semibold hover:from-purple-500 hover:to-pink-500 transition-all duration-300 transform hover:scale-105"
+            </button>
+            <button
+              onClick={() => goToSlide(6)}
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white font-semibold hover:from-purple-500 hover:to-pink-500 transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
               🧮 Расчёты
-            </a>
-            <a
-              href="#"
-              className="px-6 py-3 bg-gradient-to-r from-pink-600 to-orange-600 rounded-lg text-white font-semibold hover:from-pink-500 hover:to-orange-500 transition-all duration-300 transform hover:scale-105"
+            </button>
+            <button
+              onClick={() => goToSlide(5)}
+              className="px-6 py-3 bg-gradient-to-r from-pink-600 to-orange-600 rounded-lg text-white font-semibold hover:from-pink-500 hover:to-orange-500 transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
               🔮 Предсказания
-            </a>
+            </button>
           </div>
         </div>
       </div>
