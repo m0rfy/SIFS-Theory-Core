@@ -13,7 +13,8 @@ import {
   Brain,
   Search,
   Server,
-  Satellite
+  Satellite,
+  TrendingUp
 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -28,32 +29,32 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
   const freeApplications = [
     {
       title: "Анализ данных DESI",
-      description: "Поиск корреляций эволюции темной энергии w(z) в открытых данных DR2.",
+      description: "Валидация дрейфа темной энергии w(z) на Python по открытым датасетам DR2 (LBL).",
       icon: Database,
       tag: "Data Science"
     },
     {
       title: "GW-аналитика",
-      description: "Поиск высокочастотных гармоник в каталогах гравитационных волн GWTC-3.",
+      description: "Спектральный анализ сигналов LIGO (GWTC-3) на наличие частот >1 кГц (следы 5D).",
       icon: Radio,
       tag: "LIGO/Virgo"
     },
     {
       title: "Симуляция орбит",
-      description: "Моделирование движения тел в метрике Гордона (Python/Julia).",
+      description: "Численное моделирование геодезических в метрике Гордона (Julia/Python).",
       icon: Laptop,
-      tag: "Software"
+      tag: "Simulation"
     },
     {
       title: "Анализ CMB",
-      description: "Поиск фрактальных паттернов и 'холодных пятен' на картах Planck.",
+      description: "Поиск фрактальных паттернов и 'холодных пятен' на картах Planck (HEALPix).",
       icon: Search,
       tag: "Cosmology"
     },
     {
       title: "Кривые блеска",
-      description: "Изучение лог-периодичности в данных светимости квазаров (SDSS).",
-      icon: TrendingUp, // Will import locally or reuse
+      description: "Изучение лог-периодичности в данных светимости квазаров (SDSS/ZTF).",
+      icon: TrendingUp,
       tag: "Astrophysics"
     },
     {
@@ -63,26 +64,26 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
       tag: "Math"
     },
     {
-      title: "Образование",
-      description: "Создание визуализаций 5D-пространства для учебных материалов.",
+      title: "Образовательные 3D",
+      description: "Разработка WebGL визуализаций 5D-пространства для студентов.",
       icon: Globe,
       tag: "Education"
     },
     {
       title: "Exoplanet Atmospheres",
-      description: "Поиск аномалий рефракции в данных JWST (метрика Гордона).",
+      description: "Поиск аномалий рефракции в открытых данных JWST (метрика Гордона).",
       icon: Search,
       tag: "JWST"
     },
     {
       title: "Open Source Libs",
-      description: "Разработка библиотек для расчета геодезических в AdS5.",
+      description: "Создание открытых библиотек для расчета тензоров в AdS5 (GitHub).",
       icon: Code,
       tag: "Dev"
     },
     {
       title: "Теоретический анализ",
-      description: "Уточнение метрики для многочастичных систем.",
+      description: "Уточнение уравнений движения для многочастичных систем в SIFS.",
       icon: Brain,
       tag: "Theory"
     }
@@ -103,37 +104,37 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
     },
     {
       title: "Модификация LHC",
-      description: "Калориметры для поиска 'исчезающей' энергии (уход в 5D).",
+      description: "Калориметры для поиска 'исчезающей' энергии (уход в 5D-балк).",
       icon: Atom,
       cost: "$50M+"
     },
     {
       title: "Нейтринная лаб.",
-      description: "Глубоководный детектор для локализации источников нейтрино.",
+      description: "Глубоководный детектор для точной локализации источников ВЭ-нейтрино.",
       icon: Microscope,
       cost: "$100M"
     },
     {
       title: "Вакуумная энергетика",
-      description: "R&D генератора на эффекте Швингера в искривленном поле.",
+      description: "R&D генератора на эффекте Швингера в искривленном поле (прототип).",
       icon: Zap,
       cost: "$1B+"
     },
     {
       title: "AI-Датацентр",
-      description: "Кластер для ML-симуляции эволюции фрактальной Вселенной.",
+      description: "HPC-кластер для ML-симуляции эволюции фрактальной Вселенной.",
       icon: Server,
       cost: "$10M"
     },
     {
       title: "Стелс-материалы",
-      description: "Метаматериалы, имитирующие оптическую метрику Гордона.",
+      description: "Метаматериалы, имитирующие оптическую метрику Гордона для волн.",
       icon: Microscope,
       cost: "$20M"
     },
     {
       title: "Квантовая связь",
-      description: "Прототипирование дальней связи через ER=EPR мосты.",
+      description: "Прототипирование дальней связи через ER=EPR мосты (спутники).",
       icon: Radio,
       cost: "$200M"
     },
@@ -151,25 +152,6 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
     }
   ];
 
-  // Need to define TrendingUp locally since I used it above but didn't import it in the first list
-  const TrendingUp = ({ className }: { className?: string }) => (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-      <polyline points="17 6 23 6 23 12" />
-    </svg>
-  );
-
   return (
     <Slide
       title="Практическое применение теории"
@@ -183,26 +165,26 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
           <CardHeader className="pb-2 border-b border-green-500/20 bg-green-950/20">
             <CardTitle className="text-green-400 flex items-center gap-2">
               <Laptop className="h-5 w-5" />
-              Открытые исследования (0 ₽)
+              Открытые исследования (Free / $0)
             </CardTitle>
-            <p className="text-xs text-gray-400">Требуются только данные и время</p>
+            <p className="text-xs text-gray-400">Требуются только данные, код и время</p>
           </CardHeader>
           <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full max-h-[600px] p-4">
               <div className="space-y-3">
                 {freeApplications.map((app, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-green-900/10 border border-green-500/10 hover:bg-green-900/20 transition-colors">
-                    <div className="mt-1 p-2 rounded-md bg-green-500/10 text-green-400">
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-green-900/10 border border-green-500/10 hover:bg-green-900/20 transition-colors group">
+                    <div className="mt-1 p-2 rounded-md bg-green-500/10 text-green-400 group-hover:text-green-300 transition-colors">
                       <app.icon className="h-4 w-4" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-green-200 text-sm">{app.title}</h4>
+                        <h4 className="font-semibold text-green-200 text-sm group-hover:text-green-100">{app.title}</h4>
                         <Badge variant="outline" className="text-[10px] border-green-500/30 text-green-500 h-5 px-1.5">
                           {app.tag}
                         </Badge>
                       </div>
-                      <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                      <p className="text-xs text-gray-400 mt-0.5 leading-relaxed group-hover:text-gray-300">
                         {app.description}
                       </p>
                     </div>
@@ -220,24 +202,24 @@ export function Slide9Applications({ slideNumber, totalSlides }: Slide9Props) {
               <Rocket className="h-5 w-5" />
               Проекты с финансированием
             </CardTitle>
-            <p className="text-xs text-gray-400">Требуются капитал или господдержка</p>
+            <p className="text-xs text-gray-400">Требуются инвестиции или гранты</p>
           </CardHeader>
           <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full max-h-[600px] p-4">
               <div className="space-y-3">
                 {fundedApplications.map((app, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-purple-900/10 border border-purple-500/10 hover:bg-purple-900/20 transition-colors">
-                    <div className="mt-1 p-2 rounded-md bg-purple-500/10 text-purple-400">
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-purple-900/10 border border-purple-500/10 hover:bg-purple-900/20 transition-colors group">
+                    <div className="mt-1 p-2 rounded-md bg-purple-500/10 text-purple-400 group-hover:text-purple-300 transition-colors">
                       <app.icon className="h-4 w-4" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-semibold text-purple-200 text-sm">{app.title}</h4>
+                        <h4 className="font-semibold text-purple-200 text-sm group-hover:text-purple-100">{app.title}</h4>
                         <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-500 h-5 px-1.5">
                           {app.cost}
                         </Badge>
                       </div>
-                      <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                      <p className="text-xs text-gray-400 mt-0.5 leading-relaxed group-hover:text-gray-300">
                         {app.description}
                       </p>
                     </div>
