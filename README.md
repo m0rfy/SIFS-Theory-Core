@@ -271,6 +271,9 @@ SIFS-Theory-Core/
 git clone https://github.com/m0rfy/SIFS-Theory-Core.git
 cd SIFS-Theory-Core
 
+# Настройте Git (если ещё не настроено)
+# См. .github/scripts/setup-git-config.sh или .github/GIT_SETUP.md
+
 # Установите зависимости
 npm install
 
