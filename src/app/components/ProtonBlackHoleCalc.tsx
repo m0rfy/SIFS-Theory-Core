@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export function ProtonBlackHoleCalc() {
+  const { t } = useTranslation();
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   // Real physical constants
@@ -15,54 +17,54 @@ export function ProtonBlackHoleCalc() {
 
   const calculations = [
     {
-      title: 'Schwarzschild радиус протона',
+      title: t('components.proton_calc.items.schwarzschild.title'),
       formula: 'r_s = 2GM_p/c²',
       calculation: '= 2 × (6.674×10⁻¹¹) × (1.673×10⁻²⁷) / (2.998×10⁸)²',
       result: 'r_s ≈ 2.48 × 10⁻⁵⁴ m',
-      interpretation: 'На 39 порядков меньше наблюдаемого радиуса',
+      interpretation: t('components.proton_calc.items.schwarzschild.interpretation'),
       color: 'blue',
-      details: 'Это классический радиус Шварцшильда для массы протона. Он показывает, что если бы протон был обычной черной дырой, его горизонт был бы невероятно мал.'
+      details: t('components.proton_calc.items.schwarzschild.details')
     },
     {
-      title: 'Planck масса в r_p',
+      title: t('components.proton_calc.items.planck.title'),
       formula: 'M_Pl(r_p) = √(ħc/G) × (l_Pl/r_p)',
       calculation: '= 2.18×10⁻⁸ kg × (1.6×10⁻³⁵ / 0.84×10⁻¹⁵)',
       result: 'M_eff ≈ 4.15 × 10⁻²⁸ kg',
-      interpretation: 'Близко к массе протона!',
+      interpretation: t('components.proton_calc.items.planck.interpretation'),
       color: 'purple',
-      details: 'Планковская масса, масштабированная до размера протона, почти точно совпадает с его наблюдаемой массой. Это ключевое наблюдение теории SIFS.'
+      details: t('components.proton_calc.items.planck.details')
     },
     {
-      title: 'RS-warping фактор',
+      title: t('components.proton_calc.items.warping.title'),
       formula: 'η = exp(−k|S|) = m_p/M_Pl(r_p)',
       calculation: '= (1.673×10⁻²⁷) / (4.15×10⁻²⁸)',
       result: 'η ≈ 4.03 → |S| ≈ 11.2',
-      interpretation: 'Масштабная координата протона',
+      interpretation: t('components.proton_calc.items.warping.interpretation'),
       color: 'green',
-      details: 'Экспоненциальное подавление массы через RS-warping определяет масштабную координату протона. Это геометрический параметр, а не подгоночный.'
+      details: t('components.proton_calc.items.warping.details')
     },
     {
-      title: 'Эффективный горизонт в 5D',
+      title: t('components.proton_calc.items.horizon.title'),
       formula: 'r_eff = r_p × exp(k|S|/2)',
       calculation: '≈ 0.84 fm × exp(5.6)',
       result: 'r_eff ≈ 230 fm',
-      interpretation: 'В bulk-пространстве (ненаблюдаемо в 4D)',
+      interpretation: t('components.proton_calc.items.horizon.interpretation'),
       color: 'cyan',
-      details: 'В 5-мерном bulk-пространстве эффективный горизонт намного больше, но он не наблюдается в 4D из-за warping фактора.'
+      details: t('components.proton_calc.items.horizon.details')
     }
   ];
 
   return (
     <div className="space-y-4">
       <div className="p-4 bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border border-indigo-500/30 rounded-lg">
-        <h4 className="text-indigo-400 mb-3">Реальные вычисления: Протон как микро-сингулярность</h4>
+        <h4 className="text-indigo-400 mb-3">{t('components.proton_calc.title')}</h4>
         <p className="text-gray-400 text-sm leading-relaxed mb-4">
-          Показано, что при учёте RS-warping масса Планка на масштабе протона совпадает с его наблюдаемой массой
+          {t('components.proton_calc.subtitle')}
         </p>
         
         {/* Physical Constants */}
         <div className="mb-4 p-3 bg-black/40 rounded-lg">
-          <h5 className="text-white text-sm mb-2">Фундаментальные константы:</h5>
+          <h5 className="text-white text-sm mb-2">{t('components.proton_calc.constants')}</h5>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs font-mono">
             {Object.entries(constants).map(([key, value]) => (
               <div key={key} className="text-gray-400">
@@ -168,15 +170,13 @@ export function ProtonBlackHoleCalc() {
         <div className="flex items-start gap-3">
           <div className="text-green-400 text-2xl">✓</div>
           <div>
-            <h5 className="text-green-400 mb-2">Результат унификации</h5>
+            <h5 className="text-green-400 mb-2">{t('components.proton_calc.result.title')}</h5>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Масса протона <strong>не нужно</strong> вводить как параметр. Она появляется автоматически 
-              как масштабно-подавленная планковская масса на расстоянии r_p: <span className="font-mono text-cyan-400">m_p = M_Pl × exp(−k|S_p|)</span>
+              {t('components.proton_calc.result.text').split(': ')[0]}: <span className="font-mono text-cyan-400">m_p = M_Pl × exp(−k|S_p|)</span>
             </p>
             <div className="mt-3 p-3 bg-black/40 rounded">
               <p className="text-xs text-gray-400">
-                Стабильность: Заряд — топологический инвариант браны (сохраняется). 
-                Масса — проекция в 4D (подавлена). Энергия может утекать в bulk (испарение распределено по S).
+                {t('components.proton_calc.result.subtext')}
               </p>
             </div>
           </div>
