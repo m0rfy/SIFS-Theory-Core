@@ -1,0 +1,106 @@
+{
+  "instructions": {
+    "nav": "← → or Space to navigate",
+    "home_end": "Home/End for first/last slide"
+  },
+  "about": {
+    "title": "About SIFS Theory",
+    "subtitle": "Scale-Invariant Fractal Spacetime — Unification of physics through fractal geometry",
+    "main_title": "🌌 About SIFS Theory",
+    "description_prefix": "Scale-Invariant Fractal Spacetime (SIFS)",
+    "description_body": "— is a unified geometric field theory that combines gravity, quantum mechanics, and cosmology through the fractal geometry of 5-dimensional spacetime. The theory solves fundamental problems of modern physics: mass hierarchy, the nature of dark energy, proton stability, and the black hole information paradox.",
+    "main_idea_title": "🎯 Main Idea",
+    "main_idea_text1": "Our 4D universe is a 3-brane in a 5-dimensional fractal bulk spacetime (Randall-Sundrum model). The fifth coordinate S represents physical scale — not an abstract parameter, but a real geometric coordinate.",
+    "main_idea_text2": "The scale coordinate covers the entire range from the Planck scale (10⁻³⁵ m) to the Hubble scale (10²⁶ m), creating a fractal self-similar structure of spacetime. Exponential warping of the metric exp(−k|S|) naturally explains why gravity is 10³⁸ times weaker than the strong interaction.",
+    "calculations_title": "📊 What is Calculated?",
+    "calculations_text1": "All fundamental constants (G, α, α_s, G_F) are derived from a single geometric axiom without free parameters. Proton mass emerges automatically as a scale-suppressed Planck mass. Dark energy is explained by the drift of the global scale coordinate.",
+    "calculations_text2": "The theory makes 27 testable predictions, 11 of which have already been confirmed by observational data (DESI 2025, Euclid, JWST, EHT). A key achievement is the explanation of evolving dark energy with a >4σ deviation from the standard ΛCDM model, which is consistent with SIFS predictions about scale coordinate drift.",
+    "scientific_significance": "🔬 Scientific Significance",
+    "unification": {
+      "title": "Unification",
+      "text": "A unified geometric basis for all interactions. Gravity, electromagnetism, strong, and weak interactions are all gradients of the vacuum refractive index at different scales."
+    },
+    "predictions": {
+      "title": "Predictions",
+      "text": "27 testable predictions with specific numerical values. Predictions for colliders (LHC, FCC), gravitational waves (LIGO, Virgo), cosmology (CMB, structure formation)."
+    },
+    "confirmations": {
+      "title": "Confirmations",
+      "text": "DESI 2025: evolving dark energy (>4σ). Euclid/JWST: early massive structures. EHT: polarization flips in M87*. All consistent with the theory without fine-tuning."
+    },
+    "key_achievements": "Key Achievements",
+    "achievements_list": {
+        "mass_hierarchy": "Mass Hierarchy: Explanation from Planck scale (10⁻³⁵ m) to Hubble scale (10²⁶ m) from a single geometric axiom. Proton mass emerges automatically as scale-suppressed Planck mass without introducing it as a parameter.",
+        "constants": "8 fundamental constants derived: Gravitational constant G, fine structure constant α, strong coupling constant α_s, Fermi constant G_F, cosmological constant Λ, and others — all from one geometry without free parameters.",
+        "desi": "DESI 2025: Evolving dark energy with >4σ deviation from standard ΛCDM model fully consistent with SIFS predictions about global scale coordinate drift. This is not a coincidence, but a consequence of geometry.",
+        "predictions_count": "27 testable predictions: 11 already confirmed by observational data (DESI, Euclid, JWST, EHT), 4 in verification process, 12 awaiting experimental verification at colliders and gravitational wave detectors.",
+        "paradoxes": "Paradox Resolution: Black hole information paradox solved via ER=EPR correspondence. Proton stability explained by quantum entanglement and frozen time at the effective horizon."
+    },
+    "fractal_universe": {
+        "title": "Fractal Structure of the Universe",
+        "subtitle": "Self-similarity from Planck scale (10⁻³⁵ m) to Hubble scale (10²⁶ m)"
+    },
+    "interactive_calculations": {
+        "title": "🧮 Interactive Calculations",
+        "text1": "Click on any calculation below to see step-by-step computations with formulas, numerical values, and physical interpretation. All results are obtained from a single geometric axiom (warped 5D metric with scale coordinate S) without free parameters.",
+        "text2": "Each calculation shows: initial formulas, step-by-step calculations with real physical constants, obtained results, and their physical interpretation in the context of SIFS theory. This is not numerology — these are consequences of geometry."
+    },
+    "explore": {
+        "title": "Explore SIFS Theory",
+        "subtitle": "Study documentation, calculations, predictions, and observational data confirming the theory",
+        "docs": {
+            "title": "Documentation",
+            "desc": "Complete theoretical basis, mathematical formalism, equations of motion, RS2 geometry, fractal structure"
+        },
+        "calcs": {
+            "title": "Calculations",
+            "desc": "Detailed computations: proton mass from geometry, coupling constants (G, α, α_s, G_F), dark energy, mass hierarchy"
+        },
+        "preds": {
+            "title": "Predictions",
+            "desc": "27 testable predictions with numerical values: colliders, gravitational waves, cosmology, astrophysics. 11 confirmed."
+        },
+        "links": {
+            "open_docs": "Open documentation →",
+            "open_calcs": "Open calculations →",
+            "open_preds": "Open predictions →"
+        }
+    },
+    "stats": {
+        "predictions": "Predictions",
+        "confirmed": "Confirmed",
+        "constants": "Constants Derived",
+        "deviation": "ΛCDM Deviation"
+    },
+    "cards": {
+        "unification": {
+            "title": "Unification",
+            "desc": "Gravity + Quantum Mechanics + Cosmology"
+        },
+        "fractal": {
+            "title": "Fractal Geometry",
+            "desc": "5D spacetime with scale coordinate S"
+        },
+        "micro": {
+            "title": "Micro-singularities",
+            "desc": "Protons as charged rotating BHs"
+        },
+        "data": {
+            "title": "Observational Data",
+            "desc": "DESI 2025, Euclid, JWST, EHT"
+        }
+    },
+    "footer": {
+        "author_title": "Architecture Author",
+        "author_desc": "Theoretical basis and mathematical formalism development",
+        "release_title": "Release Date",
+        "release_desc": "First public version with full documentation",
+        "license_title": "License",
+        "license_desc": "Free to use with attribution",
+        "overview": "📖 Theory Overview",
+        "desi": "📊 DESI 2025 Data",
+        "defense": "🛡️ Theory Defense",
+        "github": "🔗 GitHub Repository"
+    }
+  }
+}
