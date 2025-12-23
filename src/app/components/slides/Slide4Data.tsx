@@ -83,6 +83,10 @@ export function Slide4Data({ slideNumber, totalSlides }: Slide4Props) {
         {/* Dark Energy Chart */}
         <div>
           <DarkEnergyEvolution />
+          <div className="flex flex-col items-center justify-center mt-6 p-4 bg-black/40 rounded-lg border border-green-500/20">
+             <h4 className="text-green-300 mb-2 text-sm">Detailed Evolution Profile (w vs z)</h4>
+             <img src="/images/dark_energy_evolution.png" alt="Dark Energy Evolution Plot" className="rounded-lg border border-green-500/50 shadow-2xl max-w-2xl w-full hover:scale-105 transition-transform duration-500" />
+          </div>
         </div>
 
         {/* Statistical Significance */}
