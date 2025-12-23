@@ -23,10 +23,17 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <Layers className="h-8 w-8 text-purple-400" />
             </div>
             <div>
-              <h3 className="mb-2 text-purple-300">Фрактальное расширение AdS/CFT</h3>
-              <p className="text-gray-300 leading-relaxed">
-                SIFS является фрактальным расширением голографического принципа AdS/CFT: 
-                брана дуальна гравитации в warped fractal AdS₅ пространстве.
+              <h3 className="mb-2 text-purple-300 text-xl font-semibold">Фрактальное расширение AdS/CFT</h3>
+              <p className="text-gray-300 leading-relaxed mb-3">
+                SIFS является фрактальным расширением голографического принципа AdS/CFT соответствия: 
+                наша 4D-брана дуальна гравитации в warped fractal AdS₅ bulk-пространстве. Это означает, 
+                что вся информация о квантовой теории поля на бране закодирована в гравитационной динамике 
+                в 5-мерном bulk.
+              </p>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Ключевое отличие от стандартного AdS/CFT: масштабная координата S создаёт фрактальную структуру, 
+                что приводит к лог-периодическим осцилляциям в энтропии запутанности и модуляциям в голографической 
+                энтропии. Это объясняет наблюдаемые временные масштабы в астрофизических явлениях.
               </p>
             </div>
           </div>
@@ -39,8 +46,14 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <Radio className="h-6 w-6 text-cyan-400" />
               <h3 className="text-cyan-400">Энтропия</h3>
             </div>
-            <p className="text-gray-300">
-              Энтропия Бекенштейна-Хокинга является источником натяжения браны в 5D-bulk
+            <p className="text-gray-300 leading-relaxed mb-2">
+              Энтропия Бекенштейна-Хокинга <code className="text-cyan-300 text-xs">S_BH = A/(4G)</code> является источником 
+              натяжения браны в 5D-bulk. Это натяжение создаёт эффективную космологическую константу через энтропийное 
+              давление: <code className="text-cyan-300 text-xs">Λ_eff ∝ (S_horizon / Area) × exp(−2k|S_global|)</code>.
+            </p>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Энтропия масштабируется с площадью горизонта, но подавляется warping фактором, что объясняет малость 
+              космологической константы и её эволюцию со временем (evolving dark energy).
             </p>
           </div>
 
@@ -49,8 +62,14 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <Activity className="h-6 w-6 text-green-400" />
               <h3 className="text-green-400">Осцилляции</h3>
             </div>
-            <p className="text-gray-300">
-              Лог-периодические осцилляции S → модуляции в entanglement entropy
+            <p className="text-gray-300 leading-relaxed mb-2">
+              Лог-периодические осцилляции масштабной координаты S создают модуляции в энтропии запутанности 
+              (entanglement entropy). Это проявляется в поляризационных флипах в аккреционных дисках чёрных дыр 
+              и временных масштабах астрофизических явлений.
+            </p>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Формула: <code className="text-green-300 text-xs">S_ent(S) = S₀ × [1 + A cos(ω ln|S| + φ)]</code>, где 
+              амплитуда A и частота ω определяются фрактальной структурой пространства-времени.
             </p>
           </div>
 
@@ -59,8 +78,14 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <Layers className="h-6 w-6 text-orange-400" />
               <h3 className="text-orange-400">Дуальность</h3>
             </div>
-            <p className="text-gray-300">
-              Гравитация в bulk ↔ квантовая теория на бране через голографическое соответствие
+            <p className="text-gray-300 leading-relaxed mb-2">
+              Гравитация в 5D-bulk полностью эквивалентна квантовой теории поля на 4D-бране через голографическое 
+              соответствие. Это означает, что гравитационные эффекты в bulk (например, испарение Хокинга) соответствуют 
+              квантовым процессам на бране (например, распаду частиц).
+            </p>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              Информационный парадокс чёрных дыр решается через ER=EPR соответствие: запутанные частицы соединены 
+              мостами Эйнштейна-Розена в bulk, что сохраняет унитарность квантовой механики.
             </p>
           </div>
         </div>
