@@ -26,10 +26,17 @@ export const InformationalCollapseSimulation: React.FC = () => {
   const [massExponent, setMassExponent] = useState(24); // 10^24 kg
   const [scaleS, setScaleS] = useState(37); // S coordinate
   const [calculatedTension, setCalculatedTension] = useState(0);
+  const [simulationSpeed, setSimulationSpeed] = useState(1.0);
 
+  // Update speed ref when state changes
+  useEffect(() => {
+    simulationSpeedRef.current = simulationSpeed;
+  }, [simulationSpeed]);
+  
   // Simulation state refs to avoid re-renders during animation loop
   const pointsRef = useRef<Point[]>([]);
   const animationRef = useRef<number>();
+  const simulationSpeedRef = useRef(1.0);
   
   // Constants based on SIFS theory
   const k_warp = 0.05; // Warping constant for visualization scaling
@@ -95,6 +102,8 @@ export const InformationalCollapseSimulation: React.FC = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      const speed = simulationSpeedRef.current;
+
       // Physics Update
       pointsRef.current.forEach((p, idx) => {
         if (p.fixed) return;
@@ -119,10 +128,11 @@ export const InformationalCollapseSimulation: React.FC = () => {
             }
         } 
 
-        p.vx = (p.vx + fx) * damp;
-        p.vy = (p.vy + fy) * damp;
-        p.x += p.vx;
-        p.y += p.vy;
+        // Apply speed
+        p.vx = (p.vx + fx * speed) * damp;
+        p.vy = (p.vy + fy * speed) * damp;
+        p.x += p.vx * speed;
+        p.y += p.vy * speed;
       });
 
       // Compute visual stress (not used for logic, just physics update)
@@ -263,6 +273,24 @@ export const InformationalCollapseSimulation: React.FC = () => {
                     />
                      <p className="text-[10px] text-slate-500">
                         Planetary Scale (~37) to Quantum (&lt;10)
+                    </p>
+                </div>
+
+                <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-mono text-slate-400">
+                        <Label>Simulation Speed</Label>
+                        <span>{simulationSpeed.toFixed(1)}x</span>
+                    </div>
+                    <Slider 
+                        value={[simulationSpeed]} 
+                        onValueChange={(v) => setSimulationSpeed(v[0])}
+                        min={0.1} 
+                        max={3.0} 
+                        step={0.1}
+                        className="cursor-pointer"
+                    />
+                     <p className="text-[10px] text-slate-500">
+                        Adjust vacuum relaxation rate
                     </p>
                 </div>
             </div>
