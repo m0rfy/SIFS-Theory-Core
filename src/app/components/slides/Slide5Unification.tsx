@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Slide } from '../Slide';
 import { Target, Waves, Boxes, Sparkles } from 'lucide-react';
 import { MassHierarchyChart } from '../MassHierarchyChart';
@@ -10,41 +11,43 @@ interface Slide5Props {
 }
 
 export function Slide5Unification({ slideNumber, totalSlides }: Slide5Props) {
+  const { t } = useTranslation();
+
   const constants = [
     {
       symbol: 'G_eff',
-      name: 'Гравитационная константа',
+      name: t('unification_slide.constants.g_eff.name'),
       formula: 'G_Pl × exp(−2k|S_grav|)',
-      description: 'Слабость гравитации относительно других сил',
+      description: t('unification_slide.constants.g_eff.desc'),
       color: 'text-blue-400'
     },
     {
       symbol: 'α ≈ 1/137',
-      name: 'Постоянная тонкой структуры',
+      name: t('unification_slide.constants.alpha.name'),
       formula: '|S|_em ≈ ln(137π) ≈ 5',
-      description: 'Калибровка по солнечной системе',
+      description: t('unification_slide.constants.alpha.desc'),
       color: 'text-purple-400'
     },
     {
       symbol: 'α_s',
-      name: 'Константа сильного взаимодействия',
+      name: t('unification_slide.constants.alpha_s.name'),
       formula: 'π / |S|_QCD ln(μ/Λ)',
-      description: 'Running coupling → конфайнмент',
+      description: t('unification_slide.constants.alpha_s.desc'),
       color: 'text-green-400'
     },
     {
       symbol: 'G_F',
-      name: 'Константа слабого взаимодействия',
+      name: t('unification_slide.constants.g_f.name'),
       formula: 'exp(−4k|S|_weak) с |S|_weak ≈ 8–10',
-      description: 'Экспоненциальное подавление',
+      description: t('unification_slide.constants.g_f.desc'),
       color: 'text-orange-400'
     }
   ];
 
   return (
     <Slide
-      title="Завершение унификации"
-      subtitle="Все фундаментальные константы из одной геометрической аксиомы"
+      title={t('unification_slide.title')}
+      subtitle={t('unification_slide.subtitle')}
       backgroundImage="https://images.unsplash.com/photo-1762962531310-a51532209ecd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGFjZXRpbWUlMjBnZW9tZXRyeXxlbnwxfHx8fDE3NjY0NzExMTN8MA&ixlib=rb-4.1.0&q=80&w=1080"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
@@ -57,9 +60,9 @@ export function Slide5Unification({ slideNumber, totalSlides }: Slide5Props) {
               <Target className="h-8 w-8 text-cyan-400" />
             </div>
             <div>
-              <h3 className="mb-2 text-cyan-300">Единая геометрическая аксиома</h3>
+              <h3 className="mb-2 text-cyan-300">{t('unification_slide.axiom.title')}</h3>
               <p className="text-gray-300 leading-relaxed">
-                Warped fractal 5D-метрика с масштабной координатой S и RS-warping exp(−k|S|)
+                {t('unification_slide.axiom.text')}
               </p>
             </div>
           </div>
@@ -110,15 +113,15 @@ export function Slide5Unification({ slideNumber, totalSlides }: Slide5Props) {
               <Sparkles className="h-6 w-6 text-orange-400" />
             </div>
             <div className="flex-1">
-              <h3 className="mb-2 text-orange-400">Λ_eff — Тёмная энергия</h3>
+              <h3 className="mb-2 text-orange-400">{t('unification_slide.dark_energy.title')}</h3>
               <p className="text-gray-300 mb-3 leading-relaxed">
-                Эффективная космологическая константа через энтропийное натяжение:
+                {t('unification_slide.dark_energy.text')}
               </p>
               <div className="p-3 bg-black/40 rounded font-mono text-sm text-orange-300 text-center">
                 Λ_eff ≈ (S_horizon / Area) × exp(−2k|S_global|)
               </div>
               <p className="text-sm text-gray-400 mt-3">
-                Совпадение с DESI 2025 без fine-tuning параметров
+                {t('unification_slide.dark_energy.subtext')}
               </p>
             </div>
           </div>
@@ -128,11 +131,10 @@ export function Slide5Unification({ slideNumber, totalSlides }: Slide5Props) {
         <div className="p-6 bg-gradient-to-r from-purple-950/50 to-pink-950/50 border border-purple-500/30 rounded-lg text-center">
           <div className="flex items-center justify-center gap-3 mb-3">
             <Boxes className="h-6 w-6 text-purple-400" />
-            <h3 className="text-purple-400">Единый механизм</h3>
+            <h3 className="text-purple-400">{t('unification_slide.mechanism.title')}</h3>
           </div>
           <p className="text-gray-300 max-w-3xl mx-auto">
-            Все взаимодействия — градиенты dn/dr на разных |S|. Иерархия масс и констант возникает 
-            из одной геометрии, без произвольных параметров.
+            {t('unification_slide.mechanism.text')}
           </p>
         </div>
       </div>

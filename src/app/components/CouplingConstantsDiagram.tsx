@@ -1,10 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis, Cell, Legend } from 'recharts';
 
 export function CouplingConstantsDiagram() {
+  const { t } = useTranslation();
+
   // Real coupling constants at different energy scales
   const data = [
     { 
-      name: 'Gravity', 
+      name: t('coupling_constants.items.gravity'), 
       S: 20, 
       alpha: 1e-38, 
       displayAlpha: -38,
@@ -13,7 +16,7 @@ export function CouplingConstantsDiagram() {
       color: '#8b5cf6'
     },
     { 
-      name: 'Weak', 
+      name: t('coupling_constants.items.weak'), 
       S: 9, 
       alpha: 1e-6, 
       displayAlpha: -6,
@@ -22,7 +25,7 @@ export function CouplingConstantsDiagram() {
       color: '#3b82f6'
     },
     { 
-      name: 'EM', 
+      name: t('coupling_constants.items.em'), 
       S: 5.1, 
       alpha: 1/137, 
       displayAlpha: -2.14,
@@ -31,7 +34,7 @@ export function CouplingConstantsDiagram() {
       color: '#06b6d4'
     },
     { 
-      name: 'Strong', 
+      name: t('coupling_constants.items.strong'), 
       S: 2.8, 
       alpha: 1, 
       displayAlpha: 0,
@@ -44,9 +47,9 @@ export function CouplingConstantsDiagram() {
   return (
     <div className="space-y-4">
       <div className="p-4 bg-black/40 rounded-lg">
-        <h4 className="text-cyan-400 mb-2">Константы связи как функции масштаба S</h4>
+        <h4 className="text-cyan-400 mb-2">{t('coupling_constants.title')}</h4>
         <p className="text-gray-400 text-sm mb-4">
-          Все взаимодействия: градиенты dn/dr на разных |S|
+          {t('coupling_constants.subtitle')}
         </p>
         <ResponsiveContainer width="100%" height={350}>
           <ScatterChart margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
@@ -56,14 +59,14 @@ export function CouplingConstantsDiagram() {
               dataKey="S" 
               stroke="#9ca3af"
               domain={[0, 22]}
-              label={{ value: 'Масштабная координата |S|', position: 'insideBottom', offset: -10, fill: '#9ca3af' }}
+              label={{ value: t('coupling_constants.axis_x'), position: 'insideBottom', offset: -10, fill: '#9ca3af' }}
             />
             <YAxis 
               type="number"
               dataKey="displayAlpha" 
               stroke="#9ca3af"
               domain={[-40, 2]}
-              label={{ value: 'log₁₀(α)', angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
+              label={{ value: t('coupling_constants.axis_y'), angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
             />
             <ZAxis 
               type="number" 
@@ -123,10 +126,9 @@ export function CouplingConstantsDiagram() {
       </div>
 
       <div className="p-4 bg-gradient-to-r from-purple-950/30 to-blue-950/30 border border-purple-500/20 rounded-lg">
-        <h4 className="text-purple-400 text-sm mb-2">Ключевой результат:</h4>
+        <h4 className="text-purple-400 text-sm mb-2">{t('coupling_constants.result.title')}</h4>
         <p className="text-gray-300 text-sm leading-relaxed">
-          Экспоненциальное убывание силы взаимодействия с увеличением |S| объясняет, почему гравитация 
-          в 10³⁸ раз слабее сильного взаимодействия. Это геометрическое следствие, а не совпадение.
+          {t('coupling_constants.result.text')}
         </p>
       </div>
     </div>

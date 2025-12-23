@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 export function DarkEnergyEvolution() {
+  const { t } = useTranslation();
+
   // DESI 2025 data: evolving dark energy
   // w(z) = w0 + wa * z/(1+z)
   const w0 = -0.827; // DESI best fit
@@ -23,9 +26,9 @@ export function DarkEnergyEvolution() {
   return (
     <div className="space-y-4">
       <div className="p-4 bg-black/40 rounded-lg">
-        <h4 className="text-green-400 mb-2">Эволюция тёмной энергии (DESI 2025)</h4>
+        <h4 className="text-green-400 mb-2">{t('dark_energy.title')}</h4>
         <p className="text-gray-400 text-sm mb-4">
-          w(z) = w₀ + wₐ × z/(1+z), где w₀ = {w0}, wₐ = {wa}
+          {t('dark_energy.formula_text', { w0, wa })}
         </p>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
@@ -33,12 +36,12 @@ export function DarkEnergyEvolution() {
             <XAxis 
               dataKey="z" 
               stroke="#9ca3af"
-              label={{ value: 'Redshift (z)', position: 'insideBottom', offset: -10, fill: '#9ca3af' }}
+              label={{ value: t('dark_energy.axis_x'), position: 'insideBottom', offset: -10, fill: '#9ca3af' }}
             />
             <YAxis 
               stroke="#9ca3af"
               domain={[-1.5, -0.5]}
-              label={{ value: 'w = P/ρ', angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
+              label={{ value: t('dark_energy.axis_y'), angle: -90, position: 'insideLeft', fill: '#9ca3af' }}
             />
             <Tooltip 
               contentStyle={{ 
@@ -56,14 +59,14 @@ export function DarkEnergyEvolution() {
               y={-1} 
               stroke="#ef4444" 
               strokeDasharray="5 5" 
-              label={{ value: 'ΛCDM (w = -1)', fill: '#ef4444', position: 'right' }}
+              label={{ value: t('dark_energy.label_lcdm'), fill: '#ef4444', position: 'right' }}
             />
             <Line 
               type="monotone" 
               dataKey="w_SIFS" 
               stroke="#10b981" 
               strokeWidth={3}
-              name="SIFS (Evolving)" 
+              name={t('dark_energy.legend_sifs')} 
               dot={{ fill: '#10b981', r: 3 }}
             />
             <Line 
@@ -71,8 +74,8 @@ export function DarkEnergyEvolution() {
               dataKey="w_LCDM" 
               stroke="#ef4444" 
               strokeWidth={2}
-              strokeDasharray="5 5"
-              name="ΛCDM (Constant)"
+              strokeDasharray="5 5" 
+              name={t('dark_energy.legend_lcdm')}
               dot={false}
             />
           </LineChart>
@@ -81,24 +84,22 @@ export function DarkEnergyEvolution() {
 
       <div className="grid grid-cols-3 gap-3 text-sm">
         <div className="p-3 bg-green-950/30 border border-green-500/30 rounded">
-          <div className="text-green-400 font-mono mb-1">&gt;4σ</div>
-          <div className="text-gray-400">Отклонение от ΛCDM</div>
+          <div className="text-green-400 font-mono mb-1">{t('dark_energy.stats.deviation.title')}</div>
+          <div className="text-gray-400">{t('dark_energy.stats.deviation.desc')}</div>
         </div>
         <div className="p-3 bg-blue-950/30 border border-blue-500/30 rounded">
-          <div className="text-blue-400 font-mono mb-1">ΔS ≈ 1.5</div>
-          <div className="text-gray-400">Дрейф за z=0→3</div>
+          <div className="text-blue-400 font-mono mb-1">{t('dark_energy.stats.drift.title')}</div>
+          <div className="text-gray-400">{t('dark_energy.stats.drift.desc')}</div>
         </div>
         <div className="p-3 bg-purple-950/30 border border-purple-500/30 rounded">
-          <div className="text-purple-400 font-mono mb-1">Λ_eff(z)</div>
-          <div className="text-gray-400">Динамическая ТЭ</div>
+          <div className="text-purple-400 font-mono mb-1">{t('dark_energy.stats.dynamic.title')}</div>
+          <div className="text-gray-400">{t('dark_energy.stats.dynamic.desc')}</div>
         </div>
       </div>
 
       <div className="p-4 bg-gradient-to-r from-green-950/30 to-cyan-950/30 border border-green-500/20 rounded-lg">
         <p className="text-gray-300 text-sm leading-relaxed">
-          <span className="text-green-400 font-mono">SIFS интерпретация:</span> w(z) отражает изменение 
-          глобальной масштабной координаты S_global со временем через энтропийное натяжение браны: 
-          Λ_eff ∝ exp(−2k|S_global|). Наблюдаемая эволюция естественна без fine-tuning.
+          <span className="text-green-400 font-mono">{t('dark_energy.interpretation.prefix')}</span> {t('dark_energy.interpretation.text')}
         </p>
       </div>
     </div>

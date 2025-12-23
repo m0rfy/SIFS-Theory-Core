@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Slide } from '../Slide';
 import { Layers, Radio, Activity } from 'lucide-react';
 
@@ -7,10 +8,12 @@ interface Slide3Props {
 }
 
 export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
+  const { t } = useTranslation();
+
   return (
     <Slide
-      title="Голографическая формулировка"
-      subtitle="AdS/CFT в фрактальном bulk"
+      title={t('holographic_slide.title')}
+      subtitle={t('holographic_slide.subtitle')}
       backgroundImage="https://images.unsplash.com/photo-1752451399417-eb6e072269bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxxdWFudHVtJTIwcGh5c2ljcyUyMGFic3RyYWN0fGVufDF8fHx8MTc2NjQ3MTExM3ww&ixlib=rb-4.1.0&q=80&w=1080"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
@@ -23,17 +26,12 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <Layers className="h-8 w-8 text-purple-400" />
             </div>
             <div>
-              <h3 className="mb-2 text-purple-300 text-xl font-semibold">Фрактальное расширение AdS/CFT</h3>
+              <h3 className="mb-2 text-purple-300 text-xl font-semibold">{t('holographic_slide.main_concept.title')}</h3>
               <p className="text-gray-300 leading-relaxed mb-3">
-                SIFS является фрактальным расширением голографического принципа AdS/CFT соответствия: 
-                наша 4D-брана дуальна гравитации в warped fractal AdS₅ bulk-пространстве. Это означает, 
-                что вся информация о квантовой теории поля на бране закодирована в гравитационной динамике 
-                в 5-мерном bulk.
+                {t('holographic_slide.main_concept.text')}
               </p>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Ключевое отличие от стандартного AdS/CFT: масштабная координата S создаёт фрактальную структуру, 
-                что приводит к лог-периодическим осцилляциям в энтропии запутанности и модуляциям в голографической 
-                энтропии. Это объясняет наблюдаемые временные масштабы в астрофизических явлениях.
+                {t('holographic_slide.main_concept.subtext')}
               </p>
             </div>
           </div>
@@ -44,48 +42,43 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
           <div className="p-6 bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg">
             <div className="flex items-center gap-3 mb-4">
               <Radio className="h-6 w-6 text-cyan-400" />
-              <h3 className="text-cyan-400">Энтропия</h3>
+              <h3 className="text-cyan-400">{t('holographic_slide.points.entropy.title')}</h3>
             </div>
             <p className="text-gray-300 leading-relaxed mb-2">
-              Энтропия Бекенштейна-Хокинга <code className="text-cyan-300 text-xs">S_BH = A/(4G)</code> является источником 
-              натяжения браны в 5D-bulk. Это натяжение создаёт эффективную космологическую константу через энтропийное 
-              давление: <code className="text-cyan-300 text-xs">Λ_eff ∝ (S_horizon / Area) × exp(−2k|S_global|)</code>.
+              {t('holographic_slide.points.entropy.text').split('S_BH')[0]}
+              <code className="text-cyan-300 text-xs">S_BH = A/(4G)</code>
+              {t('holographic_slide.points.entropy.text').split('S_BH = A/(4G)')[1].split('Λ_eff')[0]}
+              <code className="text-cyan-300 text-xs">Λ_eff ∝ (S_horizon / Area) × exp(−2k|S_global|)</code>.
             </p>
             <p className="text-gray-400 text-xs leading-relaxed">
-              Энтропия масштабируется с площадью горизонта, но подавляется warping фактором, что объясняет малость 
-              космологической константы и её эволюцию со временем (evolving dark energy).
+              {t('holographic_slide.points.entropy.subtext')}
             </p>
           </div>
 
           <div className="p-6 bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg">
             <div className="flex items-center gap-3 mb-4">
               <Activity className="h-6 w-6 text-green-400" />
-              <h3 className="text-green-400">Осцилляции</h3>
+              <h3 className="text-green-400">{t('holographic_slide.points.oscillations.title')}</h3>
             </div>
             <p className="text-gray-300 leading-relaxed mb-2">
-              Лог-периодические осцилляции масштабной координаты S создают модуляции в энтропии запутанности 
-              (entanglement entropy). Это проявляется в поляризационных флипах в аккреционных дисках чёрных дыр 
-              и временных масштабах астрофизических явлений.
+              {t('holographic_slide.points.oscillations.text')}
             </p>
             <p className="text-gray-400 text-xs leading-relaxed">
-              Формула: <code className="text-green-300 text-xs">S_ent(S) = S₀ × [1 + A cos(ω ln|S| + φ)]</code>, где 
-              амплитуда A и частота ω определяются фрактальной структурой пространства-времени.
+              {t('holographic_slide.points.oscillations.subtext').split(':')[0]}: <code className="text-green-300 text-xs">S_ent(S) = S₀ × [1 + A cos(ω ln|S| + φ)]</code>
+              {t('holographic_slide.points.oscillations.subtext').split('φ)]')[1]}
             </p>
           </div>
 
           <div className="p-6 bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg">
             <div className="flex items-center gap-3 mb-4">
               <Layers className="h-6 w-6 text-orange-400" />
-              <h3 className="text-orange-400">Дуальность</h3>
+              <h3 className="text-orange-400">{t('holographic_slide.points.duality.title')}</h3>
             </div>
             <p className="text-gray-300 leading-relaxed mb-2">
-              Гравитация в 5D-bulk полностью эквивалентна квантовой теории поля на 4D-бране через голографическое 
-              соответствие. Это означает, что гравитационные эффекты в bulk (например, испарение Хокинга) соответствуют 
-              квантовым процессам на бране (например, распаду частиц).
+              {t('holographic_slide.points.duality.text')}
             </p>
             <p className="text-gray-400 text-xs leading-relaxed">
-              Информационный парадокс чёрных дыр решается через ER=EPR соответствие: запутанные частицы соединены 
-              мостами Эйнштейна-Розена в bulk, что сохраняет унитарность квантовой механики.
+              {t('holographic_slide.points.duality.subtext')}
             </p>
           </div>
         </div>
@@ -97,10 +90,9 @@ export function Slide3Holographic({ slideNumber, totalSlides }: Slide3Props) {
               <span className="text-green-400 font-mono">✓</span>
             </div>
             <div>
-              <h3 className="mb-2 text-green-400">Подтверждение: EHT 2025</h3>
+              <h3 className="mb-2 text-green-400">{t('holographic_slide.confirmation.title')}</h3>
               <p className="text-gray-300 leading-relaxed">
-                Polarization flips в M87* (Event Horizon Telescope, сентябрь 2025) согласуются 
-                с предсказанной holographic динамикой и лог-периодическими модами масштабной координаты S.
+                {t('holographic_slide.confirmation.text')}
               </p>
             </div>
           </div>

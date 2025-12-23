@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Slide } from '../Slide';
 import { BookOpen, ExternalLink } from 'lucide-react';
 
@@ -7,48 +8,50 @@ interface Slide6Props {
 }
 
 export function Slide6References({ slideNumber, totalSlides }: Slide6Props) {
+  const { t } = useTranslation();
+
   const references = [
     {
       author: 'Nassim Haramein',
       title: 'The Schwarzschild Proton',
       year: '2010',
       url: 'https://pubs.aip.org/aip/acp/article/1303/1/95/869984/The-Schwarzschild-Proton',
-      description: 'Концепция протона как микро-черной дыры с планковским радиусом'
+      description: t('references_slide.items.haramein.desc')
     },
     {
       author: 'Alexander Burinskii',
       title: 'Kerr-Newman Electron',
       year: '2005',
       url: 'https://arxiv.org/abs/hep-th/0507109',
-      description: 'Электрон как вращающаяся заряженная черная дыра Керра-Ньюмана'
+      description: t('references_slide.items.burinskii.desc')
     },
     {
       author: 'Laurent Nottale',
       title: 'Scale Relativity',
       year: '2008',
       url: 'https://arxiv.org/abs/0812.3857',
-      description: 'Теория масштабной относительности и фрактальное пространство-время'
+      description: t('references_slide.items.nottale.desc')
     },
     {
       author: 'Lisa Randall & Raman Sundrum',
       title: 'RS Model',
       year: '1999',
       url: 'https://arxiv.org/abs/hep-ph/9905221',
-      description: 'Braneworld модель с warped дополнительным измерением'
+      description: t('references_slide.items.randall.desc')
     },
     {
       author: 'Carlo Rovelli et al.',
       title: 'Analog Gravity / Gordon Metric',
       year: '2011',
       url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5255570/',
-      description: 'Оптическая метрика и аналоговые модели гравитации'
+      description: t('references_slide.items.rovelli.desc')
     }
   ];
 
   return (
     <Slide
-      title="Научные референсы"
-      subtitle="Основные источники вдохновения и теоретический фундамент"
+      title={t('references_slide.title')}
+      subtitle={t('references_slide.subtitle')}
       backgroundImage="https://images.unsplash.com/photo-1728675437273-d83d4cfaf938?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmFjdGFsJTIwbWFuZGVsYnJvdCUyMHNldHxlbnwxfHx8fDE3NjY0NzExMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
@@ -92,11 +95,9 @@ export function Slide6References({ slideNumber, totalSlides }: Slide6Props) {
         ))}
 
         <div className="p-6 bg-gradient-to-r from-purple-950/50 to-blue-950/50 border border-purple-500/30 rounded-lg mt-8">
-          <h3 className="mb-3 text-purple-400 text-center">Междисциплинарный синтез</h3>
+          <h3 className="mb-3 text-purple-400 text-center">{t('references_slide.synthesis.title')}</h3>
           <p className="text-gray-300 text-center leading-relaxed">
-            SIFS объединяет идеи из квантовой гравитации, космологии браны, фрактальной геометрии 
-            и голографического принципа в единую coherent framework. Каждый из перечисленных авторов 
-            внёс критический вклад в отдельные аспекты теории.
+            {t('references_slide.synthesis.text')}
           </p>
         </div>
       </div>

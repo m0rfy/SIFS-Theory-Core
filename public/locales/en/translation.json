@@ -244,6 +244,269 @@
               "title": "Infinite Nesting",
               "text": "Each scale contains structures of smaller scales and is part of larger structures. Micro-BHs at Planck level ↔ supermassive BHs in galaxies: one geometry."
           }
+      },
+      "dark_energy": {
+        "title": "Dark Energy Evolution (DESI 2025)",
+        "formula_text": "w(z) = w₀ + wₐ × z/(1+z), where w₀ = {{w0}}, wₐ = {{wa}}",
+        "axis_x": "Redshift (z)",
+        "axis_y": "w = P/ρ",
+        "legend_sifs": "SIFS (Evolving)",
+        "legend_lcdm": "ΛCDM (Constant)",
+        "label_lcdm": "ΛCDM (w = -1)",
+        "stats": {
+          "deviation": {
+            "title": ">4σ",
+            "desc": "Deviation from ΛCDM"
+          },
+          "drift": {
+            "title": "ΔS ≈ 1.5",
+            "desc": "Drift over z=0→3"
+          },
+          "dynamic": {
+            "title": "Λ_eff(z)",
+            "desc": "Dynamic DE"
+          }
+        },
+        "interpretation": {
+          "prefix": "SIFS Interpretation:",
+          "text": "w(z) reflects the change of the global scale coordinate S_global over time via entropic brane tension: Λ_eff ∝ exp(−2k|S_global|). The observed evolution is natural without fine-tuning."
+        }
+      },
+      "mass_hierarchy": {
+        "title": "Mass Hierarchy via RS-warping",
+        "subtitle": "Exponential suppression: m_eff = m_Pl × exp(−k|S|)",
+        "axis_y": "log₁₀(E/GeV)",
+        "tooltip_scale": "Scale",
+        "stats": {
+          "warping": {
+            "title": "k ≈ 0.1 M_Pl",
+            "desc": "Warping parameter"
+          },
+          "hierarchy": {
+            "title": "Δ|S| ≈ 20",
+            "desc": "Total hierarchy"
+          }
+        },
+        "items": {
+          "planck": "Planck",
+          "gut": "GUT",
+          "weak": "Weak",
+          "proton": "Proton",
+          "electron": "Electron"
+        }
+      },
+      "coupling_constants": {
+        "title": "Coupling Constants as Function of Scale S",
+        "subtitle": "All interactions: gradients dn/dr at different |S|",
+        "axis_x": "Scale Coordinate |S|",
+        "axis_y": "log₁₀(α)",
+        "result": {
+          "title": "Key Result:",
+          "text": "Exponential decay of interaction strength with increasing |S| explains why gravity is 10³⁸ times weaker than the strong interaction. This is a geometric consequence, not a coincidence."
+        },
+        "items": {
+          "gravity": "Gravity",
+          "weak": "Weak",
+          "em": "EM",
+          "strong": "Strong"
+        }
+      },
+      "optical_metric": {
+        "title": "Gordon Optical Metric",
+        "subtitle": "All forces = gradients of vacuum refractive index at different scales S",
+        "formula": {
+          "main": "ds² = n²(r,S) · (c²dt² − dx²)",
+          "desc": "Minkowski metric with variable refractive index",
+          "photons": "Photons",
+          "particles": "Particles",
+          "potential": "Potential"
+        },
+        "labels": {
+          "gradient": "Gradient:",
+          "profile": "Profile n(r):",
+          "scale": "Scale",
+          "gradient_suffix": "gradient"
+        },
+        "forces": {
+          "gravity": {
+            "name": "Gravity",
+            "effect": "Trajectory curving (orbits)",
+            "strength": "Weak"
+          },
+          "em": {
+            "name": "Electromagnetism",
+            "effect": "Medium (atoms)",
+            "strength": "Medium"
+          },
+          "strong": {
+            "name": "Strong Interaction",
+            "effect": "Confinement (quarks)",
+            "strength": "Very Strong"
+          }
+        },
+        "insight": {
+          "title": "Key Insight",
+          "text": "Refractive index gradient creates effective force. The sharper n(r) changes, the stronger the interaction:",
+          "gravity_desc": "Smooth ∇n",
+          "em_desc": "Moderate ∇n",
+          "strong_desc": "Sharp ∇n"
+        },
+        "connection": {
+          "prefix": "SIFS Connection:",
+          "text": "Refractive index n(r, S) is determined by warped 5D-bulk metric. Different |S| → different dn/dr → different forces. Unification through geometry, not through symmetry groups."
+        }
       }
+  },
+  "holographic_slide": {
+    "title": "Holographic Formulation",
+    "subtitle": "AdS/CFT in Fractal Bulk",
+    "main_concept": {
+      "title": "Fractal Extension of AdS/CFT",
+      "text": "SIFS is a fractal extension of the holographic AdS/CFT correspondence principle: our 4D brane is dual to gravity in warped fractal AdS₅ bulk spacetime. This means all information about quantum field theory on the brane is encoded in gravitational dynamics in the 5D bulk.",
+      "subtext": "Key difference from standard AdS/CFT: the scale coordinate S creates a fractal structure, leading to log-periodic oscillations in entanglement entropy and modulations in holographic entropy. This explains observed time scales in astrophysical phenomena."
+    },
+    "points": {
+      "entropy": {
+        "title": "Entropy",
+        "text": "Bekenstein-Hawking entropy S_BH = A/(4G) is the source of brane tension in the 5D bulk. This tension creates an effective cosmological constant via entropic pressure: Λ_eff ∝ (S_horizon / Area) × exp(−2k|S_global|).",
+        "subtext": "Entropy scales with horizon area but is suppressed by the warping factor, explaining the smallness of the cosmological constant and its evolution over time (evolving dark energy)."
+      },
+      "oscillations": {
+        "title": "Oscillations",
+        "text": "Log-periodic oscillations of the scale coordinate S create modulations in entanglement entropy. This manifests as polarization flips in black hole accretion disks and time scales of astrophysical phenomena.",
+        "subtext": "Formula: S_ent(S) = S₀ × [1 + A cos(ω ln|S| + φ)], where amplitude A and frequency ω are determined by the fractal structure of spacetime."
+      },
+      "duality": {
+        "title": "Duality",
+        "text": "Gravity in the 5D bulk is fully equivalent to quantum field theory on the 4D brane via holographic correspondence. This means gravitational effects in the bulk (e.g., Hawking radiation) correspond to quantum processes on the brane (e.g., particle decay).",
+        "subtext": "The black hole information paradox is solved via ER=EPR correspondence: entangled particles are connected by Einstein-Rosen bridges in the bulk, preserving the unitarity of quantum mechanics."
+      }
+    },
+    "confirmation": {
+      "title": "Confirmation: EHT 2025",
+      "text": "Polarization flips in M87* (Event Horizon Telescope, September 2025) are consistent with predicted holographic dynamics and log-periodic modes of the scale coordinate S."
+    }
+  },
+  "data_slide": {
+    "title": "2025 Data Confirmations",
+    "subtitle": "Three independent observations consistent with SIFS predictions",
+    "items": {
+      "desi": {
+        "title": "DESI DR2 (March 2025)",
+        "desc": "Evolving dark energy (>4σ deviation from ΛCDM)",
+        "interpretation": "Drift of global scale coordinate S_global"
+      },
+      "euclid": {
+        "title": "Euclid / JWST",
+        "desc": "Early massive spirals + warped gravitational lensing",
+        "interpretation": "Fractal self-similarity at different scales"
+      },
+      "eht": {
+        "title": "EHT (September 2025)",
+        "desc": "Polarization flips in M87* black hole",
+        "interpretation": "Log-periodic modes of scale coordinate"
+      }
+    },
+    "interpretation_label": "SIFS Interpretation:",
+    "significance": {
+      "title": "Statistical Significance",
+      "text": "The joint probability that three independent observations (cosmology, structure formation, BH dynamics) accidentally agree with a single geometric theory is extremely low. This points to a fundamental unity of the mechanism."
+    }
+  },
+  "unification_slide": {
+    "title": "Completing Unification",
+    "subtitle": "All fundamental constants from a single geometric axiom",
+    "axiom": {
+      "title": "Unified Geometric Axiom",
+      "text": "Warped fractal 5D metric with scale coordinate S and RS-warping exp(−k|S|)"
+    },
+    "constants": {
+      "g_eff": {
+        "name": "Gravitational Constant",
+        "desc": "Weakness of gravity relative to other forces"
+      },
+      "alpha": {
+        "name": "Fine Structure Constant",
+        "desc": "Calibration by Solar System"
+      },
+      "alpha_s": {
+        "name": "Strong Coupling Constant",
+        "desc": "Running coupling → confinement"
+      },
+      "g_f": {
+        "name": "Weak Interaction Constant",
+        "desc": "Exponential suppression"
+      }
+    },
+    "dark_energy": {
+      "title": "Λ_eff — Dark Energy",
+      "text": "Effective cosmological constant via entropic tension:",
+      "subtext": "Match with DESI 2025 without parameter fine-tuning"
+    },
+    "mechanism": {
+      "title": "Unified Mechanism",
+      "text": "All interactions are gradients dn/dr at different |S|. Mass and constant hierarchy arises from single geometry, without arbitrary parameters."
+    }
+  },
+  "references_slide": {
+    "title": "Scientific References",
+    "subtitle": "Main sources of inspiration and theoretical foundation",
+    "items": {
+      "haramein": { "desc": "Proton concept as a micro-black hole with Planck radius" },
+      "burinskii": { "desc": "Electron as rotating charged Kerr-Newman black hole" },
+      "nottale": { "desc": "Scale relativity theory and fractal spacetime" },
+      "randall": { "desc": "Braneworld model with warped extra dimension" },
+      "rovelli": { "desc": "Optical metric and analog gravity models" }
+    },
+    "synthesis": {
+      "title": "Interdisciplinary Synthesis",
+      "text": "SIFS combines ideas from quantum gravity, brane cosmology, fractal geometry, and holographic principle into a single coherent framework. Each listed author made a critical contribution to specific aspects of the theory."
+    }
+  },
+  "conclusion_slide": {
+    "title": "Conclusion",
+    "subtitle": "SIFS — Path to Unified Understanding of Reality",
+    "achievement": {
+      "title": "Unification Achievement",
+      "text": "SIFS is a coherent geometric theory unifying GR, quantum mechanics, and cosmology via fractal 5D bulk. All fundamental interactions and constants are derived from a single axiom: warped fractal metric with scale coordinate S."
+    },
+    "points": {
+      "confirmations": {
+        "title": "Confirmations",
+        "text": "2025 Data (evolving DE, early galaxies, BH polarization) consistent with theory predictions"
+      },
+      "solutions": {
+        "title": "Solutions",
+        "text": "Explains mass hierarchy, confinement, charge stability, dark energy without fine-tuning"
+      },
+      "perspectives": {
+        "title": "Perspectives",
+        "text": "Ready for testing: Euclid 2026, FCC, precision gravitational lensing measurements"
+      }
+    },
+    "predictions": {
+      "title": "Predictions for Future Experiments",
+      "lensing": {
+        "title": "• Deviations in gravitational lensing",
+        "desc": "Warped metric → measurable corrections"
+      },
+      "cmb": {
+        "title": "• Log-periodic modulations in CMB",
+        "desc": "Fractal structure of early universe"
+      },
+      "running": {
+        "title": "• Running cosmological parameters",
+        "desc": "Evolution of Λ_eff with redshift"
+      },
+      "anomalies": {
+        "title": "• Anomalies in ultra-high-energy events",
+        "desc": "Manifestations of bulk effects"
+      }
+    },
+    "final": {
+      "title": "Thank you for your attention!",
+      "text": "SIFS theory is complete as a unified framework. Further development requires mathematical formalization and detailed prediction refinement.",
+      "footer": "Author: Vorobey • Date: December 22, 2025 • License: CC BY 4.0"
+    }
   }
 }
