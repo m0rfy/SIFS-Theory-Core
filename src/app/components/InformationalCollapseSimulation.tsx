@@ -103,6 +103,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       const speed = simulationSpeedRef.current;
+      const isReverse = speed < 0;
 
       // Physics Update
       pointsRef.current.forEach((p, idx) => {
@@ -129,6 +130,14 @@ export const InformationalCollapseSimulation: React.FC = () => {
         } 
 
         // Apply speed
+        // Logic for negative time: Invert damping or simply reverse flow
+        // Standard damping: velocity *= 0.95
+        // Reverse damping: velocity /= 0.95 (adds energy) -> unstable
+        // Better: Just apply dt scaling. Negative speed moves particles backwards along trajectory (roughly)
+        
+        // If speed is negative, we add "Mirror Sector" physics
+        // In mirror sector, forces might be repulsive or just visually inverted
+        
         p.vx = (p.vx + fx * speed) * damp;
         p.vy = (p.vy + fy * speed) * damp;
         p.x += p.vx * speed;
@@ -138,33 +147,83 @@ export const InformationalCollapseSimulation: React.FC = () => {
       // Compute visual stress (not used for logic, just physics update)
       
       // Draw Grid
-      ctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
+      ctx.strokeStyle = isReverse ? 'rgba(255, 100, 100, 0.4)' : 'rgba(100, 200, 255, 0.3)';
       ctx.lineWidth = 1;
       
       const rows = 15;
       const cols = 20;
       
-      ctx.beginPath();
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-            const idx = i * cols + j;
-            const p = pointsRef.current[idx];
-            
-            // Right neighbor
-            if (j < cols - 1) {
-                const pRight = pointsRef.current[idx + 1];
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(pRight.x, pRight.y);
-            }
-            // Bottom neighbor
-            if (i < rows - 1) {
-                const pBottom = pointsRef.current[idx + cols];
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(pBottom.x, pBottom.y);
+      // Mirror Projection Function
+      const drawGrid = (mirror: boolean) => {
+        ctx.beginPath();
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const idx = i * cols + j;
+                const p = pointsRef.current[idx];
+                
+                let px = p.x;
+                let py = p.y;
+
+                if (mirror) {
+                    // Mirror projection: Invert coordinates around center
+                    // Center approx: 600/2, 400/2
+                     const cx = 300; // rough center relative to grid logic
+                     const cy = 200;
+                     // Simple reflection
+                     px = cx - (p.x - cx);
+                     py = cy - (p.y - cy);
+                }
+
+                // Right neighbor
+                if (j < cols - 1) {
+                    const pRight = pointsRef.current[idx + 1];
+                    let prx = pRight.x;
+                    let pry = pRight.y;
+                    if (mirror) {
+                        const cx = 300; const cy = 200;
+                        prx = cx - (pRight.x - cx);
+                        pry = cy - (pRight.y - cy);
+                    }
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(prx, pry);
+                }
+                // Bottom neighbor
+                if (i < rows - 1) {
+                    const pBottom = pointsRef.current[idx + cols];
+                    let pbx = pBottom.x;
+                    let pby = pBottom.y;
+                    if (mirror) {
+                        const cx = 300; const cy = 200;
+                        pbx = cx - (pBottom.x - cx);
+                        pby = cy - (pBottom.y - cy);
+                    }
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(pbx, pby);
+                }
             }
         }
+        ctx.stroke();
+      };
+
+      // Draw Main Grid
+      drawGrid(false);
+
+      // Draw Mirror Grid if Reverse Time (Throat Transition)
+      if (isReverse) {
+          ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)'; // Cyan ghost
+          ctx.save();
+          // Add a slight scaling or distortion for the throat effect
+          // ctx.translate(300, 200);
+          // ctx.scale(0.9, 0.9);
+          // ctx.translate(-300, -200);
+          drawGrid(true);
+          ctx.restore();
+          
+          // Visual Glitch/Throat Text
+          ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+          ctx.font = "10px monospace";
+          ctx.fillText("4D-THROAT TRAVERSAL", 10, 390);
       }
-      ctx.stroke();
 
       // Draw Center Mass (if not collapsed)
       if (!isCollapsed) {
@@ -173,10 +232,10 @@ export const InformationalCollapseSimulation: React.FC = () => {
           // Radius depends on mass exponent
           const radius = Math.max(5, massExponent / 1.5);
           ctx.arc(cp.ox, cp.oy, radius, 0, Math.PI * 2);
-          ctx.fillStyle = '#ef4444'; // Red Planet
+          ctx.fillStyle = isReverse ? '#00ffff' : '#ef4444'; // Red Planet or Cyan Anti-Planet
           ctx.fill();
           ctx.shadowBlur = 20;
-          ctx.shadowColor = '#ef4444';
+          ctx.shadowColor = isReverse ? '#00ffff' : '#ef4444';
       } else {
            // Draw "Ghost" / Calibration Wave
           const cp = pointsRef.current[centerIdx];
@@ -186,7 +245,10 @@ export const InformationalCollapseSimulation: React.FC = () => {
           ctx.stroke();
           
           if (waveAmplitude < 150) {
-              setWaveAmplitude(prev => prev + 2);
+              setWaveAmplitude(prev => prev + 2 * Math.abs(speed)); // Animate wave forward regardless of time direction visually for effect? 
+              // Or better:
+              // setWaveAmplitude(prev => prev + 2 * speed);
+              // But wave amplitude is a visual effect of explosion.
           }
       }
 
@@ -278,19 +340,21 @@ export const InformationalCollapseSimulation: React.FC = () => {
 
                 <div className="space-y-2">
                     <div className="flex justify-between text-xs font-mono text-slate-400">
-                        <Label>Simulation Speed</Label>
-                        <span>{simulationSpeed.toFixed(1)}x</span>
+                        <Label>Time Flow (Simulation Speed)</Label>
+                        <span className={simulationSpeed < 0 ? "text-cyan-400" : "text-white"}>
+                            {simulationSpeed.toFixed(1)}x {simulationSpeed < 0 && "(REVERSE)"}
+                        </span>
                     </div>
                     <Slider 
                         value={[simulationSpeed]} 
                         onValueChange={(v) => setSimulationSpeed(v[0])}
-                        min={0.1} 
+                        min={-3.0} 
                         max={3.0} 
                         step={0.1}
                         className="cursor-pointer"
                     />
                      <p className="text-[10px] text-slate-500">
-                        Adjust vacuum relaxation rate
+                        {simulationSpeed < 0 ? "Inverting causal horizon (Anti-dS)" : "Standard vacuum relaxation rate"}
                     </p>
                 </div>
             </div>
