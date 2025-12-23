@@ -59,6 +59,8 @@
 ds² = exp(−2k|S|) · (c²dt² − dx² − dy² − dz²) + dS²
 ```
 
+![Metric Profile](docs/images/metric_profile.png)
+
 где:
 - `S` — масштабная координата (5-я размерность)
 - `k ≈ 0.1 M_Pl` — warping параметр
@@ -99,6 +101,8 @@ F = −∇n(r, S)
 ### 4. Фрактальная иерархия
 
 Самоподобие от планковского до хаббловского масштаба:
+
+![Fractal Hierarchy](docs/images/fractal_hierarchy.png)
 
 ```math
 λ(S) = λ₀ × exp(k|S|)
@@ -163,6 +167,8 @@ wₐ = −0.75 ± 0.29
 Λ_eff(z) ∝ exp(−2k|S_global(z)|)
 S_global(z) = S₀ + δS × z/(1+z)
 ```
+
+![Dark Energy Evolution](docs/images/dark_energy_evolution.png)
 
 > **Отклонение от ΛCDM:** >4σ статистическая значимость
 
