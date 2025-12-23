@@ -3,83 +3,153 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Badge } from './ui/badge';
-import { Play, Pause, RefreshCw, Activity, Clock } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { Play, Pause, RefreshCw, Clock, History, Zap, Settings } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Constants for time conversion
+const ATTO_PER_FEMTO = 1000n;
+const ATTO_PER_PICO = 1000n * ATTO_PER_FEMTO;
+const ATTO_PER_NANO = 1000n * ATTO_PER_PICO;
+const ATTO_PER_MICRO = 1000n * ATTO_PER_NANO;
+const ATTO_PER_MILLI = 1000n * ATTO_PER_MICRO;
+const ATTO_PER_SEC = 1000n * ATTO_PER_MILLI;
+
+type TimeUnit = 'attoseconds' | 'femtoseconds' | 'picoseconds' | 'nanoseconds' | 'microseconds' | 'milliseconds' | 'seconds' | 'minutes';
 
 interface ClockState {
-  globalTime: number; // ms
-  atomicTime: number; // ms
-  driftHistory: { time: number; drift: number; metric: number }[];
+  globalTime: bigint; // attoseconds from epoch
+  atomicTime: bigint; // attoseconds from epoch
+  driftHistory: { time: number; drift: number }[]; // drift in ns for visualization
 }
 
 export const AtomicClockSync: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [timeScale, setTimeScale] = useState<TimeUnit>('seconds');
   
   // Simulation parameters
-  const [amplitude, setAmplitude] = useState([0.5]); // Influence of S-factor fluctuation (0-1)
-  const [frequency, setFrequency] = useState([0.2]); // Frequency of S-factor oscillation (Hz)
-  const [baseRate, setBaseRate] = useState([1.0]); // Base tick rate relative to global time
+  const [amplitude, setAmplitude] = useState([0.5]); 
+  const [frequency, setFrequency] = useState([0.2]); 
   
   const [state, setState] = useState<ClockState>({
-    globalTime: 0,
-    atomicTime: 0,
+    globalTime: 0n,
+    atomicTime: 0n,
     driftHistory: [],
   });
 
   const lastUpdateRef = useRef<number>(0);
   const requestRef = useRef<number>();
-  const startTimeRef = useRef<number>(0);
+  
+  // Initialize with system time
+  useEffect(() => {
+    syncWithSystem();
+  }, []);
 
-  const resetSimulation = () => {
+  const syncWithSystem = () => {
+    const now = BigInt(Date.now()) * ATTO_PER_MILLI;
     setState({
-      globalTime: 0,
-      atomicTime: 0,
+      globalTime: now,
+      atomicTime: now,
       driftHistory: [],
     });
-    startTimeRef.current = performance.now();
     lastUpdateRef.current = performance.now();
   };
 
-  const syncClocks = () => {
-    setState(prev => ({
-      ...prev,
-      atomicTime: prev.globalTime
-    }));
+  const getScaleMultiplier = (unit: TimeUnit): bigint => {
+    switch(unit) {
+      case 'attoseconds': return 1n; // Very slow (1 atto per real sec?) No, let's make it observable
+      case 'femtoseconds': return 1000n;
+      case 'picoseconds': return 1000000n;
+      case 'nanoseconds': return 1000000000n;
+      case 'microseconds': return 1000000000000n;
+      case 'milliseconds': return 1000000000000000n;
+      case 'seconds': return 1000000000000000000n; // Real time (1s per 1s)
+      case 'minutes': return 60n * 1000000000000000000n;
+      default: return 1000000000000000000n;
+    }
+  };
+
+  const formatHighPrecisionTime = (time: bigint) => {
+    // Convert to local time components
+    // Note: This is a simplification. For true timezone support we'd need more complex logic.
+    // We'll use the date object for the macro part and manual formatting for micro part.
+    
+    const ms = Number(time / ATTO_PER_MILLI);
+    const date = new Date(ms);
+    
+    const remainingAtto = time % ATTO_PER_MILLI;
+    const micro = remainingAtto / ATTO_PER_MICRO;
+    const nano = (remainingAtto % ATTO_PER_MICRO) / ATTO_PER_NANO;
+    const pico = (remainingAtto % ATTO_PER_NANO) / ATTO_PER_PICO;
+    const femto = (remainingAtto % ATTO_PER_PICO) / ATTO_PER_FEMTO;
+    const atto = remainingAtto % ATTO_PER_FEMTO;
+
+    const timeString = date.toLocaleTimeString('ru-RU', { hour12: false });
+    const msPart = date.getMilliseconds().toString().padStart(3, '0');
+    
+    return {
+      macro: `${timeString}.${msPart}`,
+      micro: `${micro.toString().padStart(3, '0')} µs`,
+      nano: `${nano.toString().padStart(3, '0')} ns`,
+      pico: `${pico.toString().padStart(3, '0')} ps`,
+      femto: `${femto.toString().padStart(3, '0')} fs`,
+      atto: `${atto.toString().padStart(3, '0')} as`
+    };
   };
 
   const animate = useCallback((time: number) => {
     if (!lastUpdateRef.current) lastUpdateRef.current = time;
-    const deltaTime = (time - lastUpdateRef.current) / 1000; // seconds
+    const deltaTimeMs = time - lastUpdateRef.current;
     lastUpdateRef.current = time;
 
-    setState(prev => {
-      // SIFS Theory: Dynamic Scaling S(t) affects local time metric
-      // n(t) ~ 1 + A * cos(omega * t)
-      // d(tau) = n(t) * dt
-      
-      const t = prev.globalTime / 1000; // global time in seconds
-      
-      // Calculate instantaneous metric factor (refractive index of vacuum)
-      // Base rate + amplitude * oscillation
-      const metricFactor = baseRate[0] + (amplitude[0] * 0.1) * Math.cos(2 * Math.PI * frequency[0] * t);
-      
-      const deltaGlobal = deltaTime * 1000; // ms
-      const deltaAtomic = deltaGlobal * metricFactor;
-      
-      const newGlobalTime = prev.globalTime + deltaGlobal;
-      const newAtomicTime = prev.atomicTime + deltaAtomic;
-      const drift = newAtomicTime - newGlobalTime;
+    // Calculate time step based on selected scale
+    // If scale is 'seconds', we add exactly deltaTimeMs converted to attoseconds
+    // If scale is 'nanoseconds', we pretend 1 real second = 1 nanosecond (slow motion)
+    // Wait, the user asked for "control of animation speed" 
+    
+    // Let's interpret "scale" as: how much simulation time passes per real second.
+    // Real-time = 1 sec / sec
+    // Nanosecond scale = 1 ns / sec (Extreme Slow Motion)
+    // Minute scale = 1 min / sec (Fast Forward)
+    
+    // Calculate simulation delta in attoseconds
+    const scaleMult = getScaleMultiplier(timeScale);
+    // scaleMult is attoseconds per REAL SECOND
+    
+    // deltaTimeMs is real milliseconds passed since last frame
+    // deltaSimulation = (deltaTimeMs / 1000) * scaleMult
+    
+    const deltaSimAtto = (BigInt(Math.round(deltaTimeMs * 1000)) * scaleMult) / 1000000n; // optimize calculation
 
-      // Keep history limited to last 100 points for performance
+    setState(prev => {
+      // SIFS Effect
+      const t = Number(prev.globalTime / ATTO_PER_SEC); 
+      // Metric fluctuation: n(t)
+      const metricFactor = 1.0 + (amplitude[0] * 0.000001) * Math.cos(2 * Math.PI * frequency[0] * t);
+      
+      // Apply metric to atomic time flow
+      // atomic_delta = global_delta * metricFactor
+      // We need to handle BigInt multiplication with float factor carefully
+      // metricFactor = 1 + epsilon. 
+      // deltaAtomic = deltaSimAtto + deltaSimAtto * epsilon
+      
+      const epsilon = metricFactor - 1.0;
+      const driftAtto = BigInt(Math.round(Number(deltaSimAtto) * epsilon));
+      
+      const newGlobal = prev.globalTime + deltaSimAtto;
+      const newAtomic = prev.atomicTime + deltaSimAtto + driftAtto;
+      
+      // Calculate drift in nanoseconds for chart
+      const currentDriftNs = Number(newAtomic - newGlobal) / 1000000000;
+      
       const newHistory = [...prev.driftHistory, {
-        time: parseFloat(t.toFixed(1)),
-        drift: drift,
-        metric: metricFactor
-      }].slice(-100);
+        time: t % 100, // Rolling window visual
+        drift: currentDriftNs
+      }].slice(-50);
 
       return {
-        globalTime: newGlobalTime,
-        atomicTime: newAtomicTime,
+        globalTime: newGlobal,
+        atomicTime: newAtomic,
         driftHistory: newHistory
       };
     });
@@ -87,172 +157,187 @@ export const AtomicClockSync: React.FC = () => {
     if (isPlaying) {
       requestRef.current = requestAnimationFrame(animate);
     }
-  }, [isPlaying, amplitude, frequency, baseRate]);
+  }, [isPlaying, timeScale, amplitude, frequency]);
 
   useEffect(() => {
     if (isPlaying) {
       lastUpdateRef.current = performance.now();
       requestRef.current = requestAnimationFrame(animate);
-    } else {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-      }
     }
     return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
-      }
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, [isPlaying, animate]);
 
-  const formatTime = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const milliseconds = Math.floor(ms % 1000);
-    const seconds = totalSeconds % 60;
-    const minutes = Math.floor(totalSeconds / 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-  };
+  const tGlobal = formatHighPrecisionTime(state.globalTime);
+  const tAtomic = formatHighPrecisionTime(state.atomicTime);
 
   return (
-    <Card className="w-full bg-slate-900 border-slate-700 text-slate-100">
-      <CardHeader>
+    <Card className="w-full bg-slate-950 border-slate-800 text-slate-100 shadow-2xl">
+      <CardHeader className="border-b border-slate-800/50 pb-4">
         <div className="flex items-center justify-between">
-            <div>
-                <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-blue-400" />
-                Синхронизация Атомных Часов
+            <div className="space-y-1">
+                <CardTitle className="flex items-center gap-2 text-xl text-blue-100">
+                    <Clock className="w-6 h-6 text-blue-500" />
+                    SIFS Chronometer
                 </CardTitle>
                 <CardDescription className="text-slate-400">
-                Моделирование дрейфа времени из-за колебаний масштабного фактора S
+                    Синхронизация с локальным временем • Точность до аттосекунд (10⁻¹⁸ с)
                 </CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+                <Select value={timeScale} onValueChange={(v: TimeUnit) => setTimeScale(v)}>
+                    <SelectTrigger className="w-[180px] bg-slate-900 border-slate-700">
+                        <SelectValue placeholder="Scale" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-700 text-slate-100">
+                        <SelectItem value="attoseconds">1 as / sec (x10⁻¹⁸)</SelectItem>
+                        <SelectItem value="femtoseconds">1 fs / sec (x10⁻¹⁵)</SelectItem>
+                        <SelectItem value="picoseconds">1 ps / sec (x10⁻¹²)</SelectItem>
+                        <SelectItem value="nanoseconds">1 ns / sec (x10⁻⁹)</SelectItem>
+                        <SelectItem value="microseconds">1 µs / sec (x10⁻⁶)</SelectItem>
+                        <SelectItem value="milliseconds">1 ms / sec (x10⁻³)</SelectItem>
+                        <SelectItem value="seconds">Real-time (1x)</SelectItem>
+                        <SelectItem value="minutes">1 min / sec (x60)</SelectItem>
+                    </SelectContent>
+                </Select>
+                
                 <Button 
                     variant={isPlaying ? "destructive" : "default"}
                     size="icon"
                     onClick={() => setIsPlaying(!isPlaying)}
+                    className="w-10 h-10"
                 >
-                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                 </Button>
-                <Button variant="outline" size="icon" onClick={resetSimulation}>
-                    <RefreshCw className="w-4 h-4" />
+                
+                <Button variant="outline" size="icon" onClick={syncWithSystem} className="w-10 h-10 border-slate-700 hover:bg-slate-800">
+                    <History className="w-5 h-5" />
                 </Button>
             </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      
+      <CardContent className="pt-6 space-y-8">
         
-        {/* Clocks Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-lg bg-slate-950 border border-slate-800 flex flex-col items-center">
-                <span className="text-sm text-slate-500 mb-1">Координатное Время (Global)</span>
-                <span className="text-3xl font-mono text-blue-400 font-bold">
-                    {formatTime(state.globalTime)}
-                </span>
+        {/* Time Display Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Global Time (Reference) */}
+            <div className="space-y-2">
+                <div className="flex items-center gap-2 text-slate-400 text-sm font-medium uppercase tracking-wider">
+                    <Zap className="w-4 h-4 text-slate-500" />
+                    Reference Standard
+                </div>
+                <div className="bg-slate-900/50 rounded-xl p-6 border border-slate-800 relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 p-2 opacity-50">
+                        <Badge variant="secondary" className="bg-slate-800 text-slate-400">UTC Local</Badge>
+                     </div>
+                     <div className="font-mono text-4xl font-bold text-slate-200 tracking-tight mb-2">
+                        {tGlobal.macro}
+                     </div>
+                     <div className="grid grid-cols-5 gap-1 text-xs font-mono text-slate-500 border-t border-slate-800/50 pt-2">
+                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-400">{tGlobal.micro}</div>
+                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-500">{tGlobal.nano}</div>
+                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-600">{tGlobal.pico}</div>
+                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-700">{tGlobal.femto}</div>
+                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-800">{tGlobal.atto}</div>
+                     </div>
+                </div>
             </div>
-            <div className="p-4 rounded-lg bg-slate-950 border border-slate-800 flex flex-col items-center relative overflow-hidden">
-                <div className={`absolute inset-0 opacity-10 pointer-events-none ${Math.abs(state.atomicTime - state.globalTime) > 100 ? 'bg-red-500' : 'bg-green-500'}`} />
-                <span className="text-sm text-slate-500 mb-1">Атомное Время (Local, S-dependent)</span>
-                <span className={`text-3xl font-mono font-bold transition-colors ${Math.abs(state.atomicTime - state.globalTime) > 1000 ? 'text-red-400' : 'text-green-400'}`}>
-                    {formatTime(state.atomicTime)}
-                </span>
-                <div className="mt-2 text-xs text-slate-500 font-mono">
-                    Δ = {(state.atomicTime - state.globalTime).toFixed(2)} ms
+
+            {/* Atomic Time (Variable) */}
+            <div className="space-y-2">
+                <div className="flex items-center gap-2 text-blue-400 text-sm font-medium uppercase tracking-wider">
+                    <Activity className="w-4 h-4" />
+                    Atomic Metric Time
+                </div>
+                <div className="bg-slate-900/80 rounded-xl p-6 border border-blue-900/30 relative overflow-hidden shadow-[0_0_30px_-10px_rgba(59,130,246,0.1)]">
+                     <div className="absolute top-0 right-0 p-2">
+                        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20">SIFS Corrected</Badge>
+                     </div>
+                     <div className="font-mono text-4xl font-bold text-blue-400 tracking-tight mb-2 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]">
+                        {tAtomic.macro}
+                     </div>
+                      <div className="grid grid-cols-5 gap-1 text-xs font-mono text-blue-500/70 border-t border-blue-500/10 pt-2">
+                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-300">{tAtomic.micro}</div>
+                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-400">{tAtomic.nano}</div>
+                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-500">{tAtomic.pico}</div>
+                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-600">{tAtomic.femto}</div>
+                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-700">{tAtomic.atto}</div>
+                     </div>
                 </div>
             </div>
         </div>
 
-        {/* Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>Амплитуда флуктуаций S (Гравитация)</span>
-                        <Badge variant="outline">{amplitude[0].toFixed(2)}</Badge>
+        {/* Controls & Graph */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            <div className="md:col-span-1 space-y-6">
+                <div className="space-y-3 p-4 bg-slate-900 rounded-lg border border-slate-800">
+                    <div className="flex items-center justify-between">
+                         <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
+                            <Settings className="w-3 h-3" /> Metric Stability
+                        </span>
+                        <span className="text-xs font-mono text-slate-500">{amplitude[0].toFixed(2)} σ</span>
                     </div>
                     <Slider 
                         value={amplitude} 
                         onValueChange={setAmplitude} 
-                        max={5} 
+                        max={10} 
                         step={0.1}
-                        className="py-2" 
+                        className="[&_.range]:bg-blue-500"
                     />
-                    <p className="text-xs text-slate-500">Влияет на силу искажения метрики времени.</p>
-                </div>
-
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>Частота осцилляций (Гц)</span>
-                        <Badge variant="outline">{frequency[0].toFixed(2)} Hz</Badge>
+                     <div className="flex items-center justify-between mt-2">
+                         <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
+                            <Activity className="w-3 h-3" /> Oscillation Freq
+                        </span>
+                        <span className="text-xs font-mono text-slate-500">{frequency[0].toFixed(2)} Hz</span>
                     </div>
                     <Slider 
                         value={frequency} 
                         onValueChange={setFrequency} 
-                        max={2} 
+                        max={5} 
                         step={0.1}
-                        className="py-2" 
+                         className="[&_.range]:bg-purple-500"
                     />
-                     <p className="text-xs text-slate-500">Скорость изменения масштабного фактора.</p>
                 </div>
-            </div>
-
-            <div className="space-y-4 flex flex-col justify-center">
-                 <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span>Базовая скорость тиков</span>
-                        <Badge variant="outline">x{baseRate[0].toFixed(2)}</Badge>
+                
+                 <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
+                    <div className="text-xs text-slate-500 font-mono mb-2">TIME DILATION DELTA</div>
+                    <div className="text-2xl font-bold text-slate-200">
+                        {((Number(state.atomicTime - state.globalTime)) / 1000000).toFixed(6)} <span className="text-sm text-slate-500">ns</span>
                     </div>
-                    <Slider 
-                        value={baseRate} 
-                        onValueChange={setBaseRate} 
-                        min={0.5}
-                        max={1.5} 
-                        step={0.05}
-                        className="py-2" 
-                    />
-                </div>
-                <Button onClick={syncClocks} className="w-full mt-4" variant="secondary">
-                    <Activity className="w-4 h-4 mr-2" />
-                    Синхронизировать (Рекалибровка)
-                </Button>
+                 </div>
             </div>
-        </div>
 
-        {/* Chart */}
-        <div className="h-[200px] w-full mt-4 bg-slate-950/50 rounded-lg p-2 border border-slate-800">
-             <ResponsiveContainer width="100%" height="100%">
+            <div className="md:col-span-2 h-[200px] bg-slate-900 rounded-lg border border-slate-800 p-2">
+                <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={state.driftHistory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                    <XAxis 
-                        dataKey="time" 
-                        stroke="#94a3b8" 
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                    <XAxis hide dataKey="time" />
+                    <YAxis 
+                        stroke="#475569" 
                         fontSize={10} 
-                        tickFormatter={(val) => `${val}s`}
-                        interval="preserveStartEnd"
+                        tickFormatter={(val) => val.toFixed(2)}
+                        domain={['auto', 'auto']}
+                        width={30}
                     />
-                    <YAxis stroke="#94a3b8" fontSize={10} />
                     <Tooltip 
                         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', color: '#f1f5f9' }}
+                        itemStyle={{ fontSize: '12px' }}
+                        labelStyle={{ display: 'none' }}
+                        formatter={(value: number) => [`${value.toFixed(6)} ns`, 'Drift']}
                     />
-                    <ReferenceLine y={0} stroke="#64748b" strokeDasharray="3 3" />
                     <Line 
                         type="monotone" 
                         dataKey="drift" 
                         stroke="#60a5fa" 
                         strokeWidth={2} 
-                        dot={false} 
-                        name="Drift (ms)"
-                    />
-                    <Line 
-                        type="monotone" 
-                        dataKey="metric" 
-                        stroke="#34d399" 
-                        strokeWidth={1} 
-                        dot={false} 
-                        name="Metric Factor"
+                        dot={false}
+                        isAnimationActive={false}
                     />
                 </LineChart>
             </ResponsiveContainer>
+            </div>
         </div>
 
       </CardContent>
