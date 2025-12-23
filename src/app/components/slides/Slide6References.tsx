@@ -9,25 +9,46 @@ interface Slide6Props {
 export function Slide6References({ slideNumber, totalSlides }: Slide6Props) {
   const externalReferences = [
     {
+      author: 'Ted Jacobson',
+      title: 'Thermodynamics of Spacetime',
+      year: '1995',
+      url: 'https://arxiv.org/abs/gr-qc/9504004',
+      description: 'The Einstein Equation of State - вывод ОТО из термодинамики'
+    },
+    {
+      author: 'Juan Maldacena',
+      title: 'The Large N Limit of Superconformal Field Theories',
+      year: '1997',
+      url: 'https://arxiv.org/abs/hep-th/9711200',
+      description: 'Основа AdS/CFT соответствия и голографического принципа'
+    },
+    {
+      author: 'Lisa Randall & Raman Sundrum',
+      title: 'A Large Mass Hierarchy from a Small Extra Dimension',
+      year: '1999',
+      url: 'https://arxiv.org/abs/hep-ph/9905221',
+      description: 'RS1/RS2 модели - решение проблемы иерархии через 5D-warping'
+    },
+    {
+      author: 'Erik Verlinde',
+      title: 'On the Origin of Gravity and the Laws of Newton',
+      year: '2010',
+      url: 'https://arxiv.org/abs/1001.0785',
+      description: 'Энтропийная природа гравитации'
+    },
+    {
       author: 'Nassim Haramein',
       title: 'The Schwarzschild Proton',
       year: '2010',
       url: 'https://pubs.aip.org/aip/acp/article/1303/1/95/869984/The-Schwarzschild-Proton',
-      description: 'Протон как микро-ЧД'
-    },
-    {
-      author: 'Lisa Randall & Raman Sundrum',
-      title: 'RS Model',
-      year: '1999',
-      url: 'https://arxiv.org/abs/hep-ph/9905221',
-      description: 'Warped Extra Dimensions'
+      description: 'Протон как черная дыра (scaling law)'
     },
     {
       author: 'DESI Collaboration',
-      title: 'Year 1 Results',
+      title: 'DESI 2024 VI: Cosmological Constraints',
       year: '2024',
       url: 'https://arxiv.org/abs/2404.03002',
-      description: 'Evolving Dark Energy'
+      description: 'Наблюдательные данные об эволюции тёмной энергии'
     }
   ];
 
