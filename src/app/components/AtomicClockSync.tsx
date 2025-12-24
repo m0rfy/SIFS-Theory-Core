@@ -30,6 +30,7 @@ interface ClockState {
 export const AtomicClockSync: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [timeScale, setTimeScale] = useState<TimeUnit>('seconds');
+  const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
   
   // Simulation parameters
   const [amplitude, setAmplitude] = useState([0.5]); 
@@ -124,7 +125,8 @@ export const AtomicClockSync: React.FC = () => {
     // scaleMult is attoseconds per REAL SECOND
     
     // deltaTimeMs is real milliseconds passed since last frame
-    const deltaSimAtto = (BigInt(Math.round(deltaTimeMs * 1000)) * scaleMult) / 1000000n;
+    const effectiveSpeed = scaleMult * BigInt(Math.floor(speedMultiplier * 100)); // Maintain precision
+    const deltaSimAtto = (BigInt(Math.round(deltaTimeMs * 10)) * effectiveSpeed) / 1000000n; // Adjusted for multiplier math
 
     setState(prev => {
       // SIFS Effect
@@ -170,6 +172,11 @@ export const AtomicClockSync: React.FC = () => {
 
   const tGlobal = formatHighPrecisionTime(state.globalTime);
   const tAtomic = formatHighPrecisionTime(state.atomicTime);
+
+  // Determine if high precision elements should be visible
+  // If we are simulating more than 1 minute per real second, nanoseconds and below are just noise
+  const currentSpeedAtto = (getScaleMultiplier(timeScale) * BigInt(Math.floor(speedMultiplier * 100))) / 100n;
+  const isHighPrecisionVisible = currentSpeedAtto < (60n * ATTO_PER_SEC);
 
   return (
     <Card className="w-full bg-slate-950 border-slate-800 text-slate-100 shadow-2xl">
@@ -250,7 +257,7 @@ export const AtomicClockSync: React.FC = () => {
                             {tGlobal.time}.<span className="text-slate-400">{tGlobal.ms}</span>
                         </div>
                      </div>
-                     <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-slate-500 border-t border-slate-800/50 pt-2">
+                     <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-slate-500 border-t border-slate-800/50 pt-2 transition-opacity duration-500" style={{ opacity: isHighPrecisionVisible ? 1 : 0.1, filter: isHighPrecisionVisible ? 'none' : 'blur(2px)' }}>
                         <div className="text-center p-1 rounded bg-slate-800/20 text-slate-400">{tGlobal.micro}</div>
                         <div className="text-center p-1 rounded bg-slate-800/20 text-slate-500">{tGlobal.nano}</div>
                         <div className="text-center p-1 rounded bg-slate-800/20 text-slate-600">{tGlobal.pico}</div>
@@ -276,7 +283,7 @@ export const AtomicClockSync: React.FC = () => {
                             {tAtomic.time}.<span className="text-blue-600">{tAtomic.ms}</span>
                         </div>
                      </div>
-                      <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-blue-500/70 border-t border-blue-500/10 pt-2">
+                      <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-blue-500/70 border-t border-blue-500/10 pt-2 transition-opacity duration-500" style={{ opacity: isHighPrecisionVisible ? 1 : 0.1, filter: isHighPrecisionVisible ? 'none' : 'blur(2px)' }}>
                         <div className="text-center p-1 rounded bg-blue-500/5 text-blue-300">{tAtomic.micro}</div>
                         <div className="text-center p-1 rounded bg-blue-500/5 text-blue-400">{tAtomic.nano}</div>
                         <div className="text-center p-1 rounded bg-blue-500/5 text-blue-500">{tAtomic.pico}</div>
@@ -292,6 +299,23 @@ export const AtomicClockSync: React.FC = () => {
             <div className="md:col-span-1 space-y-6">
                 <div className="space-y-3 p-4 bg-slate-900 rounded-lg border border-slate-800">
                     <div className="flex items-center justify-between">
+                         <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
+                            <Clock className="w-3 h-3" /> Time Dilation Speed
+                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono text-slate-200">{speedMultiplier.toFixed(1)}x</span>
+                        </div>
+                    </div>
+                    <Slider 
+                        value={[speedMultiplier]} 
+                        onValueChange={(v) => setSpeedMultiplier(v[0])} 
+                        max={10} 
+                        min={0.1}
+                        step={0.1}
+                        className="[&_.range]:bg-slate-500"
+                    />
+
+                    <div className="flex items-center justify-between mt-4">
                          <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
                             <Settings className="w-3 h-3" /> Metric Stability
                         </span>
