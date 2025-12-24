@@ -33,12 +33,12 @@ $ForbiddenTerms = @{
 
 # Разрешенные контексты для "черная дыра"
 $AllowedBlackHoleContexts = @(
-    "M87\*",
-    "Sgr A\*",
-    "астрофизических",
-    "макроскопических",
-    "информационный парадокс",
-    "кривая Пейджа"
+    "M87",
+    "Sgr A",
+    "astrophysical",
+    "macroscopic",
+    "information paradox",
+    "Page curve"
 )
 
 Write-Host "Проверка терминологии в документации SIFS Theory" -ForegroundColor Cyan
@@ -90,8 +90,8 @@ foreach ($file in $files) {
                 $contextAfter = $content.Substring($match.Index, [Math]::Min(100, $content.Length - $match.Index))
                 $fullContext = $contextBefore + $contextAfter
                 
-                if ($fullContext -match "(?i)(микро|элементарн|протон|электрон|частиц)" -and 
-                    $fullContext -notmatch "(?i)(астрофизическ|макроскопическ|M87|Sgr)") {
+                if ($fullContext -match "(?i)(micro|elementary|proton|electron|particle)" -and 
+                    $fullContext -notmatch "(?i)(astrophysical|macroscopic|M87|Sgr)") {
                     $issue = [PSCustomObject]@{
                         File = $relativePath
                         Line = $lineNumber
