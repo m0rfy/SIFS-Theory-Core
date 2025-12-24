@@ -4,7 +4,7 @@ import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import { Slider } from "@/app/components/ui/slider";
 import { Label } from "@/app/components/ui/label";
-import { Play, RotateCcw, Activity, Settings2 } from "lucide-react";
+import { Play, RotateCcw, Activity, Settings2, Zap } from "lucide-react";
 
 interface Point {
   x: number;
@@ -14,6 +14,17 @@ interface Point {
   ox: number; // original x
   oy: number; // original y
   fixed: boolean;
+}
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  maxLife: number;
+  size: number;
+  color: string;
 }
 
 export const InformationalCollapseSimulation: React.FC = () => {
@@ -35,21 +46,12 @@ export const InformationalCollapseSimulation: React.FC = () => {
   
   // Simulation state refs to avoid re-renders during animation loop
   const pointsRef = useRef<Point[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>();
   const simulationSpeedRef = useRef(1.0);
   
-  // Constants based on SIFS theory
-  const k_warp = 0.05; // Warping constant for visualization scaling
-
   // Calculate Theoretical Impact based on SIFS formula
   useEffect(() => {
-    // Tension/Impact ~ Mass * e^(-k*S) (Simplified for visualization)
-    // We normalize it to a percentage 0-100 for the UI
-    // In real SIFS: Tension drop is proportional to Mass lost relative to local vacuum energy
-    
-    // Heuristic for simulation visualization:
-    // Higher mass = more tension drop
-    // Higher S (smaller scale) = typically more "local" impact, but here we visualize global metric shift
     const impact = (massExponent / 30) * (1 + scaleS / 100) * 100;
     setCalculatedTension(Math.min(100, Math.max(0, impact)));
   }, [massExponent, scaleS]);
@@ -77,6 +79,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
       }
     }
     pointsRef.current = points;
+    particlesRef.current = [];
     setMetricStress(100); // Initial tension
     setWaveAmplitude(0);
     setIsCollapsed(false);
@@ -86,6 +89,26 @@ export const InformationalCollapseSimulation: React.FC = () => {
     initGrid();
     return () => cancelAnimationFrame(animationRef.current!);
   }, []);
+
+  const createExplosion = (x: number, y: number, intensity: number) => {
+    const particles: Particle[] = [];
+    const count = 50 + intensity * 2;
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 5 + 2;
+      particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1.0,
+        maxLife: 1.0 + Math.random() * 0.5,
+        size: Math.random() * 3 + 1,
+        color: Math.random() > 0.5 ? '#ef4444' : '#fbbf24' // Red or Amber
+      });
+    }
+    particlesRef.current = [...particlesRef.current, ...particles];
+  };
 
   const runSimulation = () => {
     const canvas = canvasRef.current;
@@ -130,22 +153,22 @@ export const InformationalCollapseSimulation: React.FC = () => {
         } 
 
         // Apply speed
-        // Logic for negative time: Invert damping or simply reverse flow
-        // Standard damping: velocity *= 0.95
-        // Reverse damping: velocity /= 0.95 (adds energy) -> unstable
-        // Better: Just apply dt scaling. Negative speed moves particles backwards along trajectory (roughly)
-        
-        // If speed is negative, we add "Mirror Sector" physics
-        // In mirror sector, forces might be repulsive or just visually inverted
-        
         p.vx = (p.vx + fx * speed) * damp;
         p.vy = (p.vy + fy * speed) * damp;
         p.x += p.vx * speed;
         p.y += p.vy * speed;
       });
 
-      // Compute visual stress (not used for logic, just physics update)
-      
+      // Update Particles
+      if (particlesRef.current.length > 0) {
+        particlesRef.current.forEach(p => {
+            p.x += p.vx * speed;
+            p.y += p.vy * speed;
+            p.life -= 0.02 * Math.abs(speed);
+        });
+        particlesRef.current = particlesRef.current.filter(p => p.life > 0);
+      }
+
       // Draw Grid
       ctx.strokeStyle = isReverse ? 'rgba(255, 100, 100, 0.4)' : 'rgba(100, 200, 255, 0.3)';
       ctx.lineWidth = 1;
@@ -165,11 +188,8 @@ export const InformationalCollapseSimulation: React.FC = () => {
                 let py = p.y;
 
                 if (mirror) {
-                    // Mirror projection: Invert coordinates around center
-                    // Center approx: 600/2, 400/2
-                     const cx = 300; // rough center relative to grid logic
+                     const cx = 300; 
                      const cy = 200;
-                     // Simple reflection
                      px = cx - (p.x - cx);
                      py = cy - (p.y - cy);
                 }
@@ -212,18 +232,23 @@ export const InformationalCollapseSimulation: React.FC = () => {
       if (isReverse) {
           ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)'; // Cyan ghost
           ctx.save();
-          // Add a slight scaling or distortion for the throat effect
-          // ctx.translate(300, 200);
-          // ctx.scale(0.9, 0.9);
-          // ctx.translate(-300, -200);
           drawGrid(true);
           ctx.restore();
           
-          // Visual Glitch/Throat Text
           ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
           ctx.font = "10px monospace";
           ctx.fillText("4D-THROAT TRAVERSAL", 10, 390);
       }
+
+      // Draw Particles
+      particlesRef.current.forEach(p => {
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
 
       // Draw Center Mass (if not collapsed)
       if (!isCollapsed) {
@@ -231,24 +256,34 @@ export const InformationalCollapseSimulation: React.FC = () => {
           ctx.beginPath();
           // Radius depends on mass exponent
           const radius = Math.max(5, massExponent / 1.5);
-          ctx.arc(cp.ox, cp.oy, radius, 0, Math.PI * 2);
-          ctx.fillStyle = isReverse ? '#00ffff' : '#ef4444'; // Red Planet or Cyan Anti-Planet
+          
+          // Glow effect
+          const gradient = ctx.createRadialGradient(cp.ox, cp.oy, radius * 0.2, cp.ox, cp.oy, radius * 2);
+          const colorMain = isReverse ? '#00ffff' : '#ef4444';
+          const colorFade = isReverse ? 'rgba(0, 255, 255, 0)' : 'rgba(239, 68, 68, 0)';
+          
+          gradient.addColorStop(0, colorMain);
+          gradient.addColorStop(1, colorFade);
+          
+          ctx.fillStyle = gradient;
+          ctx.arc(cp.ox, cp.oy, radius * 2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 20;
-          ctx.shadowColor = isReverse ? '#00ffff' : '#ef4444';
+          
+          ctx.beginPath();
+          ctx.arc(cp.ox, cp.oy, radius, 0, Math.PI * 2);
+          ctx.fillStyle = colorMain;
+          ctx.fill();
       } else {
            // Draw "Ghost" / Calibration Wave
           const cp = pointsRef.current[centerIdx];
           ctx.beginPath();
           ctx.arc(cp.ox, cp.oy, waveAmplitude, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${Math.max(0, 1 - waveAmplitude/100)})`;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${Math.max(0, 1 - waveAmplitude/150)})`;
+          ctx.lineWidth = 2;
           ctx.stroke();
           
-          if (waveAmplitude < 150) {
-              setWaveAmplitude(prev => prev + 2 * Math.abs(speed)); // Animate wave forward regardless of time direction visually for effect? 
-              // Or better:
-              // setWaveAmplitude(prev => prev + 2 * speed);
-              // But wave amplitude is a visual effect of explosion.
+          if (waveAmplitude < 200) {
+              setWaveAmplitude(prev => prev + 3 * Math.abs(speed)); 
           }
       }
 
@@ -260,11 +295,16 @@ export const InformationalCollapseSimulation: React.FC = () => {
 
   useEffect(() => {
       runSimulation();
-  }, [isCollapsed, massExponent]); // Re-run when mass changes to update visual pull
+  }, [isCollapsed, massExponent]); 
 
   const handleCollapse = () => {
       setIsCollapsed(true);
       setWaveAmplitude(0);
+      
+      // Trigger particle explosion
+      const centerIdx = Math.floor(pointsRef.current.length / 2) + 10;
+      const cp = pointsRef.current[centerIdx];
+      createExplosion(cp.ox, cp.oy, massExponent);
   };
 
   const handleReset = () => {
@@ -312,7 +352,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
                         max={30} 
                         step={1}
                         disabled={isCollapsed}
-                        className="cursor-pointer"
+                        className="cursor-pointer [&_.range]:bg-indigo-500"
                     />
                     <p className="text-[10px] text-slate-500">
                         Planet (24) to Star (30) range
@@ -331,7 +371,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
                         max={100} 
                         step={1}
                         disabled={isCollapsed}
-                        className="cursor-pointer"
+                        className="cursor-pointer [&_.range]:bg-indigo-500"
                     />
                      <p className="text-[10px] text-slate-500">
                         Planetary Scale (~37) to Quantum (&lt;10)
@@ -351,7 +391,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
                         min={-3.0} 
                         max={3.0} 
                         step={0.1}
-                        className="cursor-pointer"
+                        className="cursor-pointer [&_.range]:bg-emerald-500"
                     />
                      <p className="text-[10px] text-slate-500">
                         {simulationSpeed < 0 ? "Inverting causal horizon (Anti-dS)" : "Standard vacuum relaxation rate"}
@@ -376,10 +416,10 @@ export const InformationalCollapseSimulation: React.FC = () => {
                 <Button 
                     onClick={handleCollapse} 
                     disabled={isCollapsed}
-                    className="flex-1 bg-red-600 hover:bg-red-700 text-white border-none"
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white border-none transition-all hover:scale-105 active:scale-95"
                 >
-                    <Play className="w-4 h-4 mr-2" />
-                    Collapse
+                    <Zap className="w-4 h-4 mr-2" />
+                    Collapse Metric
                 </Button>
                 <Button 
                     onClick={handleReset}
@@ -393,7 +433,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
 
         {/* Right Column: Visualization */}
         <div className="lg:col-span-2 space-y-4">
-            <div className="relative rounded-lg overflow-hidden border border-slate-800 bg-black shadow-inner">
+            <div className="relative rounded-lg overflow-hidden border border-slate-800 bg-black shadow-inner group">
                 <canvas 
                     ref={canvasRef} 
                     width={600} 
@@ -402,7 +442,7 @@ export const InformationalCollapseSimulation: React.FC = () => {
                 />
                 
                 {/* Overlay Info */}
-                <div className="absolute top-4 right-4 text-right space-y-1 pointer-events-none">
+                <div className="absolute top-4 right-4 text-right space-y-1 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
                     <div className="text-[10px] font-mono text-slate-500">REAL-TIME METRIC</div>
                     <div className={`text-sm font-mono font-bold ${isCollapsed ? 'text-red-500' : 'text-blue-500'}`}>
                         {isCollapsed ? `ΔE = ${(calculatedTension * 0.015).toFixed(4)} Planck Units` : 'E ≈ 0 (Stable)'}

@@ -11,32 +11,45 @@ interface Slide8SimulationProps {
 export const Slide8Simulation: React.FC<Slide8SimulationProps> = ({ slideNumber, totalSlides }) => {
   return (
     <Slide
-      title="Informational Collapse Simulation"
-      subtitle="Interactive analysis of metric recalibration events"
+      title="Интерактивная Симуляция SIFS"
+      subtitle="Анализ коллапса метрики и темпоральной синхронизации"
       slideNumber={slideNumber}
       totalSlides={totalSlides}
     >
-      <div className="flex flex-col items-center justify-center w-full min-h-[60vh] gap-8 pb-12">
-        <div className="text-center max-w-3xl space-y-4">
-          <p className="text-xl text-slate-300">
-            Моделирование реакции SIFS-метрики на мгновенное уничтожение планетарного узла.
-          </p>
-          <p className="text-sm text-slate-400">
-            Используйте панель управления ниже, чтобы изменить параметры массы и масштаба (S) и запустить процесс калибровки вакуума.
-          </p>
-        </div>
-
-        <InformationalCollapseSimulation />
-
-        <div className="w-full max-w-4xl mt-8 pt-8 border-t border-slate-800">
-          <div className="text-center mb-6">
-             <h3 className="text-xl font-semibold text-slate-200 mb-2">
-                Тест: Синхронизация Времени Атомных Часов
-            </h3>
-            <p className="text-sm text-slate-400">
-                Анализ дрейфа локального времени при флуктуациях метрики пространства-времени.
+      <div className="flex flex-col items-center justify-center w-full min-h-[60vh] gap-10 pb-16 px-4">
+        
+        {/* Section 1: Collapse Simulation */}
+        <div className="w-full max-w-6xl space-y-6">
+          <div className="text-center space-y-3 mb-8">
+            <h2 className="text-2xl font-light text-blue-100 tracking-wide">
+              Моделирование Гравитационного Коллапса
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Экспериментальная установка для визуализации реакции вакуумной энергии SIFS на мгновенную потерю топологического узла. 
+              Изменяйте массу и масштабный коэффициент (S), чтобы наблюдать распространение информационных волн.
             </p>
           </div>
+          
+          <div className="flex justify-center">
+             <InformationalCollapseSimulation />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full max-w-4xl border-t border-slate-800/60 my-4"></div>
+
+        {/* Section 2: Atomic Clock Sync */}
+        <div className="w-full max-w-5xl space-y-6">
+          <div className="text-center mb-8 space-y-2">
+             <h3 className="text-xl font-semibold text-slate-200 flex items-center justify-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                Темпоральная Калибровка
+            </h3>
+            <p className="text-sm text-slate-400 max-w-xl mx-auto">
+                Система мониторинга релятивистского дрейфа времени. Позволяет отслеживать расхождение между локальным временем наблюдателя и метрическим временем SIFS с точностью до аттосекунд.
+            </p>
+          </div>
+          
           <AtomicClockSync />
         </div>
       </div>
