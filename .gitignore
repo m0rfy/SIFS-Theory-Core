@@ -61,3 +61,6 @@ Thumbs.db
 
 # Vite
 .vite/
+
+# Cursor IDE - локальные настройки IDE (не должны быть в репозитории)
+.cursor/
