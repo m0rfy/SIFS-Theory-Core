@@ -19,6 +19,12 @@ export function Slide1bFractal({ slideNumber, totalSlides }: Slide1bProps) {
         {/* Main Diagram */}
         <FractalScaleDiagram />
 
+        <div className="flex flex-col items-center justify-center my-6 p-4 bg-black/40 rounded-lg border border-purple-500/20">
+           <h4 className="text-purple-300 mb-2 text-sm">Theoretical Scaling Law Validation</h4>
+           <img src="/images/fractal_hierarchy.png" alt="Fractal Hierarchy Plot" className="rounded-lg border border-purple-500/50 shadow-2xl max-w-2xl w-full hover:scale-105 transition-transform duration-500" />
+           <p className="text-center text-gray-400 text-xs mt-2 font-mono">Log-log plot showing linearity across 60 orders of magnitude</p>
+        </div>
+
         {/* Key Images */}
         <div className="grid md:grid-cols-3 gap-4">
           <div className="relative overflow-hidden rounded-lg border border-purple-500/30 group">
