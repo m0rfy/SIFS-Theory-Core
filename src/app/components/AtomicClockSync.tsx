@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Badge } from './ui/badge';
+import { Input } from './ui/input';
 import { Play, Pause, RefreshCw, Clock, History, Zap, Settings, Activity } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -294,26 +295,48 @@ export const AtomicClockSync: React.FC = () => {
                          <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
                             <Settings className="w-3 h-3" /> Metric Stability
                         </span>
-                        <span className="text-xs font-mono text-slate-500">{amplitude[0].toFixed(2)} σ</span>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="number"
+                                value={amplitude[0]}
+                                onChange={(e) => setAmplitude([Math.min(10, Math.max(0, parseFloat(e.target.value) || 0))])}
+                                className="w-16 h-6 text-right font-mono text-xs bg-slate-800 border-slate-700 text-slate-200"
+                                step={0.01}
+                                min={0}
+                                max={10}
+                            />
+                            <span className="text-xs font-mono text-slate-500 w-4">σ</span>
+                        </div>
                     </div>
                     <Slider 
                         value={amplitude} 
                         onValueChange={setAmplitude} 
                         max={10} 
-                        step={0.1}
+                        step={0.01}
                         className="[&_.range]:bg-blue-500"
                     />
                      <div className="flex items-center justify-between mt-2">
                          <span className="text-xs font-medium text-slate-400 uppercase flex items-center gap-2">
                             <Activity className="w-3 h-3" /> Oscillation Freq
                         </span>
-                        <span className="text-xs font-mono text-slate-500">{frequency[0].toFixed(2)} Hz</span>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="number"
+                                value={frequency[0]}
+                                onChange={(e) => setFrequency([Math.min(5, Math.max(0, parseFloat(e.target.value) || 0))])}
+                                className="w-16 h-6 text-right font-mono text-xs bg-slate-800 border-slate-700 text-slate-200"
+                                step={0.01}
+                                min={0}
+                                max={5}
+                            />
+                            <span className="text-xs font-mono text-slate-500 w-4">Hz</span>
+                        </div>
                     </div>
                     <Slider 
                         value={frequency} 
                         onValueChange={setFrequency} 
                         max={5} 
-                        step={0.1}
+                        step={0.01}
                          className="[&_.range]:bg-purple-500"
                     />
                 </div>

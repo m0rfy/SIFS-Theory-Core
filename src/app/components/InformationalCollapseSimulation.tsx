@@ -4,6 +4,7 @@ import { Button } from "@/app/components/ui/button";
 import { Badge } from "@/app/components/ui/badge";
 import { Slider } from "@/app/components/ui/slider";
 import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
 import { Play, RotateCcw, Activity, Settings2, Zap } from "lucide-react";
 
 interface Point {
@@ -341,9 +342,20 @@ export const InformationalCollapseSimulation: React.FC = () => {
 
             <div className="space-y-4">
                 <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-mono text-slate-400">
+                    <div className="flex justify-between items-center text-xs font-mono text-slate-400">
                         <Label>Node Mass (log kg)</Label>
-                        <span>10^{massExponent} kg</span>
+                        <div className="flex items-center gap-1">
+                            <span>10^</span>
+                            <Input 
+                                type="number" 
+                                value={massExponent} 
+                                onChange={(e) => !isCollapsed && setMassExponent(Math.min(30, Math.max(18, parseInt(e.target.value) || 18)))}
+                                className="w-12 h-6 text-center text-xs bg-slate-800 border-slate-700 text-slate-200" 
+                                min={18} max={30} step={1}
+                                disabled={isCollapsed}
+                            />
+                            <span>kg</span>
+                        </div>
                     </div>
                     <Slider 
                         value={[massExponent]} 
@@ -360,9 +372,19 @@ export const InformationalCollapseSimulation: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                     <div className="flex justify-between text-xs font-mono text-slate-400">
+                     <div className="flex justify-between items-center text-xs font-mono text-slate-400">
                         <Label>Scale Coordinate (S)</Label>
-                        <span>S = {scaleS}</span>
+                        <div className="flex items-center gap-1">
+                            <span>S=</span>
+                            <Input 
+                                type="number" 
+                                value={scaleS} 
+                                onChange={(e) => !isCollapsed && setScaleS(Math.min(100, Math.max(1, parseInt(e.target.value) || 1)))}
+                                className="w-12 h-6 text-center text-xs bg-slate-800 border-slate-700 text-slate-200" 
+                                min={1} max={100} step={1}
+                                disabled={isCollapsed}
+                            />
+                        </div>
                     </div>
                     <Slider 
                         value={[scaleS]} 
@@ -379,18 +401,25 @@ export const InformationalCollapseSimulation: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-mono text-slate-400">
-                        <Label>Time Flow (Simulation Speed)</Label>
-                        <span className={simulationSpeed < 0 ? "text-cyan-400" : "text-white"}>
-                            {simulationSpeed.toFixed(1)}x {simulationSpeed < 0 && "(REVERSE)"}
-                        </span>
+                    <div className="flex justify-between items-center text-xs font-mono text-slate-400">
+                        <Label>Time Flow (Speed)</Label>
+                        <div className="flex items-center gap-1">
+                            <Input 
+                                type="number" 
+                                value={simulationSpeed} 
+                                onChange={(e) => setSimulationSpeed(Math.min(3, Math.max(-3, parseFloat(e.target.value) || 0)))}
+                                className="w-14 h-6 text-center text-xs bg-slate-800 border-slate-700 text-slate-200" 
+                                min={-3} max={3} step={0.01}
+                            />
+                            <span>x</span>
+                        </div>
                     </div>
                     <Slider 
                         value={[simulationSpeed]} 
                         onValueChange={(v) => setSimulationSpeed(v[0])}
                         min={-3.0} 
                         max={3.0} 
-                        step={0.1}
+                        step={0.01}
                         className="cursor-pointer [&_.range]:bg-emerald-500"
                     />
                      <p className="text-[10px] text-slate-500">
