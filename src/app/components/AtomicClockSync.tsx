@@ -174,9 +174,10 @@ export const AtomicClockSync: React.FC = () => {
   const tAtomic = formatHighPrecisionTime(state.atomicTime);
 
   // Determine if high precision elements should be visible
-  // If we are simulating more than 1 minute per real second, nanoseconds and below are just noise
-  const currentSpeedAtto = (getScaleMultiplier(timeScale) * BigInt(Math.floor(speedMultiplier * 100))) / 100n;
-  const isHighPrecisionVisible = currentSpeedAtto < (60n * ATTO_PER_SEC);
+  // Hide if timeScale is 'minutes' or larger
+  const isHighPrecisionVisible = !['minutes', 'minutes_2', 'minutes_4', 'minutes_10', 'minutes_15', 'minutes_30', 
+                                  'hours', 'hours_2', 'hours_4', 'hours_12', 'days', 'weeks', 'months', 'years']
+                                  .includes(timeScale);
 
   return (
     <Card className="w-full bg-slate-950 border-slate-800 text-slate-100 shadow-2xl">
@@ -257,13 +258,15 @@ export const AtomicClockSync: React.FC = () => {
                             {tGlobal.time}.<span className="text-slate-400">{tGlobal.ms}</span>
                         </div>
                      </div>
-                     <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-slate-500 border-t border-slate-800/50 pt-2 transition-opacity duration-500" style={{ opacity: isHighPrecisionVisible ? 1 : 0.1, filter: isHighPrecisionVisible ? 'none' : 'blur(2px)' }}>
-                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-400">{tGlobal.micro}</div>
-                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-500">{tGlobal.nano}</div>
-                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-600">{tGlobal.pico}</div>
-                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-700">{tGlobal.femto}</div>
-                        <div className="text-center p-1 rounded bg-slate-800/20 text-slate-800">{tGlobal.atto}</div>
-                     </div>
+                     {isHighPrecisionVisible && (
+                         <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-slate-500 border-t border-slate-800/50 pt-2 transition-opacity duration-500">
+                            <div className="text-center p-1 rounded bg-slate-800/20 text-slate-400">{tGlobal.micro}</div>
+                            <div className="text-center p-1 rounded bg-slate-800/20 text-slate-500">{tGlobal.nano}</div>
+                            <div className="text-center p-1 rounded bg-slate-800/20 text-slate-600">{tGlobal.pico}</div>
+                            <div className="text-center p-1 rounded bg-slate-800/20 text-slate-700">{tGlobal.femto}</div>
+                            <div className="text-center p-1 rounded bg-slate-800/20 text-slate-800">{tGlobal.atto}</div>
+                         </div>
+                     )}
                 </div>
             </div>
 
@@ -283,13 +286,15 @@ export const AtomicClockSync: React.FC = () => {
                             {tAtomic.time}.<span className="text-blue-600">{tAtomic.ms}</span>
                         </div>
                      </div>
-                      <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-blue-500/70 border-t border-blue-500/10 pt-2 transition-opacity duration-500" style={{ opacity: isHighPrecisionVisible ? 1 : 0.1, filter: isHighPrecisionVisible ? 'none' : 'blur(2px)' }}>
-                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-300">{tAtomic.micro}</div>
-                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-400">{tAtomic.nano}</div>
-                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-500">{tAtomic.pico}</div>
-                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-600">{tAtomic.femto}</div>
-                        <div className="text-center p-1 rounded bg-blue-500/5 text-blue-700">{tAtomic.atto}</div>
-                     </div>
+                      {isHighPrecisionVisible && (
+                        <div className="grid grid-cols-5 gap-1 text-[10px] md:text-xs font-mono text-blue-500/70 border-t border-blue-500/10 pt-2 transition-opacity duration-500">
+                            <div className="text-center p-1 rounded bg-blue-500/5 text-blue-300">{tAtomic.micro}</div>
+                            <div className="text-center p-1 rounded bg-blue-500/5 text-blue-400">{tAtomic.nano}</div>
+                            <div className="text-center p-1 rounded bg-blue-500/5 text-blue-500">{tAtomic.pico}</div>
+                            <div className="text-center p-1 rounded bg-blue-500/5 text-blue-600">{tAtomic.femto}</div>
+                            <div className="text-center p-1 rounded bg-blue-500/5 text-blue-700">{tAtomic.atto}</div>
+                        </div>
+                     )}
                 </div>
             </div>
         </div>
@@ -309,8 +314,8 @@ export const AtomicClockSync: React.FC = () => {
                     <Slider 
                         value={[speedMultiplier]} 
                         onValueChange={(v) => setSpeedMultiplier(v[0])} 
-                        max={10} 
-                        min={0.1}
+                        max={20} 
+                        min={-50}
                         step={0.1}
                         className="[&_.range]:bg-slate-500"
                     />
