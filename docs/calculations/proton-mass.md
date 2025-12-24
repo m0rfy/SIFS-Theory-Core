@@ -210,7 +210,7 @@ m_p_calc ≈ 1.7 × 10⁻²⁷ kg
 
 ### Почему протон стабилен?
 
-В 5D-bulk протон — это Kerr-Newman черная дыра с:
+В 5D-bulk протон — это Kerr-Newman effective horizon-like trapped region с:
 
 ```
 M_bulk ≈ M_Pl ≈ 10⁻⁸ kg  (истинная масса в bulk)
