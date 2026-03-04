@@ -16,7 +16,7 @@ import { Badge } from '@/app/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
 import { DOCUMENTS, Document, DocumentCategory, searchDocuments, getDocumentsByCategory } from '@/app/utils/docs-structure';
 import { SpatialSlab } from '@/app/components/spatial';
-import { cn } from '@/app/components/ui/utils';
+import { ImagePlaceholder } from '@/app/components/ImagePlaceholder';
 
 const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   theory: 'Теория',
@@ -27,6 +27,8 @@ const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   protocol: 'Протоколы',
   analysis: 'Анализ',
   visualizations: 'Визуализации',
+  applications: 'Приложения',
+  hardware: 'Аппаратура',
 };
 
 const READING_PATHS = {
@@ -130,6 +132,14 @@ export function DocsIndexPage() {
             Полная документация теории Scale-Invariant Fractal Spacetime: ядро, расчёты, предсказания, данные
           </p>
         </div>
+
+        <ImagePlaceholder
+          id="docs-index-banner"
+          label="Баннер раздела документации"
+          hint="1400×360px"
+          aspect="4/1"
+          className="w-full"
+        />
 
         {/* Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

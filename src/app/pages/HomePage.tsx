@@ -5,6 +5,7 @@ import {
   ArrowRight, ExternalLink, CheckCircle2, Clock,
   Atom, Calculator, TrendingUp, Globe, FlaskConical, Cpu,
 } from 'lucide-react';
+import { ImagePlaceholder } from '@/app/components/ImagePlaceholder';
 
 // Chart components (lazy)
 const MassHierarchyChart = lazy(() =>
@@ -552,6 +553,46 @@ export function HomePage() {
 
       <Divider />
 
+      {/* ── Theory Diagram (image placeholder) ─────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Геометрия"
+              title="5D Рэндалл–Сандрум пространство"
+              desc="Схема RS2-геометрии с браной, балком и масштабной координатой S"
+            />
+          </motion.div>
+          <motion.div
+            className="grid md:grid-cols-2 gap-6"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <ImagePlaceholder
+              id="rs2-geometry-diagram"
+              label="RS2 геометрия — брана и балк"
+              hint="1200×800px — диаграмма 5D пространства"
+              aspect="3/2"
+            />
+            <ImagePlaceholder
+              id="warp-factor-visualization"
+              label="Варпинг-фактор W(S) = exp(−2k|S|)"
+              hint="1200×800px — график экспоненциального подавления"
+              aspect="3/2"
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      <Divider />
+
       {/* ── Visualizations ──────────────────────────────────────────────────── */}
       <section className="py-20 px-6">
         <div className="max-w-[1100px] mx-auto">
@@ -882,6 +923,55 @@ export function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      <Divider />
+
+      {/* ── About image placeholder ─────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="О теории"
+              title="Автор и история SIFS"
+            />
+          </motion.div>
+          <motion.div
+            className="grid md:grid-cols-3 gap-6"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <ImagePlaceholder
+              id="author-photo"
+              label="Фото автора"
+              hint="600×600px — квадратный формат"
+              aspect="1/1"
+            />
+            <div className="md:col-span-2 flex flex-col gap-4 justify-center">
+              <ImagePlaceholder
+                id="timeline-sifs-history"
+                label="Хронология развития теории SIFS"
+                hint="1600×600px — горизонтальная временная шкала"
+                aspect="8/3"
+              />
+              <ImagePlaceholder
+                id="theory-overview-banner"
+                label="Схема структуры теории"
+                hint="1600×400px — баннер-схема разделов"
+                aspect="4/1"
+              />
+            </div>
+          </motion.div>
         </div>
       </section>
 

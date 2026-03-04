@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/components/ui/select';
+import { ImagePlaceholder } from '@/app/components/ImagePlaceholder';
 
 interface Simulation {
   id: string;
@@ -153,6 +154,15 @@ export function SimulationsIndexPage() {
             интегрированы с SSF-2025 Spatial Framework для real-time визуальных эффектов.
           </p>
         </div>
+
+        {/* Hero image placeholder */}
+        <ImagePlaceholder
+          id="simulations-index-hero"
+          label="Баннер раздела симуляций"
+          hint="1920×480px — коллапс, часы, графики"
+          aspect="4/1"
+          className="w-full"
+        />
 
         {/* Search and Filter */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">

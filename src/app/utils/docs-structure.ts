@@ -23,7 +23,9 @@ export type DocumentCategory =
   | 'defense'
   | 'protocol'
   | 'analysis'
-  | 'visualizations';
+  | 'visualizations'
+  | 'applications'
+  | 'hardware';
 
 export interface DocumentStructure {
   categories: Record<DocumentCategory, Document[]>;
@@ -194,6 +196,14 @@ export const DOCUMENTS: DocumentStructure = {
     ],
     predictions: [
       {
+        id: 'README',
+        title: 'Предсказания теории',
+        category: 'predictions',
+        path: '/docs/predictions/README.md',
+        description: 'Обзор предсказаний SIFS и их проверка',
+        order: 0,
+      },
+      {
         id: 'cosmological',
         title: 'Космологические предсказания',
         category: 'predictions',
@@ -298,6 +308,26 @@ export const DOCUMENTS: DocumentStructure = {
     ],
     analysis: [],
     visualizations: [],
+    applications: [
+      {
+        id: 'README',
+        title: 'Приложения SIFS',
+        category: 'applications',
+        path: '/docs/applications/README.md',
+        description: 'Обзор приложений теории',
+        order: 0,
+      },
+    ],
+    hardware: [
+      {
+        id: 'README',
+        title: 'Аппаратная реализация',
+        category: 'hardware',
+        path: '/docs/hardware/README.md',
+        description: 'Обзор аппаратуры и протоколов',
+        order: 0,
+      },
+    ],
   },
   all: [],
 };

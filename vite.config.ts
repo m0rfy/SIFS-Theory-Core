@@ -1,7 +1,23 @@
 import { defineConfig } from 'vite'
 import path from 'path'
+import { copyFileSync, mkdirSync, readdirSync, statSync, existsSync, createReadStream } from 'fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+
+/** Recursively copy src directory to dest */
+function copyDir(src: string, dest: string) {
+  if (!existsSync(src)) return;
+  mkdirSync(dest, { recursive: true });
+  for (const item of readdirSync(src)) {
+    const srcPath = path.join(src, item);
+    const destPath = path.join(dest, item);
+    if (statSync(srcPath).isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else {
+      copyFileSync(srcPath, destPath);
+    }
+  }
+}
 
 export default defineConfig({
   // Base path for GitHub Pages deployment - using relative path to be agnostic of repo name
@@ -12,6 +28,29 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
+    // Copy docs/ to dist/docs/ so markdown files are served on GitHub Pages
+    {
+      name: 'copy-docs',
+      closeBundle() {
+        copyDir('docs', path.join('dist', 'docs'));
+        console.log('✓ docs/ copied to dist/docs/');
+      },
+    },
+    // In dev: serve /docs/* from project docs/ so DocPage fetch works
+    {
+      name: 'serve-docs-dev',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const urlPath = req.url?.split('?')[0] ?? '';
+          if (!urlPath.startsWith('/docs/')) return next();
+          const relative = urlPath.replace(/^\/docs\/?/, '').replace(/\.\./g, '');
+          const filePath = path.join(process.cwd(), 'docs', relative);
+          if (!existsSync(filePath) || !statSync(filePath).isFile()) return next();
+          res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+          createReadStream(filePath).pipe(res);
+        });
+      },
+    },
   ],
   resolve: {
     alias: {

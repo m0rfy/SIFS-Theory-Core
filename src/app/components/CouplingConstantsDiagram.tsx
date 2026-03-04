@@ -1,45 +1,18 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis, Cell, Legend } from 'recharts';
+import { COUPLING_SCALES } from '@/app/utils/sifs-theory-constants';
+
+const STRENGTHS = [1, 100, 150, 200];
 
 export function CouplingConstantsDiagram() {
-  // Real coupling constants at different energy scales
-  const data = [
-    { 
-      name: 'Gravity', 
-      S: 20, 
-      alpha: 1e-38, 
-      displayAlpha: -38,
-      strength: 1,
-      formula: 'G_eff = G_Pl × exp(−2k|S|)',
-      color: '#8b5cf6'
-    },
-    { 
-      name: 'Weak', 
-      S: 9, 
-      alpha: 1e-6, 
-      displayAlpha: -6,
-      strength: 100,
-      formula: 'G_F ∝ exp(−4k|S|_weak)',
-      color: '#3b82f6'
-    },
-    { 
-      name: 'EM', 
-      S: 5.1, 
-      alpha: 1/137, 
-      displayAlpha: -2.14,
-      strength: 150,
-      formula: 'α ≈ 1/137, |S| ≈ ln(137π)',
-      color: '#06b6d4'
-    },
-    { 
-      name: 'Strong', 
-      S: 2.8, 
-      alpha: 1, 
-      displayAlpha: 0,
-      strength: 200,
-      formula: 'α_s ≈ π/|S|ln(μ/Λ)',
-      color: '#10b981'
-    }
-  ];
+  const data = COUPLING_SCALES.map((entry, i) => ({
+    name: entry.name,
+    S: entry.S,
+    alpha: Math.pow(10, entry.logAlpha),
+    displayAlpha: entry.logAlpha,
+    strength: STRENGTHS[i] ?? 100,
+    formula: entry.formula,
+    color: entry.color,
+  }));
 
   return (
     <div className="space-y-4">

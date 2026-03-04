@@ -14,6 +14,7 @@ import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Loader2, FileText, AlertCircle, ExternalLink } from 'lucide-react';
 import { MarkdownRenderer } from '@/app/components/markdown/MarkdownRenderer';
 import { ScrollReveal } from '@/app/components/enhanced/ScrollReveal';
+import { ImagePlaceholder } from '@/app/components/ImagePlaceholder';
 import { Breadcrumbs, BreadcrumbItem } from '@/app/components/enhanced/Breadcrumbs';
 import { getDocumentByPath, getDocumentById, getDocumentsByCategory, type Document, type DocumentCategory } from '@/app/utils/docs-structure';
 import { SpatialSlab } from '@/app/components/spatial';
@@ -106,10 +107,13 @@ export function DocPage() {
     setLoading(true);
     setError(null);
 
-    // In Vite, we can use fetch to load markdown files
-    // For dev: files are served from root
-    // For production: files should be in public/ or copied during build
-    fetch(fullPath)
+    // Build URL relative to the app base path so it works on both
+    // GitHub Pages (sub-path) and local dev/preview servers.
+    // import.meta.env.BASE_URL is './' in production, '/' in dev.
+    const base = import.meta.env.BASE_URL;
+    const relativePath = fullPath.replace(/^\//, '');
+    const fetchUrl = base.endsWith('/') ? `${base}${relativePath}` : `${base}/${relativePath}`;
+    fetch(fetchUrl)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Документ не найден: ${response.status}`);
@@ -234,6 +238,13 @@ export function DocPage() {
                   ))}
                 </div>
               )}
+              <ImagePlaceholder
+                id={`doc-cover-${document.category}`}
+                label={`Обложка раздела «${document.category}»`}
+                hint="1200×400px"
+                aspect="3/1"
+                className="mt-4 w-full"
+              />
             </div>
           </ScrollReveal>
         )}

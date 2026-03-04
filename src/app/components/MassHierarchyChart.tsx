@@ -1,14 +1,16 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { MASS_HIERARCHY, k_over_M_Pl } from '@/app/utils/sifs-theory-constants';
+
+const HIERARCHY_COLORS = ['#8b5cf6', '#a78bfa', '#6366f1', '#3b82f6', '#06b6d4'];
 
 export function MassHierarchyChart() {
-  // Real mass scales in eV (logarithmic)
-  const data = [
-    { name: 'Планк', value: 19, realValue: '1.22 × 10¹⁹ GeV', color: '#8b5cf6', S: 0 },
-    { name: 'GUT', value: 16, realValue: '10¹⁶ GeV', color: '#a78bfa', S: 2 },
-    { name: 'Weak', value: 2.4, realValue: '246 GeV', color: '#6366f1', S: 8.5 },
-    { name: 'Proton', value: 0.938, realValue: '938 MeV', color: '#3b82f6', S: 11.2 },
-    { name: 'Electron', value: 0.000511, realValue: '511 keV', color: '#06b6d4', S: 18.7 }
-  ];
+  const data = MASS_HIERARCHY.map((entry, i) => ({
+    name: entry.name,
+    value: entry.logGeV,
+    realValue: entry.realValue,
+    S: entry.S,
+    color: HIERARCHY_COLORS[i] ?? '#8b5cf6',
+  }));
 
   return (
     <div className="space-y-4">
@@ -54,7 +56,7 @@ export function MassHierarchyChart() {
       
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="p-3 bg-purple-950/30 border border-purple-500/30 rounded">
-          <div className="text-purple-400 font-mono mb-1">k ≈ 0.1 M_Pl</div>
+          <div className="text-purple-400 font-mono mb-1">k ≈ {k_over_M_Pl} M_Pl</div>
           <div className="text-gray-400">Warping параметр</div>
         </div>
         <div className="p-3 bg-blue-950/30 border border-blue-500/30 rounded">

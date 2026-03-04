@@ -1,20 +1,19 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { DESI, w_z } from '@/app/utils/sifs-theory-constants';
 
 export function DarkEnergyEvolution() {
-  // DESI 2025 data: evolving dark energy
-  // w(z) = w0 + wa * z/(1+z)
-  const w0 = -0.827; // DESI best fit
-  const wa = -0.75;  // Evolution parameter
-  
+  const w0 = DESI.w0;
+  const wa = DESI.wa;
+
   const data = [];
   for (let z = 0; z <= 3; z += 0.1) {
-    const w_z = w0 + wa * z / (1 + z);
+    const wVal = w_z(z);
     const w_LCDM = -1.0;
     const S_global = 20 + 0.5 * z; // SIFS prediction: S increases with redshift
-    
+
     data.push({
       z: parseFloat(z.toFixed(2)),
-      w_SIFS: parseFloat(w_z.toFixed(3)),
+      w_SIFS: parseFloat(wVal.toFixed(3)),
       w_LCDM: w_LCDM,
       S: parseFloat(S_global.toFixed(2))
     });
