@@ -89,9 +89,9 @@ function applySpatialUpdates(): void {
 /**
  * React хук для автоматической интеграции в компоненты
  */
+import { useEffect } from 'react';
+
 export function useSpatialConnector(params: SpatialParams): void {
-  const { useEffect } = require('react');
-  
   useEffect(() => {
     updateSpatialVariables(params);
     

@@ -53,19 +53,23 @@
 /* Level 2: The Control Plane (Навигация и Док) */
 .dock-spatial-module {
   position: fixed;
-  bottom: 24px;
+  top: 24px;
   left: 50%;
-  transform: translateX(-50%) translateZ(calc(var(--sifs-time-dilation-delta) * 20px));
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: saturate(180%) blur(20px) brightness(1.2);
-  border-radius: 32px;
+  /* Центрирование управляется через Motion (x: "-50%"), не задаём transform здесь */
+  transform-origin: center;
+  /* FR-069: Сверхпрозрачное стекло с backdrop-filter: blur(20px) opacity(0.1) */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 24px; /* FR-069: border-radius: 24px */
   padding: 12px 24px;
   display: flex;
   gap: 16px;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease;
+  pointer-events: auto; /* Обеспечиваем взаимодействие даже когда невидим */
 }
 
 .dock-spatial-module:hover {
@@ -80,20 +84,39 @@
   75% { transform: translateX(-50%) translateZ(0) translateY(2px) translateX(1px); }
 }
 
+/* Вибрация отключена, так как Motion управляет transform */
+/* Вибрация будет реализована через изменение x в Motion animate, если нужно */
 .dock-spatial-module[data-stability="low"] {
-  animation: spatial-vibration 0.1s infinite;
+  /* Вибрация через Motion будет добавлена позже, если нужно */
+}
+
+/* FR-069: Float анимация связана с --sifs-oscillation-speed для частоты "дыхания" */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 /* Orbital Dock Islands (Bento-стиль) */
 .dock-island {
   position: relative;
-  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: all 0.3s ease;
   transform: translateY(0);
-  animation: float 3s ease-in-out infinite;
+  /* FR-069: Float анимация использует --sifs-oscillation-speed для частоты */
+  animation: float var(--sifs-oscillation-speed, 1s) ease-in-out infinite;
+  border: none;
+  text-decoration: none;
+  color: inherit;
 }
 
 .dock-island:nth-child(1) { animation-delay: 0s; }
@@ -103,11 +126,6 @@
 .dock-island:nth-child(5) { animation-delay: 0.8s; }
 .dock-island:nth-child(6) { animation-delay: 1s; }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
 .dock-island:hover {
   transform: scale(1.2) translateY(-4px);
   background: rgba(255, 255, 255, 0.1);
@@ -115,7 +133,7 @@
 }
 
 .dock-island.active {
-  transform: scale(1.15);
+  transform: scale(1.0);
   box-shadow: 0 0 20px var(--sifs-delta-color);
   background: rgba(255, 255, 255, 0.08);
 }
@@ -163,37 +181,153 @@
 .bento-cell:nth-child(3) { animation-delay: 0.3s; }
 .bento-cell:nth-child(4) { animation-delay: 0.4s; }
 
-/* Data Capsule Preset */
+/* Orbital Preset (для навигации с островками и левитацией) */
+.spatial-orbital-preset {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.spatial-orbital-preset > * {
+  position: relative;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  /* Левитация с частотой из --sifs-oscillation-speed */
+  animation: float var(--sifs-oscillation-speed, 1s) ease-in-out infinite;
+}
+
+.spatial-orbital-preset > *:nth-child(1) { animation-delay: 0s; }
+.spatial-orbital-preset > *:nth-child(2) { animation-delay: 0.2s; }
+.spatial-orbital-preset > *:nth-child(3) { animation-delay: 0.4s; }
+.spatial-orbital-preset > *:nth-child(4) { animation-delay: 0.6s; }
+.spatial-orbital-preset > *:nth-child(5) { animation-delay: 0.8s; }
+.spatial-orbital-preset > *:nth-child(6) { animation-delay: 1s; }
+
+.spatial-orbital-preset > *:hover {
+  transform: scale(1.1) translateY(-4px);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px var(--sifs-delta-color);
+}
+
+/* Data Capsule Preset (для виджетов с градиентной обводкой 0.5px) */
 .data-capsule {
-  border: 0.5px solid;
-  border-image: linear-gradient(
-    to right,
-    var(--sifs-stable-color),
-    var(--sifs-unstable-color)
-  ) 1;
+  position: relative;
   border-radius: 12px;
   padding: 16px;
   background: rgba(15, 15, 15, 0.8);
+  /* Градиентная обводка через псевдоэлемент (border-image не работает с border-radius) */
+}
+
+.data-capsule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 0.5px;
+  background: linear-gradient(
+    to right,
+    var(--sifs-stable-color),
+    var(--sifs-delta-color),
+    var(--sifs-unstable-color)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Spatial Scrollbar */
+.spatial-scrollbar-container {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sifs-delta-color) transparent;
+}
+
+/* Кастомный скроллбар для WebKit браузеров */
+.spatial-scrollbar-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.spatial-scrollbar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.spatial-scrollbar-container::-webkit-scrollbar-thumb {
+  background: var(--sifs-delta-color);
+  border-radius: 4px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.spatial-scrollbar-container::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
+
+/* Индикатор прогресса скролла */
+.spatial-scrollbar-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--sifs-stable-color),
+    var(--sifs-delta-color),
+    var(--sifs-unstable-color)
+  );
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.spatial-scrollbar-progress-visible {
+  opacity: 1;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .spatial-page-block {
-    margin: 16px;
-    padding: 16px;
-    border-radius: 24px;
+    margin: 8px;
+    padding: 12px;
+    border-radius: 16px;
   }
   
   .dock-spatial-module {
-    bottom: 16px;
-    padding: 8px 16px;
-    gap: 8px;
-    flex-wrap: wrap;
-    max-width: calc(100% - 32px);
+    top: 12px;
+    padding: 8px 12px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    max-width: calc(100% - 24px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .dock-spatial-module::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
   
   .dock-island {
-    padding: 8px 12px;
+    /* T025: Touch-friendly sizes minimum 44x44px */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
     font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 }

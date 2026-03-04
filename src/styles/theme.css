@@ -119,6 +119,89 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* SIFS Color Palette - SSF-2025 Levels */
+:root {
+  /* Level 0: Temporal Abyss */
+  --sifs-level-0: oklch(0% 0 0);
+  
+  /* Level 1: Substrate */
+  --sifs-level-1: rgba(15, 15, 15, 0.7);
+  
+  /* Level 2: Control Plane */
+  --sifs-level-2: rgba(255, 255, 255, 0.03);
+  
+  /* Neomorphism base */
+  --sifs-neo-base: #1e1e1e;
+}
+
+/* SIFS Spacing System */
+:root {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+}
+
+/* SIFS Typography */
+:root {
+  /* Font sizes */
+  --sifs-h1: 48px;
+  --sifs-h1-mobile: 32px;
+  --sifs-h2: 36px;
+  --sifs-h3: 28px;
+  --sifs-h4: 24px;
+  --sifs-base: 16px;
+  --sifs-small: 14px;
+  
+  /* Line heights */
+  --sifs-line-height-text: 1.6;
+  --sifs-line-height-headings: 1.2;
+  
+  /* Max width */
+  --sifs-max-width: 800px;
+}
+
+/* Neomorphism Classes */
+.neo-raised {
+  background: var(--sifs-neo-base);
+  box-shadow: 
+    8px 8px 16px rgba(0, 0, 0, 0.4),
+    -8px -8px 16px rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.neo-pressed {
+  background: var(--sifs-neo-base);
+  box-shadow: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.neo-card {
+  background: var(--sifs-neo-base);
+  box-shadow: 
+    4px 4px 8px rgba(0, 0, 0, 0.3),
+    -4px -4px 8px rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: var(--spacing-md);
+}
+
+.neo-glow {
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.1),
+    0 0 40px rgba(255, 255, 255, 0.05);
+}
+
+.neo-grid {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -138,45 +221,67 @@
   }
 
   h1 {
-    font-size: var(--text-2xl);
+    font-size: var(--sifs-h1);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-headings);
+    max-width: var(--sifs-max-width);
   }
 
   h2 {
-    font-size: var(--text-xl);
+    font-size: var(--sifs-h2);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-headings);
+    max-width: var(--sifs-max-width);
   }
 
   h3 {
-    font-size: var(--text-lg);
+    font-size: var(--sifs-h3);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-headings);
+    max-width: var(--sifs-max-width);
   }
 
   h4 {
-    font-size: var(--text-base);
+    font-size: var(--sifs-h4);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-headings);
+    max-width: var(--sifs-max-width);
+  }
+
+  p {
+    font-size: var(--sifs-base);
+    line-height: var(--sifs-line-height-text);
+    max-width: var(--sifs-max-width);
   }
 
   label {
-    font-size: var(--text-base);
+    font-size: var(--sifs-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-text);
   }
 
   button {
-    font-size: var(--text-base);
+    font-size: var(--sifs-base);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-text);
   }
 
   input {
-    font-size: var(--text-base);
+    font-size: var(--sifs-base);
     font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    line-height: var(--sifs-line-height-text);
+  }
+
+  small {
+    font-size: var(--sifs-small);
+    line-height: var(--sifs-line-height-text);
+  }
+
+  /* Mobile typography adjustments */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: var(--sifs-h1-mobile);
+    }
   }
 
   /* Custom scrollbar styling */

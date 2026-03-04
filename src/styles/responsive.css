@@ -1,0 +1,118 @@
+/* Responsive Design - Mobile-first approach */
+
+/* Breakpoints */
+/* sm: 640px, md: 768px, lg: 1024px, xl: 1280px */
+
+/* Mobile-first base styles (320px+) */
+* {
+  box-sizing: border-box;
+}
+
+/* Small devices (landscape phones, 640px and up) */
+@media (min-width: 640px) {
+  /* sm breakpoint styles */
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  /* md breakpoint styles */
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  /* lg breakpoint styles */
+}
+
+/* Extra large devices (large desktops, 1280px and up) */
+@media (min-width: 1280px) {
+  /* xl breakpoint styles */
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 767px) {
+  /* Reduced spacing on mobile - T060: spacing-md instead of spacing-xl */
+  .spacing-xs { padding: var(--spacing-xs); }
+  .spacing-sm { padding: var(--spacing-sm); }
+  .spacing-md { padding: var(--spacing-md); }
+  .spacing-lg { padding: var(--spacing-md); } /* T060: Use spacing-md instead of spacing-lg */
+  .spacing-xl { padding: var(--spacing-md); } /* T060: Use spacing-md instead of spacing-xl */
+  .spacing-2xl { padding: var(--spacing-lg); } /* T060: Use spacing-lg instead of spacing-2xl */
+  
+  /* Adaptive typography - T060: h1: 32px mobile, 48px desktop */
+  h1 { font-size: var(--sifs-h1-mobile); }
+  
+  /* Touch-friendly button sizes (minimum 44x44px) - T060 */
+  button, a.button, .button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  /* Adaptive graph sizes (100% width) - T060 */
+  canvas, svg, .chart-container, .visualization-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Simplified animations for performance - T060 */
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Horizontal scroll for tables - T060, T062 */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix кривое отображение - карточки должны показывать весь текст */
+  .spatial-page-block {
+    overflow-x: hidden;
+  }
+  
+  /* Убираем ограничения высоты для карточек на мобильных */
+  [data-slot="card"] {
+    min-height: auto !important;
+    height: auto !important;
+  }
+  
+  [data-slot="card-header"] {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-rows: none !important;
+    auto-rows: auto !important;
+  }
+  
+  [data-slot="card-description"] {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    display: block !important;
+    max-height: none !important;
+    -webkit-line-clamp: none !important;
+  }
+  
+  /* Исправляем grid layout для CardHeader на мобильных */
+  @container (max-width: 768px) {
+    [data-slot="card-header"] {
+      grid-template-rows: auto auto !important;
+      grid-auto-rows: auto !important;
+    }
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet-specific styles */
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+  /* Desktop-specific styles */
+}

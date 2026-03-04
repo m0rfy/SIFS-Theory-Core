@@ -1,0 +1,19 @@
+{
+  "home": "SIFS Theory - Scale-Invariant Fractal Spacetime",
+  "theory": "Теория",
+  "calculations": "Расчёты",
+  "predictions": "Предсказания",
+  "data": "Наблюдательные данные",
+  "defense": "Защита теории",
+  "protocol": "Протоколы",
+  "simulations": "Симуляции",
+  "simulationsIndex": "Индекс симуляций",
+  "collapseSimulation": "Симуляция гравитационного коллапса",
+  "temporalSync": "Темпоральная синхронизация",
+  "interactiveCalculations": "Интерактивные расчёты",
+  "visualizations": "Визуализации",
+  "worldChange": "Как теория изменит мир",
+  "presentation": "Презентация",
+  "docsIndex": "Индекс документов",
+  "docPage": "Документ"
+}

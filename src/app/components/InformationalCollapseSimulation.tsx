@@ -28,7 +28,15 @@ interface Particle {
   color: string;
 }
 
-export const InformationalCollapseSimulation: React.FC = () => {
+interface InformationalCollapseSimulationProps {
+  onMetricStressChange?: (value: number) => void;
+  onWaveAmplitudeChange?: (value: number) => void;
+}
+
+export const InformationalCollapseSimulation: React.FC<InformationalCollapseSimulationProps> = ({
+  onMetricStressChange,
+  onWaveAmplitudeChange,
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [metricStress, setMetricStress] = useState(0);
@@ -57,6 +65,15 @@ export const InformationalCollapseSimulation: React.FC = () => {
     setCalculatedTension(Math.min(100, Math.max(0, impact)));
   }, [massExponent, scaleS]);
 
+  // Notify parent component of parameter changes for spatial connector integration
+  useEffect(() => {
+    onMetricStressChange?.(metricStress);
+  }, [metricStress, onMetricStressChange]);
+
+  useEffect(() => {
+    onWaveAmplitudeChange?.(waveAmplitude);
+  }, [waveAmplitude, onWaveAmplitudeChange]);
+
   // Init grid
   const initGrid = () => {
     const points: Point[] = [];
@@ -81,9 +98,12 @@ export const InformationalCollapseSimulation: React.FC = () => {
     }
     pointsRef.current = points;
     particlesRef.current = [];
-    setMetricStress(100); // Initial tension
+    const initialStress = 100;
+    setMetricStress(initialStress); // Initial tension
     setWaveAmplitude(0);
     setIsCollapsed(false);
+    onMetricStressChange?.(initialStress);
+    onWaveAmplitudeChange?.(0);
   };
 
   useEffect(() => {
@@ -284,7 +304,9 @@ export const InformationalCollapseSimulation: React.FC = () => {
           ctx.stroke();
           
           if (waveAmplitude < 200) {
-              setWaveAmplitude(prev => prev + 3 * Math.abs(speed)); 
+              const newAmplitude = waveAmplitude + 3 * Math.abs(speed);
+              setWaveAmplitude(newAmplitude);
+              onWaveAmplitudeChange?.(newAmplitude);
           }
       }
 
