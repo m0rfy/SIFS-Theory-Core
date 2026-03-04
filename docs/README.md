@@ -22,6 +22,10 @@
 - **[Гравитационная модель EMA (v6.6)](applications/sifs-gravity-model.md)** — mass(p)=p^φ, W_gravity, внешние поля
 - **[Эволюция v5→v6.6](applications/sifs-evolution.md)** — Хронология изменений, таблица соответствий теория→инструмент
 
+#### Freqtrade стратегия и дашборд:
+- **[SIFS Freqtrade Strategy](applications/sifs-freqtrade-strategy.md)** — бэктесты 2024–2026, профили, DCA, win rate 99.9%, +25.17% (XRP futures)
+- **[SIFS Live Dashboard](applications/sifs-live-dashboard.md)** — HTML дашборд реального времени (Binance Klines), k=1/π², 10 S-уровней
+
 #### Версионные документы (из репозитория):
 - **[SIFS v6.1](SiFS_6.1.md)** — Компрессия тиков между уровнями, SIFS как аналитический инструмент
 - **[SIFS v6.2 (тест BTC)](SiFS_6.2(test).md)** — S(T)=ln(T/(2k)), фаза φ_S, тестовый протокол
@@ -92,6 +96,15 @@
 - **[RS Model Defense](defense/rs-model-defense.md)** - Защита от критики FCNC и нестабильности
 - **[Thermodynamics Defense](defense/thermodynamics-defense.md)** - Защита от термодинамического парадокса
 - **[Causality Defense](defense/causality-defense.md)** - Защита от критики причинности
+
+### ⚙️ Аппаратная реализация (Hardware)
+
+Концепция нейроморфного SIFS Processor на базе математического ядра:
+
+- **[Hardware Overview](hardware/README.md)** — SIFS Processor: 0.1 см³, 22 мкВт, 10¹⁴ синапсов, сравнение с мозгом
+- **[SIFS Транзистор](hardware/sifs-transistor.md)** — φ-пороговая структура, 10 аналоговых состояний, 3.46 бит/ячейка
+- **[Нейронная архитектура](hardware/sifs-brain-architecture.md)** — φ-тесселяция, k_n = 7000, small-world σ>>10⁶
+- **[Технологический маршрут](hardware/sifs-fabrication.md)** — EBL → ALD → Au → Si₃N₄ → QD → тест I-V
 
 ### 📐 Анализ и планы
 
