@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Скрипт для настройки Git конфигурации
+# Использование: ./setup-git-config.sh
+
+set -e
+
+echo "🔧 Настройка Git конфигурации..."
+
+# Настройка имени пользователя
+git config --global user.name "TohaVorobey"
+
+# Настройка email для GitHub (используется для коммитов)
+git config --global user.email "4241515@gmail.com"
+
+# Настройка имени ветки по умолчанию
+git config --global init.defaultBranch main
+
+# Настройка редактора (можно изменить на свой)
+# Для Windows с Notepad++
+# git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"
+
+# Настройка автоперевода CRLF (для Windows)
+git config --global core.autocrlf true
+
+# Настройка цветного вывода
+git config --global color.ui auto
+
+# Настройка push поведения (только текущая ветка)
+git config --global push.default simple
+
+# Настройка pull поведения (rebase вместо merge)
+git config --global pull.rebase false
+
+# Настройка алиасов для удобства
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'
+
+echo ""
+echo "✅ Git конфигурация успешно настроена!"
+echo ""
+echo "📋 Текущие настройки:"
+echo "   Имя: $(git config --global user.name)"
+echo "   Email: $(git config --global user.email)"
+echo "   Ветка по умолчанию: $(git config --global init.defaultBranch)"
+echo ""
+echo "📧 Контакты:"
+echo "   GitHub: m0rfy"
+echo "   GitHub Email: 4241515@gmail.com"
+echo "   Email для связей: nikelon@proton.me"
+echo ""
+echo "🔍 Просмотр всех настроек: git config --list --show-origin"
