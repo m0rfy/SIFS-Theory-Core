@@ -29,21 +29,27 @@ const CATEGORY_LABELS: Record<DocumentCategory, string> = {
   visualizations: 'Визуализации',
 };
 
-const RECOMMENDED_ROUTES = {
-  beginners: {
-    title: 'Для начинающих',
-    description: 'Введение в теорию SIFS для новичков',
-    docs: ['overview', 'fractal-structure', 'mathematics'],
+const READING_PATHS = {
+  core: {
+    title: 'Математическое ядро',
+    description: 'Метрика, уравнения движения, константы, фрактальная структура',
+    icon: '∑',
+    color: 'text-cyan-400',
+    docs: ['overview', 'mathematics', 'fractal-structure'],
   },
-  experts: {
-    title: 'Для экспертов',
-    description: 'Продвинутые материалы для специалистов',
-    docs: ['equations-of-motion', 'constants-unification', 'detailed-predictions'],
+  predictions: {
+    title: 'Предсказания и данные',
+    description: 'Проверяемые следствия теории и их сопоставление с экспериментом',
+    icon: '📊',
+    color: 'text-green-400',
+    docs: ['detailed-predictions', 'desi-2025', 'euclid-jwst'],
   },
-  curious: {
-    title: 'Для любознательных',
-    description: 'Интересные материалы для широкой аудитории',
-    docs: ['overview', 'cosmological', 'astrophysical'],
+  calculations: {
+    title: 'Расчёты',
+    description: 'Масса протона, константы связи, иерархия масс из геометрии',
+    icon: '🧮',
+    color: 'text-purple-400',
+    docs: ['proton-mass', 'coupling-constants', 'constants-unification'],
   },
 };
 
@@ -118,10 +124,10 @@ export function DocsIndexPage() {
         <div className="space-y-4">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-100 flex items-center gap-3">
             <BookOpen className="w-8 h-8 text-cyan-400" />
-            Карта музея SIFS Theory
+            Документация SIFS Theory
           </h1>
           <p className="text-slate-400 text-lg">
-            Исследуйте все документы теории Scale-Invariant Fractal Spacetime
+            Полная документация теории Scale-Invariant Fractal Spacetime: ядро, расчёты, предсказания, данные
           </p>
         </div>
 
@@ -199,25 +205,28 @@ export function DocsIndexPage() {
           </Select>
         </div>
 
-        {/* Recommended Routes */}
+        {/* Reading Paths */}
         {!searchQuery && selectedCategory === 'all' && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-slate-100">Рекомендуемые маршруты</h2>
+            <h2 className="text-2xl font-bold text-slate-100">Разделы теории</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              {Object.entries(RECOMMENDED_ROUTES).map(([key, route]) => (
+              {Object.entries(READING_PATHS).map(([key, path]) => (
                 <Card key={key} className="bg-slate-950/50 border-slate-800 hover:border-cyan-400/50 transition-colors">
                   <CardHeader>
-                    <CardTitle className="text-lg">{route.title}</CardTitle>
-                    <CardDescription>{route.description}</CardDescription>
+                    <CardTitle className={`text-lg flex items-center gap-2 ${path.color}`}>
+                      <span>{path.icon}</span>
+                      {path.title}
+                    </CardTitle>
+                    <CardDescription>{path.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {(() => {
-                      const firstDoc = DOCUMENTS.all.find(d => d.id === route.docs[0]);
+                      const firstDoc = DOCUMENTS.all.find(d => d.id === path.docs[0]);
                       const docPath = firstDoc ? firstDoc.path.replace('/docs/', '/docs/').replace('.md', '') : '/docs';
                       return (
                         <Link to={docPath}>
                           <Button variant="outline" size="sm" className="w-full">
-                            Начать маршрут
+                            Открыть раздел →
                           </Button>
                         </Link>
                       );
