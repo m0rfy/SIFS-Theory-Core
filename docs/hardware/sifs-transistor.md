@@ -64,10 +64,10 @@ Gate ──[ Q-точка ]──────── Drain
 
 | | |
 |--|--|
-| ![Схема транзистора](../../Процессор/sifs_transistor.png) | ![Структура Фибоначчи](../../Процессор/sifs_transistor_fib.png) |
+| ![Схема транзистора](../images/hardware/sifs_transistor.png) | ![Структура Фибоначчи](../images/hardware/sifs_transistor_fib.png) |
 | *SIFS-транзистор: схема и I-V характеристика* | *Фибоначчи-структура φ-порогов* |
 
-![Полная схема](../../Процессор/sifs_transistor_full.png)
+![Полная схема](../images/hardware/sifs_transistor_full.png)
 *Полная схема SIFS-элемента с 10 уровнями*
 
 ---

@@ -53,19 +53,19 @@ SIFS Processor
 
 ---
 
-## Изображения (Процессор/)
+## Изображения (docs/images/hardware/)
 
 | Файл | Описание |
 |------|----------|
-| [sifs_transistor.png](../../Процессор/sifs_transistor.png) | SIFS-транзистор: схема и I-V характеристика |
-| [sifs_transistor_fib.png](../../Процессор/sifs_transistor_fib.png) | Фибоначчи-структура переключательных порогов |
-| [sifs_transistor_full.png](../../Процессор/sifs_transistor_full.png) | Полная схема SIFS-элемента |
-| [sifs_brain_topology.png](../../Процессор/sifs_brain_topology.png) | φ-тесселяция нейронной сети (3 уровня связей) |
-| [sifs_brain_math.png](../../Процессор/sifs_brain_math.png) | Математика нейронной архитектуры |
-| [sifs_topology_3d.png](../../Процессор/sifs_topology_3d.png) | 3D-топология S-уровней процессора |
-| [sifs_fabrication.png](../../Процессор/sifs_fabrication.png) | Технологический маршрут изготовления |
-| [sifs_antenna_test.png](../../Процессор/sifs_antenna_test.png) | Тест антенного элемента |
-| [sifs_views.png](../../Процессор/sifs_views.png) | Проекции (виды) процессора |
+| [sifs_transistor.png](../images/hardware/sifs_transistor.png) | SIFS-транзистор: схема и I-V характеристика |
+| [sifs_transistor_fib.png](../images/hardware/sifs_transistor_fib.png) | Фибоначчи-структура переключательных порогов |
+| [sifs_transistor_full.png](../images/hardware/sifs_transistor_full.png) | Полная схема SIFS-элемента |
+| [sifs_brain_topology.png](../images/hardware/sifs_brain_topology.png) | φ-тесселяция нейронной сети (3 уровня связей) |
+| [sifs_brain_math.png](../images/hardware/sifs_brain_math.png) | Математика нейронной архитектуры |
+| [sifs_topology_3d.png](../images/hardware/sifs_topology_3d.png) | 3D-топология S-уровней процессора |
+| [sifs_fabrication.png](../images/hardware/sifs_fabrication.png) | Технологический маршрут изготовления |
+| [sifs_antenna_test.png](../images/hardware/sifs_antenna_test.png) | Тест антенного элемента |
+| [sifs_views.png](../images/hardware/sifs_views.png) | Проекции (виды) процессора |
 
 ---
 

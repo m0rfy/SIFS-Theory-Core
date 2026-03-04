@@ -64,3 +64,81 @@ Thumbs.db
 
 # Cursor IDE - локальные настройки IDE (не должны быть в репозитории)
 .cursor/
+
+# Внешние/личные артефакты (не часть теории-ядра на GitHub)
+dalle-mcp/
+Процессор/
+spec-kit/
+.specify/
+guidelines/
+
+# Инструкции для агентов/IDE (не часть теории для людей)
+AGENTS.md
+
+# Внутренние процесс/сообщество (не контент теории)
+ATTRIBUTIONS.md
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+CONTRIBUTORS.md
+FUNDING.yml
+ISSUE_TEMPLATE/
+pull_request_template.md
+docs/CHANGELOG.md
+
+# Внутренний workflow генерации изображений
+public/images/generated/
+
+# Внутренние скрипты (проверки, генерация, валидация)
+scripts/check-consistency.ps1
+scripts/check-terminology.ps1
+scripts/generate-images.js
+scripts/generate_plots.py
+scripts/model_collapse.py
+scripts/validate-formulas.ps1
+scripts/validate-links.ps1
+
+# Внутренняя dev-документация (не теория, не ядро)
+specs/
+docs/analysis/
+docs/protocol/
+docs/cursor-ide-errors-guide.md
+docs/mcp-oauth-fix.md
+docs/migration-guide.md
+docs/security-checklist.md
+docs/ssf-2025-verification.md
+SECURITY_AUDIT.md
+SHADCN_SETUP.md
+MCP_CONFIGURATION.md
+MCP_SETUP.md
+
+# Внутренние git/repo скрипты настройки
+.github/BRANCH_PROTECTION.md
+.github/GIT_SETUP.md
+.github/scripts/
+
+# Внутренние dev/design/spec скрипты
+scripts/check-color-palette.ps1
+scripts/check-design-consistency.ps1
+scripts/check-modularity.ps1
+scripts/check-module-structure.ps1
+scripts/check-page-goals.ps1
+scripts/check-responsive-design.ps1
+scripts/check-shadcn-neomorphism.ps1
+scripts/check-typography.ps1
+scripts/fix-cursor-errors.ps1
+scripts/test-routes.ps1
+scripts/verify-sc-002.ps1
+scripts/verify-sc-003.ps1
+scripts/verify-sc-004.ps1
+
+# Сгенерированные отчёты и артефакты
+licenses.json
+licenses-temp.json
+LICENSE-DEPENDENCIES.md
+responsive-design-checklist.md
+
+# Локальные/опциональные MCP скрипты
+mcp-openai-server.py
+requirements-mcp.txt
+scripts/update-openssh.ps1
