@@ -9,6 +9,7 @@ import { CollapseSimulationPage } from './pages/simulations/CollapseSimulationPa
 import { TemporalSyncPage } from './pages/simulations/TemporalSyncPage';
 import { InteractiveCalculationsPage } from './pages/simulations/InteractiveCalculationsPage';
 import { VisualizationsPage } from './pages/simulations/VisualizationsPage';
+import { WorldChangePage } from './pages/WorldChangePage';
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: 'simulations/visualizations',
         element: <VisualizationsPage />,
+      },
+      {
+        path: 'world-change',
+        element: <WorldChangePage />,
       },
       {
         path: 'presentation',

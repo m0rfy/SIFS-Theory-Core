@@ -10,6 +10,7 @@
 - **[White Paper (LaTeX)](white-paper.tex)** - LaTeX версия для arXiv/журналов
 - **[Terminology Guide](terminology-guide.md)** - Руководство по правильной терминологии
 - **[Migration Guide](migration-guide.md)** - Инструкции по миграции терминологии
+- **[Related projects](related-projects.md)** - Два контекста SIFS (System vs Spacetime), связанные проекты и приложения математического ядра
 
 ### 🔬 Теоретическая база
 
@@ -17,6 +18,7 @@
 
 - **[Overview](theory/overview.md)** - Общий обзор теории
 - **[Mathematics](theory/mathematics.md)** - Математический формализм
+- **[Group Theory](theory/group-theory.md)** - Теория групп и симметрии в SIFS
 - **[Equations of Motion](theory/equations-of-motion.md)** - Полные уравнения движения
 - **[RS2 Geometry](theory/rs2-geometry.md)** - Геометрия Randall-Sundrum
 - **[Fractal Structure](theory/fractal-structure.md)** - Фрактальная структура пространства-времени
@@ -77,6 +79,11 @@
 - **[Thermodynamics Defense](defense/thermodynamics-defense.md)** - Защита от термодинамического парадокса
 - **[Causality Defense](defense/causality-defense.md)** - Защита от критики причинности
 
+### 📐 Анализ и планы
+
+- **[Анализ документации внешних проектов](analysis/external-projects-documentation-analysis.md)** — обзор документации из связанных проектов, два контекста SIFS, идеи для обновления репозитория
+- **[План синхронизации внешней документации](analysis/external-docs-sync-plan.md)** — рекомендации для документов, ссылающихся на SIFS-Theory-Core
+
 ### 📋 Протоколы
 
 - **[Handover Protocol v2.1](protocol/handover-protocol.md)** - Протокол передачи данных v2.1
@@ -120,14 +127,17 @@
 4. **Космология:** [DESI 2025](data/desi-2025.md) → современные данные
 5. **Глубокая математика:** [Mathematics](theory/mathematics.md) → полный формализм
 
-## 📖 Ссылки на литературу
+## 📖 Источники и связанные проекты
 
-Все ссылки на научные работы собраны в [References](references.md).
+- **Литература:** все ссылки на научные работы — в [References](references.md).
+- **Связанные проекты:** проекты, использующие то же математическое ядро (k, W(n), φ, FIB) для приложений (финансы, дашборды), и различие контекстов **SIFS System** vs **SIFS Theory (Spacetime)** — в [Related projects](related-projects.md).
+- **Анализ внешней документации:** [Analysis: external projects documentation](analysis/external-projects-documentation-analysis.md).
 
 ## 🔄 Обновления
 
 Последние обновления документации:
 
+- **2026-03-04:** Добавлены анализ документации из внешних проектов (C:\Users\m0rfy\Projects), раздел «Связанные проекты и два контекста SIFS» ([related-projects.md](related-projects.md)), план синхронизации внешней документации ([analysis/external-docs-sync-plan.md](analysis/external-docs-sync-plan.md)); обновлено оглавление docs.
 - **2025-01-27:** Создан White Paper и Terminology Guide
 - **2025-01-27:** Систематическая замена терминологии: "черная дыра" → "effective horizon", "подтверждено" → "согласуется"
 - **2025-01-27:** Созданы скрипты валидации (check-terminology.ps1, validate-links.ps1, validate-formulas.ps1)

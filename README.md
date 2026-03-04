@@ -4,17 +4,16 @@
 
 <div align="center">
 
-![SIFS Theory](docs/images/fractal_hierarchy.png)
-
 **Унификация гравитации и квантовой механики через фрактальную геометрию 5D-пространства**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build](https://github.com/m0rfy/SIFS-Theory-Core/actions/workflows/ci.yml/badge.svg)](https://github.com/m0rfy/SIFS-Theory-Core/actions/workflows/ci.yml)
 [![GitHub Stars](https://img.shields.io/github/stars/m0rfy/SIFS-Theory-Core?style=social)](https://github.com/m0rfy/SIFS-Theory-Core)
 [![GitHub Forks](https://img.shields.io/github/forks/m0rfy/SIFS-Theory-Core?style=social)](https://github.com/m0rfy/SIFS-Theory-Core)
 
-**Архитектор:** Vorobey | **Релиз:** 2025.01.23
+**Архитектор:** Vorobey | **Релиз:** 2025.01.23 | **Обновление:** 2026.03.04
 
-[📄 Документация](docs/README.md) • [📑 White Paper](docs/white-paper.md) • [📖 Terminology Guide](docs/terminology-guide.md) • [🧮 Расчёты](docs/calculations) • [🔮 Предсказания](docs/predictions) • [📊 Данные](docs/data)
+[📄 Документация](docs/README.md) • [📑 White Paper](docs/white-paper.md) • [📖 Terminology Guide](docs/terminology-guide.md) • [🧮 Расчёты](docs/calculations) • [🔮 Предсказания](docs/predictions) • [📊 Данные](docs/data) • [🔗 Related Projects](docs/related-projects.md)
 
 </div>
 
@@ -60,8 +59,6 @@
 ds² = exp(−2k|S|) · (c²dt² − dx² − dy² − dz²) + dS²
 ```
 
-![Metric Profile](docs/images/metric_profile.png)
-
 где:
 - `S` — масштабная координата (5-я размерность)
 - `k ≈ 0.1 M_Pl` — warping параметр
@@ -102,8 +99,6 @@ F = −∇n(r, S)
 ### 4. Фрактальная иерархия
 
 Самоподобие от планковского до хаббловского масштаба:
-
-![Fractal Hierarchy](docs/images/fractal_hierarchy.png)
 
 ```math
 λ(S) = λ₀ × exp(k|S|)
@@ -169,8 +164,6 @@ wₐ = −0.75 ± 0.29
 S_global(z) = S₀ + δS × z/(1+z)
 ```
 
-![Dark Energy Evolution](docs/images/dark_energy_evolution.png)
-
 > **Отклонение от ΛCDM:** >4σ статистическая значимость
 
 ---
@@ -229,26 +222,26 @@ S_global(z) = S₀ + δS × z/(1+z)
 ```
 SIFS-Theory-Core/
 ├── docs/                          # Полная документация
-│   ├── theory/                    # Теоретическая база
-│   │   ├── overview.md            # Общий обзор
-│   │   ├── mathematics.md         # Математический формализм
-│   │   ├── equations-of-motion.md # Уравнения движения
-│   │   └── ...
-│   ├── calculations/              # Детальные расчёты
-│   │   ├── proton-mass.md         # Масса протона
-│   │   ├── coupling-constants.md  # Константы связи
-│   │   └── ...
-│   ├── predictions/               # Предсказания теории
-│   │   ├── README.md              # Индекс предсказаний
-│   │   ├── detailed-predictions.md # Детальные предсказания
-│   │   ├── collider-predictions.md # Коллайдеры
-│   │   ├── gravitational-waves.md  # Гравитационные волны
-│   │   └── ...
-│   ├── data/                      # Наблюдательные данные
-│   │   ├── desi-2025.md           # DESI 2025
-│   │   └── ...
-├── src/                           # Исходный код
-│   └── app/                       # React приложение
+│   ├── theory/                    # Теоретическая база (overview, mathematics, RS2, fractal и др.)
+│   ├── calculations/              # Детальные расчёты (proton-mass, coupling-constants и др.)
+│   ├── predictions/               # Предсказания теории (colliders, GW, cosmology)
+│   ├── data/                      # Наблюдательные данные (DESI 2025, JWST, EHT)
+│   ├── defense/                   # Стратегии защиты от критики
+│   ├── analysis/                  # Анализ и планы синхронизации
+│   ├── protocol/                  # Протоколы передачи данных
+│   ├── visualizations/            # Диаграммы и компоненты
+│   ├── related-projects.md        # Два контекста SIFS + связанные проекты
+│   ├── white-paper.md             # Академическое изложение (+ LaTeX)
+│   ├── terminology-guide.md       # Руководство по терминологии
+│   └── README.md                  # Полное оглавление
+├── src/                           # React-приложение (интерактивные визуализации)
+│   └── app/
+│       ├── components/            # museum, spatial, visual, enhanced, markdown
+│       ├── pages/                 # страницы теории и симуляций
+│       └── utils/                 # утилиты для вычислений и экспорта
+├── specs/                         # Спецификации улучшений
+├── scripts/                       # Скрипты проверки качества
+├── .github/workflows/             # CI (lint + build) и deploy
 └── README.md                      # Этот файл
 ```
 
@@ -305,6 +298,21 @@ npm run build
 - **Gordon, W.** (1923). "Zur Lichtfortpflanzung nach der Relativitätstheorie." *Ann. Phys.* 377, 421.
 
 [📚 Полный список ссылок →](docs/references.md)
+
+---
+
+## 🔗 Связанные проекты
+
+**SIFS** существует в двух контекстах, использующих одно математическое ядро:
+
+| | **SIFS Theory (Spacetime)** | **SIFS System** |
+|---|---|---|
+| **Этот репозиторий** | ✅ | |
+| **Фокус** | Физическая теория: 5D, гравитация, КМ, частицы, DESI | Математическое ядро + приложения: финансы, нейронаука, дашборды |
+| **Параметр k** | k ≈ 0.1 M_Pl (размерный, варпинг) | k = 1/π² (безразмерный, затухание) |
+| **Варпинг** | exp(−2k\|S\|), S — непрерывная координата | W(n) = exp(−2kn), n — уровень 0..9 |
+
+Подробнее о связи между контекстами и общем математическом ядре (k, W(n), φ, FIB): [docs/related-projects.md](docs/related-projects.md).
 
 ---
 
