@@ -211,8 +211,8 @@ export function DocPage() {
   }
 
   return (
-    <SpatialSlab preset="monolith" className="min-h-screen">
-      <div className="container mx-auto px-4 md:px-4 py-4 md:py-8 max-w-5xl">
+    <SpatialSlab preset="monolith" className="min-h-screen pb-20">
+      <div className="container mx-auto px-4 md:px-6 py-4 md:py-8 max-w-6xl">
         {/* Breadcrumbs */}
         <ScrollReveal direction="down" delay={0}>
           <Breadcrumbs items={breadcrumbs} />
@@ -242,7 +242,7 @@ export function DocPage() {
                 id={`doc-cover-${document.category}`}
                 label={`Обложка раздела «${document.category}»`}
                 hint="1200×400px"
-                aspect="3/1"
+                aspect="4/1"
                 className="mt-4 w-full"
               />
             </div>
@@ -250,10 +250,10 @@ export function DocPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-3">
+          {/* Main Content — min-w-0 чтобы таблицы не выталкивали сетку, overflow для горизонтального скролла */}
+          <div className="lg:col-span-3 min-w-0 overflow-x-auto">
             <ScrollReveal direction="up" delay={100}>
-              <div className="prose prose-invert max-w-none">
+              <div className="prose prose-invert max-w-none min-h-[60vh] pb-12">
                 <MarkdownRenderer content={content} onLinkClick={handleLinkClick} />
               </div>
             </ScrollReveal>

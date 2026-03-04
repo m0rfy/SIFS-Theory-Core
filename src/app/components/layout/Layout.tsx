@@ -23,8 +23,8 @@ export function Layout() {
       <Navbar />
 
       <main
-        className="relative"
-        style={{ zIndex: 1, paddingTop: '60px' }}
+        className="relative pb-8"
+        style={{ zIndex: 1, paddingTop: '60px', minHeight: 'calc(100vh - 60px)' }}
       >
         <Outlet />
       </main>

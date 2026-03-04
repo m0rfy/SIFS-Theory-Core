@@ -21,6 +21,8 @@ import {
   Filter,
   TrendingUp,
   History,
+  ArrowRight,
+  ChevronRight,
 } from 'lucide-react';
 import {
   Select,
@@ -35,20 +37,30 @@ interface Simulation {
   id: string;
   name: string;
   description: string;
+  /** Краткий список «что внутри» для карточки */
+  features: string[];
   category: 'collapse' | 'temporal' | 'calculations' | 'visualizations';
   path: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
+  borderColor: string;
   usageCount?: number;
   lastUsed?: number;
 }
+
+const CATEGORY_LABELS: Record<string, string> = {
+  collapse: 'Коллапс',
+  temporal: 'Время',
+  calculations: 'Расчёты',
+  visualizations: 'Графики',
+};
 
 const simulations: Simulation[] = [
   {
     id: 'collapse',
     name: 'Гравитационный коллапс',
-    description:
-      'Моделирование реакции вакуумной энергии SIFS на мгновенную потерю топологического узла. Изменяйте массу и масштабный коэффициент для наблюдения распространения информационных волн.',
+    description: 'Реакция вакуумной энергии SIFS на потерю топологического узла: волны, масштаб, масса.',
+    features: ['Параметры массы и масштаба', 'Распространение информационных волн', 'Визуализация коллапса'],
     category: 'collapse',
     path: '/simulations/collapse',
     icon: Activity,
@@ -58,8 +70,8 @@ const simulations: Simulation[] = [
   {
     id: 'temporal',
     name: 'Темпоральная калибровка',
-    description:
-      'Синхронизация атомных часов с учётом флуктуаций метрики SIFS. Точность до аттосекунд (10⁻¹⁸ с) с визуализацией дрейфа времени.',
+    description: 'Синхронизация атомных часов с учётом флуктуаций метрики SIFS, точность до аттосекунд.',
+    features: ['Дрейф времени', 'Аттосекундная точность', 'Сравнение с эталоном'],
     category: 'temporal',
     path: '/simulations/temporal',
     icon: Clock,
@@ -69,8 +81,8 @@ const simulations: Simulation[] = [
   {
     id: 'calculations',
     name: 'Интерактивные расчёты',
-    description:
-      'Калькуляторы для всех направлений теории SIFS: константы связи, тёмная энергия, масса частиц, фрактальная структура и другие.',
+    description: 'Калькуляторы по теории SIFS: константы связи, тёмная энергия, массы, фрактальная структура.',
+    features: ['Константы связи', 'w(z) тёмная энергия', 'Иерархия масс', 'Формулы из документации'],
     category: 'calculations',
     path: '/simulations/calculations',
     icon: Calculator,
@@ -80,8 +92,8 @@ const simulations: Simulation[] = [
   {
     id: 'visualizations',
     name: 'Визуализации',
-    description:
-      'Интерактивные графики и диаграммы для визуализации различных аспектов теории SIFS: иерархия масс, эволюция тёмной энергии, константы связи и другие.',
+    description: 'Графики и диаграммы: иерархия масс, эволюция тёмной энергии, константы связи.',
+    features: ['Иерархия масс', 'Эволюция w(z)', 'Константы связи', 'RS2 и фракталы'],
     category: 'visualizations',
     path: '/simulations/visualizations',
     icon: BarChart3,
@@ -144,24 +156,25 @@ export function SimulationsIndexPage() {
   };
 
   return (
-    <SpatialSlab preset="monolith" className="min-h-screen p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
+    <SpatialSlab preset="monolith" className="min-h-screen p-4 md:p-6 lg:p-8 pb-20">
+      <div className="max-w-5xl mx-auto space-y-6 md:space-y-8">
         {/* Header */}
-        <div className="space-y-3 md:space-y-4">
-          <h1 className="text-[32px] md:text-4xl font-bold text-slate-100">Интерактивные симуляции</h1>
-          <p className="text-sm md:text-base text-slate-400 max-w-3xl">
-            Экспериментируйте с теорией SIFS через интерактивные симуляции. Все симуляции
-            интегрированы с SSF-2025 Spatial Framework для real-time визуальных эффектов.
+        <header className="space-y-2">
+          <h1 className="text-2xl md:text-4xl font-bold text-slate-100 tracking-tight">
+            Симуляции SIFS
+          </h1>
+          <p className="text-slate-400 text-base md:text-lg max-w-2xl">
+            Калькуляторы, визуализации и интерактивные сценарии по теории Scale-Invariant Fractal Spacetime.
           </p>
-        </div>
+        </header>
 
-        {/* Hero image placeholder */}
+        {/* Hero — компактный баннер */}
         <ImagePlaceholder
           id="simulations-index-hero"
           label="Баннер раздела симуляций"
-          hint="1920×480px — коллапс, часы, графики"
+          hint="1200×300px"
           aspect="4/1"
-          className="w-full"
+          className="w-full rounded-xl"
         />
 
         {/* Search and Filter */}
@@ -192,12 +205,12 @@ export function SimulationsIndexPage() {
 
         {/* Recently Used */}
         {recentSims.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-slate-400">
-              <History className="w-5 h-5" />
-              <h2 className="text-lg font-semibold">Недавно использованные</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+          <section className="space-y-3">
+            <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <History className="w-4 h-4" />
+              Недавно открывали
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {recentSims.map((sim) => {
                 const Icon = sim.icon;
                 return (
@@ -208,38 +221,37 @@ export function SimulationsIndexPage() {
                     className="block"
                   >
                     <Card
-                      className={`bg-gradient-to-br ${sim.color} border ${sim.borderColor} hover:border-opacity-60 transition-all cursor-pointer h-full`}
+                      className={`bg-gradient-to-br ${sim.color} border ${sim.borderColor} hover:border-opacity-70 transition-all cursor-pointer h-full`}
                     >
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center gap-2 md:gap-3">
-                          <div className={`p-2 rounded-lg bg-slate-900/50 flex-shrink-0`}>
-                            <Icon className="w-5 h-5 text-slate-300" />
-                          </div>
-                          <CardTitle className="text-base md:text-lg break-words">{sim.name}</CardTitle>
+                      <CardHeader className="py-3 px-4 flex flex-row items-center gap-3">
+                        <div className="p-2 rounded-lg bg-slate-900/50 flex-shrink-0">
+                          <Icon className="w-5 h-5 text-slate-300" />
                         </div>
+                        <CardTitle className="text-base break-words">{sim.name}</CardTitle>
+                        <ChevronRight className="w-4 h-4 text-slate-500 ml-auto flex-shrink-0" />
                       </CardHeader>
                     </Card>
                   </Link>
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* All Simulations */}
-        <div className="space-y-3">
+        {/* All Simulations — карточки с «что внутри» */}
+        <section className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-slate-100">
-              Все симуляции ({filteredSimulations.length})
+            <h2 className="text-lg font-semibold text-slate-200">
+              Выберите симуляцию
             </h2>
             {Object.keys(usageStats).length > 0 && (
-              <Badge variant="secondary" className="bg-slate-800 text-slate-400">
+              <Badge variant="secondary" className="bg-slate-800/80 text-slate-400 text-xs">
                 <TrendingUp className="w-3 h-3 mr-1" />
-                Статистика доступна
+                Статистика
               </Badge>
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 gap-4">
             {filteredSimulations.map((sim) => {
               const Icon = sim.icon;
               const usageCount = usageStats[sim.id] || 0;
@@ -248,62 +260,64 @@ export function SimulationsIndexPage() {
                   key={sim.id}
                   to={sim.path}
                   onClick={() => handleSimulationClick(sim.id)}
-                  className="block"
+                  className="block group"
                 >
                   <Card
-                    className={`bg-gradient-to-br ${sim.color} border ${sim.borderColor} hover:border-opacity-60 transition-all cursor-pointer flex flex-col`}
+                    className={`bg-gradient-to-br ${sim.color} border ${sim.borderColor} hover:border-opacity-70 transition-all cursor-pointer overflow-hidden`}
                   >
-                    <CardHeader className="flex-1 flex flex-col !px-4 md:!px-6 !pt-4 md:!pt-6">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-                          <div className={`p-2 rounded-lg bg-slate-900/50 flex-shrink-0`}>
-                            <Icon className="w-5 h-5 md:w-6 md:h-6 text-slate-300" />
+                    <div className="flex flex-col sm:flex-row sm:items-stretch">
+                      <div className="flex items-center gap-4 p-4 md:p-6 flex-1 min-w-0">
+                        <div className="p-3 rounded-xl bg-slate-900/50 flex-shrink-0">
+                          <Icon className="w-8 h-8 text-slate-300" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <CardTitle className="text-lg md:text-xl break-words">{sim.name}</CardTitle>
+                            <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
+                              {CATEGORY_LABELS[sim.category] ?? sim.category}
+                            </Badge>
+                            {usageCount > 0 && (
+                              <span className="text-xs text-slate-500">{usageCount} использований</span>
+                            )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <CardTitle className="text-lg md:text-xl mb-1 break-words">{sim.name}</CardTitle>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <Badge
-                                variant="outline"
-                                className="text-xs border-slate-700 text-slate-400"
-                              >
-                                {sim.category}
-                              </Badge>
-                              {usageCount > 0 && (
-                                <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-400">
-                                  {usageCount} использований
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
+                          <CardDescription className="text-slate-300 text-sm md:text-base leading-relaxed">
+                            {sim.description}
+                          </CardDescription>
+                          <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-400">
+                            {sim.features.map((f, i) => (
+                              <li key={i} className="flex items-center gap-1">
+                                <span className="text-slate-500">·</span>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                      <CardDescription className="text-sm md:text-base text-slate-300 leading-relaxed !mt-2 !mb-0">
-                        {sim.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="!px-4 md:!px-6 !pt-4 !pb-4 md:!pb-6">
-                      <Button
-                        variant="outline"
-                        className="w-full border-slate-700 hover:bg-slate-800 hover:border-slate-600 min-h-[44px]"
-                      >
-                        Открыть симуляцию
-                      </Button>
-                    </CardContent>
+                      <div className="flex items-center justify-center sm:justify-end p-4 md:p-6 border-t sm:border-t-0 sm:border-l border-slate-700/50">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="border-slate-600 hover:bg-slate-800 hover:border-slate-500 min-h-[44px] gap-2 group-hover:gap-3 transition-all"
+                        >
+                          Открыть
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </Card>
                 </Link>
               );
             })}
           </div>
-        </div>
+        </section>
 
-        {/* Empty State */}
         {filteredSimulations.length === 0 && (
-          <Card className="bg-slate-950 border-slate-800 text-center py-12">
+          <Card className="bg-slate-950/80 border-slate-700 text-center py-12">
             <CardContent>
               <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-              <p className="text-slate-400">Симуляции не найдены</p>
+              <p className="text-slate-400 font-medium">Ничего не найдено</p>
               <p className="text-slate-500 text-sm mt-2">
-                Попробуйте изменить параметры поиска или фильтра
+                Измените поиск или выберите «Все категории»
               </p>
             </CardContent>
           </Card>

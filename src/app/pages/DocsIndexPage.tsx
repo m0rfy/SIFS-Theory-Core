@@ -120,18 +120,18 @@ export function DocsIndexPage() {
   }, []);
 
   return (
-    <SpatialSlab preset="monolith" className="min-h-screen p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <SpatialSlab preset="monolith" className="min-h-screen p-4 md:p-8 pb-20">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-100 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 text-cyan-400" />
+        <header className="space-y-2">
+          <h1 className="text-2xl md:text-4xl font-bold text-slate-100 flex items-center gap-3">
+            <BookOpen className="w-7 h-7 md:w-8 md:h-8 text-cyan-400 flex-shrink-0" />
             Документация SIFS Theory
           </h1>
-          <p className="text-slate-400 text-lg">
-            Полная документация теории Scale-Invariant Fractal Spacetime: ядро, расчёты, предсказания, данные
+          <p className="text-slate-400 text-base md:text-lg max-w-2xl">
+            Теория Scale-Invariant Fractal Spacetime: ядро, расчёты, предсказания, данные
           </p>
-        </div>
+        </header>
 
         <ImagePlaceholder
           id="docs-index-banner"
