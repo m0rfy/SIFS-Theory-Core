@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIFS Live · Binance</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap');
+  :root {
+    --bg:#060B14; --bg2:#0C1520; --bg3:#111E2D;
+    --cyan:#00D4FF; --gold:#FFB800; --mint:#00F5A0;
+    --red:#FF4466; --violet:#9B6DFF; --muted:#3A5068;
+    --text:#C8DCF0; --dim:#6080A0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(0,212,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.015) 1px,transparent 1px);background-size:40px 40px;}
+  .app{position:relative;z-index:1;padding:10px;max-width:1700px;margin:0 auto;}
+
+  /* Header */
+  .header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    padding:10px 16px;margin-bottom:10px;border:1px solid var(--muted);background:var(--bg2);}
+  .logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:4px;
+    color:var(--cyan);text-shadow:0 0 20px rgba(0,212,255,0.3);}
+  .logo span{color:var(--gold);}
+  .subtitle{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:2px;}
+  .controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+
+  select,button{background:var(--bg3);color:var(--text);border:1px solid var(--muted);
+    padding:5px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;}
+  select:hover,button:hover{border-color:var(--cyan);color:var(--cyan);}
+  .btn-load{background:rgba(0,212,255,0.08);border-color:var(--cyan);color:var(--cyan);font-weight:700;padding:5px 16px;}
+  .btn-load:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-auto{background:rgba(255,184,0,0.08);border-color:var(--gold);color:var(--gold);font-size:10px;padding:5px 10px;}
+
+  .status{font-size:10px;padding:4px 10px;border:1px solid var(--muted);color:var(--dim);min-width:180px;text-align:center;}
+  .status.loading{border-color:var(--gold);color:var(--gold);}
+  .status.ok{border-color:var(--mint);color:var(--mint);}
+  .status.err{border-color:var(--red);color:var(--red);}
+
+  /* TF pills */
+  .tf-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
+  .tf-pill{font-size:9px;padding:3px 8px;border:1px solid var(--muted);color:var(--dim);cursor:pointer;
+    background:var(--bg3);letter-spacing:1px;transition:all .15s;}
+  .tf-pill:hover{border-color:var(--cyan);color:var(--cyan);}
+  .tf-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(255,184,0,0.08);}
+  .tf-group{font-size:8px;color:var(--dim);letter-spacing:1px;align-self:center;padding:0 4px;}
+
+  /* Stats */
+  .stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:8px;}
+  .stat-card{background:var(--bg2);border:1px solid var(--muted);padding:8px 12px;position:relative;overflow:hidden;}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent,var(--cyan));}
+  .stat-label{font-size:8px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;}
+  .stat-value{font-size:15px;font-weight:700;margin-top:3px;color:var(--accent,var(--cyan));}
+  .stat-sub{font-size:8px;color:var(--dim);margin-top:1px;}
+
+  /* Usage tips */
+  .usage-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;}
+  .usage-card{background:var(--bg2);border:1px solid var(--muted);padding:8px 12px;border-left:3px solid var(--accent,var(--cyan));}
+  .usage-title{font-size:9px;color:var(--accent,var(--cyan));font-weight:700;letter-spacing:1px;margin-bottom:4px;}
+  .usage-text{font-size:9px;color:var(--dim);line-height:1.5;}
+  .usage-sig{font-size:10px;font-weight:700;margin-top:4px;}
+
+  /* Layout */
+  .main-grid{display:grid;grid-template-columns:1fr 240px;gap:8px;}
+  .panel{background:var(--bg2);border:1px solid var(--muted);padding:10px;}
+  .panel-title{font-size:8px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;
+    margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .panel-title::after{content:'';flex:1;height:1px;background:var(--muted);}
+  .tag{font-size:8px;padding:2px 6px;border:1px solid currentColor;letter-spacing:1px;}
+
+  .chart-box{position:relative;width:100%;}
+  .chart-box canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important;}
+
+  .view-tabs{display:flex;gap:4px;margin-bottom:8px;}
+  .tab{font-size:9px;padding:3px 10px;cursor:pointer;border:1px solid var(--muted);
+    color:var(--dim);background:transparent;letter-spacing:1px;transition:all .15s;}
+  .tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06);}
+
+  /* S-levels */
+  .s-levels{display:flex;flex-direction:column;gap:3px;}
+  .s-row{display:flex;align-items:center;gap:5px;padding:4px 6px;
+    border:1px solid var(--muted);background:var(--bg3);}
+  .s-row.bull{border-color:rgba(0,245,160,0.4)!important;}
+  .s-row.bear{border-color:rgba(255,68,102,0.4)!important;}
+  .s-n{font-size:8px;color:var(--dim);width:24px;}
+  .s-fib{font-size:8px;color:var(--violet);width:26px;}
+  .s-period{font-size:8px;color:var(--dim);width:36px;text-align:right;}
+  .s-bar{flex:1;height:4px;background:var(--muted);position:relative;}
+  .s-bar-fill{position:absolute;left:0;top:0;height:100%;}
+  .s-w{font-size:8px;width:32px;text-align:right;}
+  .s-sig{font-size:9px;width:48px;text-align:right;font-weight:700;}
+
+  .bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .formula-box{background:var(--bg3);border:1px solid rgba(0,212,255,0.15);
+    padding:5px 10px;margin-top:6px;font-size:9px;color:var(--cyan);letter-spacing:.3px;}
+
+  /* Consensus meter */
+  .consensus{display:flex;gap:4px;align-items:center;margin-top:6px;}
+  .c-label{font-size:8px;color:var(--dim);width:80px;}
+  .c-bar{flex:1;height:8px;background:var(--muted);position:relative;border-radius:0;}
+  .c-fill{position:absolute;left:0;top:0;height:100%;transition:width .4s;}
+  .c-val{font-size:9px;width:40px;text-align:right;font-weight:700;}
+
+  /* ── Signal Block ── */
+  .signal-block{background:var(--bg2);border:1px solid var(--muted);padding:12px 14px;margin-bottom:8px;}
+  .signal-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .signal-title{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+  .signal-badge{font-size:12px;font-weight:700;padding:4px 14px;border:1px solid currentColor;letter-spacing:2px;}
+  .signal-badge.long {color:var(--mint);border-color:var(--mint);background:rgba(0,245,160,0.08);}
+  .signal-badge.short{color:var(--red); border-color:var(--red); background:rgba(255,68,102,0.08);}
+  .signal-badge.wait {color:var(--gold);border-color:var(--gold);background:rgba(255,184,0,0.08);}
+  .signal-badge.none {color:var(--dim); border-color:var(--muted);}
+
+  .signal-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+  .sig-cell{background:var(--bg3);border:1px solid var(--muted);padding:8px 10px;position:relative;}
+  .sig-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cl,var(--muted));}
+  .sig-cell-label{font-size:8px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;}
+  .sig-cell-value{font-size:16px;font-weight:700;color:var(--cl,var(--text));margin-top:3px;letter-spacing:.5px;}
+  .sig-cell-sub{font-size:8px;color:var(--dim);margin-top:2px;}
+
+  .roi-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .roi-label{font-size:9px;color:var(--dim);white-space:nowrap;}
+  .roi-input{width:80px;background:var(--bg3);border:1px solid var(--gold);color:var(--gold);
+    padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:center;}
+  .roi-input:focus{outline:none;border-color:var(--cyan);color:var(--cyan);}
+  .roi-targets{display:flex;gap:6px;flex-wrap:wrap;}
+  .roi-target{font-size:9px;padding:3px 10px;border:1px solid var(--muted);color:var(--dim);cursor:pointer;background:var(--bg3);}
+  .roi-target:hover{border-color:var(--gold);color:var(--gold);}
+  .roi-target.active{border-color:var(--gold);color:var(--gold);background:rgba(255,184,0,0.1);}
+
+  .tp-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
+  .tp-card{background:var(--bg3);border:1px solid var(--muted);padding:6px 10px;position:relative;overflow:hidden;}
+  .tp-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cl,var(--muted));}
+  .tp-label{font-size:8px;color:var(--dim);letter-spacing:1px;}
+  .tp-price{font-size:14px;font-weight:700;color:var(--cl,var(--text));margin-top:2px;}
+  .tp-roi{font-size:9px;margin-top:1px;}
+  .tp-dist{font-size:8px;color:var(--dim);}
+
+  .strength-bar{display:flex;align-items:center;gap:6px;margin-top:8px;}
+  .str-label{font-size:8px;color:var(--dim);width:100px;white-space:nowrap;}
+  .str-track{flex:1;height:6px;background:var(--muted);position:relative;}
+  .str-fill{position:absolute;left:0;top:0;height:100%;transition:width .5s;}
+  .str-val{font-size:9px;font-weight:700;width:36px;text-align:right;}
+
+  .sig-log{margin-top:8px;border-top:1px solid var(--muted);padding-top:8px;
+    font-size:8px;color:var(--dim);line-height:1.8;max-height:80px;overflow-y:auto;}
+  .sig-log span{color:var(--cyan);}
+
+  @media(max-width:900px){.main-grid{grid-template-columns:1fr;}.stats-row{grid-template-columns:repeat(3,1fr);}
+    .usage-bar{grid-template-columns:1fr;}.bottom-row{grid-template-columns:1fr;}
+    .signal-grid{grid-template-columns:1fr 1fr;}.tp-row{grid-template-columns:1fr 1fr;}}
+
+  /* ── Signal Block ── */
+  .signal-block{background:var(--bg2);border:1px solid var(--muted);padding:12px 14px;margin-bottom:8px;}
+  .signal-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .signal-title{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;font-weight:700;}
+  .signal-badge{font-size:12px;font-weight:700;padding:4px 14px;border:1px solid currentColor;letter-spacing:2px;}
+  .signal-badge.long {color:var(--mint);border-color:var(--mint);background:rgba(0,245,160,0.08);}
+  .signal-badge.short{color:var(--red); border-color:var(--red); background:rgba(255,68,102,0.08);}
+  .signal-badge.wait {color:var(--gold);border-color:var(--gold);background:rgba(255,184,0,0.08);}
+  .signal-badge.none {color:var(--dim); border-color:var(--muted);}
+  .signal-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:8px;}
+  .sig-cell{background:var(--bg3);border:1px solid var(--muted);padding:8px 10px;position:relative;}
+  .sig-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cl,var(--muted));}
+  .sig-cell-label{font-size:8px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;}
+  .sig-cell-value{font-size:16px;font-weight:700;color:var(--cl,var(--text));margin-top:3px;}
+  .sig-cell-sub{font-size:8px;color:var(--dim);margin-top:2px;}
+  .roi-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .roi-label{font-size:9px;color:var(--dim);white-space:nowrap;}
+  .roi-input{width:72px;background:var(--bg3);border:1px solid var(--gold);color:var(--gold);
+    padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:center;}
+  .roi-input:focus{outline:none;border-color:var(--cyan);color:var(--cyan);}
+  .roi-targets{display:flex;gap:4px;flex-wrap:wrap;}
+  .roi-target{font-size:9px;padding:3px 8px;border:1px solid var(--muted);color:var(--dim);cursor:pointer;background:var(--bg3);transition:all .15s;}
+  .roi-target:hover,.roi-target.active{border-color:var(--gold);color:var(--gold);background:rgba(255,184,0,0.1);}
+  .tp-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .tp-card{background:var(--bg3);border:1px solid var(--muted);padding:7px 10px;position:relative;overflow:hidden;}
+  .tp-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cl,var(--muted));}
+  .tp-label{font-size:8px;color:var(--dim);letter-spacing:1px;}
+  .tp-price{font-size:15px;font-weight:700;color:var(--cl,var(--text));margin-top:2px;}
+  .tp-roi{font-size:9px;font-weight:700;margin-top:1px;}
+  .tp-dist{font-size:8px;color:var(--dim);}
+  .strength-bar{display:flex;align-items:center;gap:6px;margin-top:5px;}
+  .str-label{font-size:8px;color:var(--dim);width:110px;white-space:nowrap;}
+  .str-track{flex:1;height:5px;background:var(--muted);position:relative;}
+  .str-fill{position:absolute;left:0;top:0;height:100%;transition:width .5s;}
+  .str-val{font-size:9px;font-weight:700;width:36px;text-align:right;}
+  .sig-log{margin-top:8px;border-top:1px solid var(--muted);padding-top:6px;
+    font-size:8px;color:var(--dim);line-height:1.9;max-height:72px;overflow-y:auto;}
+  .sig-log .ok{color:var(--mint);} .sig-log .warn{color:var(--gold);} .sig-log .bad{color:var(--red);}
+  @media(max-width:700px){.signal-grid{grid-template-columns:1fr 1fr;}.tp-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="logo">SIFS<span>·</span>LIVE</div>
+      <div class="subtitle">SCALE-INVARIANT FRACTAL SYSTEM  ·  k = 1/π²  ·  10 φ-LEVELS</div>
+    </div>
+    <div class="controls">
+      <select id="sel-symbol">
+        <option value="BTCUSDT">BTC/USDT</option>
+        <option value="ETHUSDT">ETH/USDT</option>
+        <option value="XRPUSDT">XRP/USDT</option>
+        <option value="SOLUSDT">SOL/USDT</option>
+        <option value="BNBUSDT">BNB/USDT</option>
+        <option value="DOGEUSDT">DOGE/USDT</option>
+      </select>
+      <select id="sel-limit">
+        <option value="200">200 баров</option>
+        <option value="500" selected>500 баров</option>
+        <option value="1000">1000 баров</option>
+      </select>
+      <button class="btn-load" id="btn-load" onclick="loadData()">▶ ЗАГРУЗИТЬ</button>
+      <button class="btn-auto" onclick="toggleAuto()" id="btn-auto">⟳ АВТО: ВЫКЛ</button>
+      <div class="status" id="status">ОЖИДАНИЕ</div>
+    </div>
+  </div>
+
+  <!-- TF selector -->
+  <div class="tf-row" id="tf-row">
+    <span class="tf-group">СЕКУНДЫ:</span>
+    <!-- 1s требует auth, пропускаем -->
+    <span class="tf-group" style="margin-left:8px;">МИНУТЫ:</span>
+    <button class="tf-pill" data-tf="1m"  data-mult="1">1m</button>
+    <button class="tf-pill" data-tf="3m"  data-mult="1">3m</button>
+    <button class="tf-pill" data-tf="5m"  data-mult="1">5m</button>
+    <button class="tf-pill" data-tf="15m" data-mult="2">15m</button>
+    <button class="tf-pill" data-tf="30m" data-mult="2">30m</button>
+    <span class="tf-group" style="margin-left:8px;">ЧАСЫ:</span>
+    <button class="tf-pill active" data-tf="1h"  data-mult="3">1h</button>
+    <button class="tf-pill" data-tf="2h"  data-mult="3">2h</button>
+    <button class="tf-pill" data-tf="4h"  data-mult="4">4h</button>
+    <button class="tf-pill" data-tf="6h"  data-mult="4">6h</button>
+    <button class="tf-pill" data-tf="8h"  data-mult="4">8h</button>
+    <button class="tf-pill" data-tf="12h" data-mult="4">12h</button>
+    <span class="tf-group" style="margin-left:8px;">ДНИ+:</span>
+    <button class="tf-pill" data-tf="1d"  data-mult="5">1d</button>
+    <button class="tf-pill" data-tf="3d"  data-mult="5">3d</button>
+    <button class="tf-pill" data-tf="1w"  data-mult="6">1w</button>
+    <button class="tf-pill" data-tf="1M"  data-mult="6">1M</button>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="usage-bar">
+    <div class="usage-card" style="--accent:var(--mint)">
+      <div class="usage-title">② СВЕРХУ — ФИЛЬТР ВХОДА</div>
+      <div class="usage-text">Смотри на тепловую карту. Если n=0..3 (верх) зелёные — тренд подтверждён сверху. Не входи против старшего уровня.</div>
+      <div class="usage-sig" id="tip-filter" style="color:var(--dim)">—</div>
+    </div>
+    <div class="usage-card" style="--accent:var(--gold)">
+      <div class="usage-title">③ СПЕРЕДИ — КОНСЕНСУС</div>
+      <div class="usage-text">Профиль монотонно падает → все уровни согласны. "Горб" посередине → разлом TF, ждать консенсуса.</div>
+      <div class="usage-sig" id="tip-consensus" style="color:var(--dim)">—</div>
+    </div>
+    <div class="usage-card" style="--accent:var(--cyan)">
+      <div class="usage-title">⑥ СИГНАЛ — ВХОД/ВЫХОД</div>
+      <div class="usage-text">Пересечение нуля снизу вверх + подтверждение карты = вход. Дивергенция (цена хай, сигнал нет) = слабость.</div>
+      <div class="usage-sig" id="tip-signal" style="color:var(--dim)">—</div>
+    </div>
+  </div>
+
+  <!-- SIGNAL BLOCK -->
+  <div class="signal-block">
+    <div class="signal-header">
+      <div>
+        <div class="signal-title">⚡ SIFS ТОРГОВЫЙ СИГНАЛ</div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px" id="sig-updated">— загрузите данные —</div>
+      </div>
+      <div class="signal-badge none" id="sig-badge">НЕТ ДАННЫХ</div>
+      <div class="roi-row">
+        <span class="roi-label">ЖЕЛАЕМЫЙ ROI %:</span>
+        <input class="roi-input" id="roi-input" type="number" value="5" min="0.1" max="500" step="0.1" oninput="recalcROI()">
+        <div class="roi-targets">
+          <button class="roi-target" onclick="setROI(1)">1%</button>
+          <button class="roi-target" onclick="setROI(3)">3%</button>
+          <button class="roi-target active" onclick="setROI(5)">5%</button>
+          <button class="roi-target" onclick="setROI(10)">10%</button>
+          <button class="roi-target" onclick="setROI(20)">20%</button>
+          <button class="roi-target" onclick="setROI(50)">50%</button>
+        </div>
+      </div>
+    </div>
+    <div class="signal-grid">
+      <div class="sig-cell" style="--cl:var(--cyan)">
+        <div class="sig-cell-label">ВХОД (Entry)</div>
+        <div class="sig-cell-value" id="sig-entry">—</div>
+        <div class="sig-cell-sub" id="sig-entry-sub">текущая цена</div>
+      </div>
+      <div class="sig-cell" style="--cl:var(--red)">
+        <div class="sig-cell-label">СТОП (Stop Loss)</div>
+        <div class="sig-cell-value" id="sig-stop">—</div>
+        <div class="sig-cell-sub" id="sig-stop-sub">ATR × 1.5</div>
+      </div>
+      <div class="sig-cell" style="--cl:var(--gold)">
+        <div class="sig-cell-label">R/R RATIO</div>
+        <div class="sig-cell-value" id="sig-rr">—</div>
+        <div class="sig-cell-sub" id="sig-rr-sub">риск / награда TP1</div>
+      </div>
+      <div class="sig-cell" style="--cl:var(--violet)">
+        <div class="sig-cell-label">ATR (волатильность)</div>
+        <div class="sig-cell-value" id="sig-atr">—</div>
+        <div class="sig-cell-sub" id="sig-atr-sub">avg true range 14</div>
+      </div>
+    </div>
+    <div style="font-size:8px;color:var(--dim);letter-spacing:2px;margin-bottom:5px;margin-top:8px">
+      ТЕЙК-ПРОФИТЫ — φ-УРОВНИ (ROI · φ⁰ / ROI · φ¹ / ROI · φ²)
+    </div>
+    <div class="tp-row">
+      <div class="tp-card" style="--cl:var(--mint)">
+        <div class="tp-label">TP1 · цель ROI</div>
+        <div class="tp-price" id="tp1-price">—</div>
+        <div class="tp-roi" id="tp1-roi" style="color:var(--mint)">—</div>
+        <div class="tp-dist" id="tp1-dist">—</div>
+      </div>
+      <div class="tp-card" style="--cl:var(--cyan)">
+        <div class="tp-label">TP2 · ROI × φ</div>
+        <div class="tp-price" id="tp2-price">—</div>
+        <div class="tp-roi" id="tp2-roi" style="color:var(--cyan)">—</div>
+        <div class="tp-dist" id="tp2-dist">—</div>
+      </div>
+      <div class="tp-card" style="--cl:var(--gold)">
+        <div class="tp-label">TP3 · ROI × φ²</div>
+        <div class="tp-price" id="tp3-price">—</div>
+        <div class="tp-roi" id="tp3-roi" style="color:var(--gold)">—</div>
+        <div class="tp-dist" id="tp3-dist">—</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+      <div>
+        <div class="strength-bar">
+          <span class="str-label">Сила сигнала</span>
+          <div class="str-track"><div class="str-fill" id="str-signal" style="background:var(--cyan)"></div></div>
+          <span class="str-val" id="strv-signal" style="color:var(--cyan)">—</span>
+        </div>
+        <div class="strength-bar">
+          <span class="str-label">Консенсус TF</span>
+          <div class="str-track"><div class="str-fill" id="str-consensus" style="background:var(--mint)"></div></div>
+          <span class="str-val" id="strv-consensus" style="color:var(--mint)">—</span>
+        </div>
+        <div class="strength-bar">
+          <span class="str-label">Макро-фильтр</span>
+          <div class="str-track"><div class="str-fill" id="str-macro" style="background:var(--violet)"></div></div>
+          <span class="str-val" id="strv-macro" style="color:var(--violet)">—</span>
+        </div>
+      </div>
+      <div>
+        <div class="strength-bar">
+          <span class="str-label">Momentum (ROC)</span>
+          <div class="str-track"><div class="str-fill" id="str-mom" style="background:var(--gold)"></div></div>
+          <span class="str-val" id="strv-mom" style="color:var(--gold)">—</span>
+        </div>
+        <div class="strength-bar">
+          <span class="str-label">Итоговый скор</span>
+          <div class="str-track"><div class="str-fill" id="str-total" style="background:var(--mint)"></div></div>
+          <span class="str-val" id="strv-total" style="color:var(--mint)">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="sig-log" id="sig-log">Загрузите данные для получения сигнала...</div>
+  </div>
+
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card" style="--accent:var(--cyan)">
+      <div class="stat-label">Цена</div>
+      <div class="stat-value" id="st-price">—</div>
+      <div class="stat-sub" id="st-change">загрузите данные</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--gold)">
+      <div class="stat-label">SIFS Сигнал</div>
+      <div class="stat-value" id="st-sifs">—</div>
+      <div class="stat-sub" id="st-sifs-sub">Σ W(n)·dev(n)</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--mint)">
+      <div class="stat-label">Консенсус TF</div>
+      <div class="stat-value" id="st-consensus">—</div>
+      <div class="stat-sub" id="st-consensus-sub">уровней согласны</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--violet)">
+      <div class="stat-label">Активный уровень</div>
+      <div class="stat-value" id="st-level">—</div>
+      <div class="stat-sub" id="st-level-sub">макс. |W·dev|</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--cyan)">
+      <div class="stat-label">TF · Период EMA</div>
+      <div class="stat-value" id="st-tf" style="font-size:13px">1h</div>
+      <div class="stat-sub" id="st-periods">F1×3 .. F89×3</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--gold)">
+      <div class="stat-label">k=1/π²  φ=1.618</div>
+      <div class="stat-value" style="font-size:11px">0.10132</div>
+      <div class="stat-sub">W(n)=e^(−2n/π²)</div>
+    </div>
+  </div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+    <div>
+      <div class="panel">
+        <div class="panel-title">
+          <span class="tag" style="color:var(--cyan);border-color:var(--cyan)" id="view-tag">① СБОКУ</span>
+          <span id="view-desc">Цена + EMA(F_n × mult) · толщина = W(n)</span>
+        </div>
+        <div class="view-tabs">
+          <button class="tab active" onclick="switchView('side')">① Сбоку</button>
+          <button class="tab" onclick="switchView('signal')">⑥ SIFS Сигнал</button>
+          <button class="tab" onclick="switchView('levels')">④ Уровни</button>
+        </div>
+        <div class="chart-box" style="height:300px">
+          <canvas id="chart-main"></canvas>
+        </div>
+        <div class="formula-box" id="formula-box">
+          W(n) = exp(−2n/π²)  |  EMA_n = EMA(F_n × mult)  |  SIFS = Σ W(n)·(EMA_n − цена)
+        </div>
+      </div>
+    </div>
+
+    <!-- S-levels sidebar -->
+    <div class="panel">
+      <div class="panel-title">
+        <span class="tag" style="color:var(--gold);border-color:var(--gold)">ИЕРАРХИЯ</span>
+        S-уровни · W(n) · Сигнал
+      </div>
+      <div class="s-levels" id="s-levels"></div>
+
+      <!-- Consensus bars -->
+      <div style="margin-top:10px;border-top:1px solid var(--muted);padding-top:8px;">
+        <div style="font-size:8px;color:var(--dim);letter-spacing:2px;margin-bottom:6px;">КОНСЕНСУС</div>
+        <div class="consensus">
+          <span class="c-label">МАКРО n=0..2</span>
+          <div class="c-bar"><div class="c-fill" id="c-macro" style="background:var(--mint)"></div></div>
+          <span class="c-val" id="cv-macro">—</span>
+        </div>
+        <div class="consensus">
+          <span class="c-label">МЕЗО n=3..5</span>
+          <div class="c-bar"><div class="c-fill" id="c-meso" style="background:var(--cyan)"></div></div>
+          <span class="c-val" id="cv-meso">—</span>
+        </div>
+        <div class="consensus">
+          <span class="c-label">МИКРО n=6..9</span>
+          <div class="c-bar"><div class="c-fill" id="c-micro" style="background:var(--violet)"></div></div>
+          <span class="c-val" id="cv-micro">—</span>
+        </div>
+      </div>
+
+      <div class="formula-box" style="margin-top:8px;font-size:8px;color:var(--gold)">
+        k_n = 7000·W(n)/ΣW = синапсов/нейрон<br>
+        Σk_n = 7000 ≡ биол. мозг
+      </div>
+    </div>
+
+    <!-- Bottom row -->
+    <div class="bottom-row" style="grid-column:1/-1">
+      <div class="panel">
+        <div class="panel-title">
+          <span class="tag" style="color:var(--mint);border-color:var(--mint)">② СВЕРХУ</span>
+          Тепловая карта · Время × S-уровень · зелёный бычий / красный медвежий
+        </div>
+        <div class="chart-box" style="height:160px">
+          <canvas id="chart-heatmap"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">
+          <span class="tag" style="color:var(--violet);border-color:var(--violet)">③ СПЕРЕДИ</span>
+          Профиль W(n)·dev · последние бары · форма = "отпечаток" рынка
+        </div>
+        <div class="chart-box" style="height:160px">
+          <canvas id="chart-front"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── SIFS Constants ────────────────────────────────────────────
+const PI=Math.PI, PHI=(1+Math.sqrt(5))/2, K=1/(PI*PI);
+const FIB=[1,2,3,5,8,13,21,34,55,89];
+const W=FIB.map((_,n)=>Math.exp(-2*K*n));
+const W_SUM=W.reduce((a,b)=>a+b,0);
+const COLS=['#00D4FF','#18C8EE','#30BCDE','#48B0CE','#60A4BE',
+            '#7898AE','#908C9E','#A8808E','#C0747E','#FF6855'];
+
+Chart.defaults.font.family="'JetBrains Mono',monospace";
+Chart.defaults.color='#6080A0';
+
+// ─── State ─────────────────────────────────────────────────────
+let S={closes:null,times:null,emas:null,signals:null,total:null,view:'side',tf:'1h',mult:3};
+let charts={main:null,heat:null,front:null};
+let autoTimer=null;
+
+// ─── TF pills ─────────────────────────────────────────────────
+document.querySelectorAll('.tf-pill').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tf-pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    S.tf=btn.dataset.tf; S.mult=parseInt(btn.dataset.mult)||3;
+    document.getElementById('st-tf').textContent=S.tf;
+  });
+});
+
+// ─── EMA ──────────────────────────────────────────────────────
+function ema(arr,p){
+  const a=2/(p+1),r=new Float64Array(arr.length);
+  r[0]=arr[0];
+  for(let i=1;i<arr.length;i++) r[i]=a*arr[i]+(1-a)*r[i-1];
+  return r;
+}
+
+// ─── SIFS ─────────────────────────────────────────────────────
+function calcSIFS(closes,mult){
+  const emas=FIB.map(f=>ema(closes,Math.max(2,Math.round(f*mult))));
+  const signals=emas.map((e,n)=>{
+    const s=new Float64Array(closes.length);
+    for(let i=0;i<closes.length;i++) s[i]=W[n]*(e[i]-closes[i]);
+    return s;
+  });
+  const total=new Float64Array(closes.length);
+  signals.forEach(s=>{for(let i=0;i<closes.length;i++) total[i]+=s[i];});
+  return{emas,signals,total};
+}
+
+// ─── S-level UI init ──────────────────────────────────────────
+function initSLevels(){
+  const c=document.getElementById('s-levels'); c.innerHTML='';
+  FIB.forEach((f,n)=>{
+    const d=document.createElement('div');
+    d.className='s-row'; d.id=`srow-${n}`;
+    const period=Math.max(2,Math.round(f*(S.mult||3)));
+    d.innerHTML=`
+      <span class="s-n" style="color:${COLS[n]}">n=${n}</span>
+      <span class="s-fib">F${f}</span>
+      <span class="s-period" id="sp-${n}">E${period}</span>
+      <div class="s-bar"><div class="s-bar-fill" style="width:${(W[n]*100).toFixed(0)}%;background:${COLS[n]}"></div></div>
+      <span class="s-w" style="color:${COLS[n]}">${W[n].toFixed(3)}</span>
+      <span class="s-sig" id="ssig-${n}">—</span>`;
+    c.appendChild(d);
+  });
+}
+
+// ─── Load data ────────────────────────────────────────────────
+async function loadData(){
+  const sym=document.getElementById('sel-symbol').value;
+  const limit=document.getElementById('sel-limit').value;
+  const btn=document.getElementById('btn-load');
+  const st=document.getElementById('status');
+
+  btn.disabled=true; st.className='status loading'; st.textContent='ЗАГРУЗКА...';
+  try{
+    const url=`https://api.binance.com/api/v3/klines?symbol=${sym}&interval=${S.tf}&limit=${limit}`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+
+    const closes=new Float64Array(data.map(d=>parseFloat(d[4])));
+    const highs =new Float64Array(data.map(d=>parseFloat(d[2])));
+    const lows  =new Float64Array(data.map(d=>parseFloat(d[3])));
+    S.sym=sym;
+    const times=data.map(d=>{
+      const dt=new Date(d[0]);
+      const mo=dt.getMonth()+1,da=dt.getDate(),h=dt.getHours(),m=String(dt.getMinutes()).padStart(2,'0');
+      // Compact label depending on TF
+      if(['1d','3d','1w','1M'].includes(S.tf)) return `${mo}/${da}`;
+      if(['4h','6h','8h','12h','1h','2h'].includes(S.tf)) return `${mo}/${da} ${h}h`;
+      return `${h}:${m}`;
+    });
+
+    const{emas,signals,total}=calcSIFS(closes,S.mult);
+    S={...S,closes,highs,lows,times,emas,signals,total};
+
+    // Update period labels
+    FIB.forEach((f,n)=>{
+      const p=Math.max(2,Math.round(f*S.mult));
+      const el=document.getElementById(`sp-${n}`);
+      if(el) el.textContent=`E${p}`;
+    });
+    document.getElementById('st-tf').textContent=S.tf;
+    document.getElementById('st-periods').textContent=`F1×${S.mult}..F89×${S.mult}`;
+
+    st.className='status ok'; st.textContent=`OK · ${data.length} баров · ${sym} · ${S.tf}`;
+    updateStats(closes,total,signals);
+    updateSLevelUI(signals,closes);
+    updateUsageTips(signals,total,closes);
+    updateConsensus(signals);
+    renderAll();
+    updateSignalUI();
+  }catch(e){
+    st.className='status err'; st.textContent='ОШИБКА: '+e.message;
+    console.error(e);
+  }
+  btn.disabled=false;
+}
+
+// ─── Auto refresh ─────────────────────────────────────────────
+function toggleAuto(){
+  const btn=document.getElementById('btn-auto');
+  if(autoTimer){
+    clearInterval(autoTimer); autoTimer=null;
+    btn.textContent='⟳ АВТО: ВЫКЛ'; btn.style.borderColor='var(--gold)';
+  } else {
+    const intervals={'1m':15000,'3m':20000,'5m':30000,'15m':60000,'30m':120000,
+      '1h':300000,'2h':300000,'4h':600000};
+    const delay=intervals[S.tf]||60000;
+    autoTimer=setInterval(loadData,delay);
+    btn.textContent=`⟳ АВТО: ${delay/1000}с`; btn.style.borderColor='var(--mint)';
+    btn.style.color='var(--mint)';
+  }
+}
+
+// ─── Stats ────────────────────────────────────────────────────
+function updateStats(closes,total,signals){
+  const last=closes[closes.length-1],prev=closes[closes.length-2]||last;
+  const chg=((last-prev)/prev*100).toFixed(2);
+  const sv=total[total.length-1];
+  const bull=sv>0;
+
+  document.getElementById('st-price').textContent=last>999?last.toFixed(0):last>1?last.toFixed(3):last.toFixed(5);
+  const chgEl=document.getElementById('st-change');
+  chgEl.textContent=`${parseFloat(chg)>=0?'+':''}${chg}% vs prev`;
+  chgEl.style.color=parseFloat(chg)>=0?'var(--mint)':'var(--red)';
+
+  const sifsEl=document.getElementById('st-sifs');
+  sifsEl.textContent=bull?'▲ БЫЧИЙ':'▼ МЕДВЕЖИЙ';
+  sifsEl.style.color=bull?'var(--mint)':'var(--red)';
+  document.getElementById('st-sifs-sub').textContent=`raw: ${sv.toFixed(3)}`;
+
+  // Consensus: how many levels agree with total direction
+  const agreed=signals.filter((_,n)=>{
+    const v=signals[n][signals[n].length-1];
+    return (bull&&v>0)||(!bull&&v<0);
+  }).length;
+  const consEl=document.getElementById('st-consensus');
+  consEl.textContent=`${agreed}/10`;
+  consEl.style.color=agreed>=7?'var(--mint)':agreed>=5?'var(--gold)':'var(--red)';
+  document.getElementById('st-consensus-sub').textContent=agreed>=7?'сильный сигнал':agreed>=5?'умеренный':'слабый';
+
+  let maxV=0,maxN=0;
+  signals.forEach((s,n)=>{const v=Math.abs(s[s.length-1]);if(v>maxV){maxV=v;maxN=n;}});
+  const lvEl=document.getElementById('st-level');
+  lvEl.textContent=`n=${maxN} F${FIB[maxN]}`; lvEl.style.color=COLS[maxN];
+  document.getElementById('st-level-sub').textContent=`W=${W[maxN].toFixed(3)} E${Math.round(FIB[maxN]*S.mult)}`;
+}
+
+// ─── Usage tips (live) ────────────────────────────────────────
+function updateUsageTips(signals,total,closes){
+  const N=signals[0].length, last=N-1;
+  const sv=total[last], bull=sv>0;
+
+  // Filter tip: macro levels
+  const macro=[0,1,2].map(n=>signals[n][last]);
+  const macroAgree=macro.every(v=>v>0)||macro.every(v=>v<0);
+  const macroDir=macro.reduce((a,v)=>a+v,0)>0?'🟢 БЫЧИЙ':'🔴 МЕДВЕЖИЙ';
+  document.getElementById('tip-filter').textContent=
+    macroAgree?`Макро-уровни: ${macroDir} — вход в сторону тренда`:'⚠️ Макро-разлом — лучше ждать';
+  document.getElementById('tip-filter').style.color=macroAgree?'var(--mint)':'var(--gold)';
+
+  // Consensus tip
+  const vals=signals.map(s=>s[last]);
+  const pos=vals.filter(v=>v>0).length;
+  const neg=vals.filter(v=>v<0).length;
+  const consensus=Math.max(pos,neg)/10;
+  document.getElementById('tip-consensus').textContent=
+    consensus>=0.8?`✓ Монотонный профиль (${Math.round(consensus*10)}/10)`:
+    consensus>=0.6?`~ Частичный консенсус (${Math.round(consensus*10)}/10)`:
+    `✗ Разлом TF — ждать (${Math.round(consensus*10)}/10)`;
+  document.getElementById('tip-consensus').style.color=
+    consensus>=0.8?'var(--mint)':consensus>=0.6?'var(--gold)':'var(--red)';
+
+  // Signal tip: zero cross
+  const prev2=total[last-2]||0,prev1=total[last-1]||0,curr=total[last];
+  const zeroCross=prev1<=0&&curr>0?'↑ ПЕРЕСЕЧЕНИЕ НУЛЯ СНИЗУ — потенциальный ВХОД':
+                  prev1>=0&&curr<0?'↓ ПЕРЕСЕЧЕНИЕ НУЛЯ СВЕРХУ — потенциальный ВЫХОД/ШОРТ':
+                  curr>0?'▲ В БЫЧЬЕЙ ЗОНЕ':'▼ В МЕДВЕЖЬЕЙ ЗОНЕ';
+  document.getElementById('tip-signal').textContent=zeroCross;
+  document.getElementById('tip-signal').style.color=
+    zeroCross.includes('ВХОД')?'var(--mint)':
+    zeroCross.includes('ВЫХОД')?'var(--red)':
+    curr>0?'rgba(0,245,160,0.7)':'rgba(255,68,102,0.7)';
+}
+
+// ─── Consensus bars ───────────────────────────────────────────
+function updateConsensus(signals){
+  const last=signals[0].length-1;
+  const zones=[[0,3],[3,6],[6,10]];
+  const ids=['macro','meso','micro'];
+  zones.forEach(([from,to],zi)=>{
+    let bull=0,bear=0;
+    for(let n=from;n<to;n++){
+      const v=signals[n][last];
+      if(v>0) bull++; else bear++;
+    }
+    const total=to-from;
+    const bullPct=bull/total*100, bearPct=bear/total*100;
+    const dominant=bull>=bear;
+    const pct=dominant?bullPct:bearPct;
+    document.getElementById(`c-${ids[zi]}`).style.width=pct+'%';
+    document.getElementById(`c-${ids[zi]}`).style.background=dominant?'var(--mint)':'var(--red)';
+    document.getElementById(`cv-${ids[zi]}`).textContent=(dominant?'▲':'▼')+Math.round(pct)+'%';
+    document.getElementById(`cv-${ids[zi]}`).style.color=dominant?'var(--mint)':'var(--red)';
+  });
+}
+
+// ─── S-level UI update ────────────────────────────────────────
+function updateSLevelUI(signals,closes){
+  const last=closes[closes.length-1];
+  signals.forEach((sig,n)=>{
+    const v=sig[sig.length-1];
+    const el=document.getElementById(`ssig-${n}`);
+    if(!el)return;
+    const pct=(v/last*100).toFixed(2);
+    el.textContent=`${v>=0?'+':''}${pct}%`;
+    el.style.color=v>=0?'var(--mint)':'var(--red)';
+    const row=document.getElementById(`srow-${n}`);
+    row.classList.remove('bull','bear');
+    row.classList.add(v>=0?'bull':'bear');
+  });
+}
+
+// ─── Chart helpers ────────────────────────────────────────────
+function destroyChart(k){if(charts[k]){charts[k].destroy();charts[k]=null;}}
+
+const baseOpts={
+  responsive:true,maintainAspectRatio:false,
+  interaction:{mode:'index',intersect:false},
+  plugins:{
+    tooltip:{backgroundColor:'#0C1520',borderColor:'#3A5068',borderWidth:1,
+      titleColor:'#00D4FF',bodyColor:'#C8DCF0',titleFont:{size:9},bodyFont:{size:8},
+      callbacks:{label:c=>{const v=c.raw;return typeof v==='number'?
+        ` ${c.dataset.label}: ${Math.abs(v)>999?v.toFixed(0):Math.abs(v)>0.01?v.toFixed(4):v.toFixed(6)}`:'';}}
+    }
+  },
+  scales:{
+    x:{grid:{color:'#0E1A28'},ticks:{color:'#3A5068',font:{size:8},maxTicksLimit:10,maxRotation:0}},
+    y:{position:'right',grid:{color:'#0E1A28'},ticks:{color:'#3A5068',font:{size:8}}}
+  }
+};
+
+function renderAll(){renderMain();renderHeatmap();renderFront();}
+
+function switchView(v){
+  S.view=v;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['side','signal','levels'][i]===v));
+  const tags={side:'① СБОКУ',signal:'⑥ SIFS СИГНАЛ',levels:'④ УРОВНИ'};
+  const descs={
+    side:'Цена + EMA(F_n × mult) · толщина = W(n)',
+    signal:'SIFS = Σ W(n)·(EMA_n − цена) · зелёный бычий / красный медвежий',
+    levels:'Каждый S-уровень отдельно · виден доминирующий TF',
+  };
+  document.getElementById('view-tag').textContent=tags[v]||v;
+  document.getElementById('view-desc').textContent=descs[v]||'';
+  const fmls={
+    side:'СБОКУ: Цена + 10 EMA. Толстые линии = малый n = больший W(n) = больший вес',
+    signal:'СИГНАЛ: Σ W(n)·(EMA_n − цена). Пересечение нуля = потенциальная точка входа/выхода',
+    levels:'УРОВНИ: сигналы каждого S-уровня. Монотонность = консенсус иерархии',
+  };
+  document.getElementById('formula-box').textContent=fmls[v]||'';
+  renderMain();
+}
+
+// ─── Main chart ───────────────────────────────────────────────
+function renderMain(){
+  if(!S.closes)return;
+  destroyChart('main');
+  const N=S.closes.length,show=Math.min(N,200);
+  const labels=S.times.slice(-show);
+  const closes=Array.from(S.closes.slice(-show));
+  let datasets=[];
+
+  if(S.view==='side'){
+    datasets.push({label:'Цена',data:closes,borderColor:'#4488FF',borderWidth:1.8,
+      pointRadius:0,fill:false,tension:0.2,order:0});
+    FIB.forEach((f,n)=>{
+      datasets.push({label:`F${f} W=${W[n].toFixed(2)}`,
+        data:Array.from(S.emas[n].slice(-show)),
+        borderColor:COLS[n],borderWidth:Math.max(0.4,W[n]*2.8),
+        pointRadius:0,fill:false,tension:0.3,
+        borderDash:n>5?[3,3]:[],order:n+1});
+    });
+  } else if(S.view==='signal'){
+    const sig=Array.from(S.total.slice(-show));
+    datasets=[
+      {label:'Бычий',data:sig.map(v=>v>0?v:0),borderColor:'rgba(0,245,160,0.9)',borderWidth:1.5,
+       backgroundColor:'rgba(0,245,160,0.12)',pointRadius:0,fill:'origin',tension:0.3},
+      {label:'Медвежий',data:sig.map(v=>v<0?v:0),borderColor:'rgba(255,68,102,0.9)',borderWidth:1.5,
+       backgroundColor:'rgba(255,68,102,0.12)',pointRadius:0,fill:'origin',tension:0.3},
+      {label:'SIFS',data:sig,borderColor:'#FFB800',borderWidth:1.5,
+       pointRadius:0,fill:false,tension:0.3},
+    ];
+  } else {
+    FIB.forEach((f,n)=>{
+      datasets.push({label:`n=${n} F${f}`,
+        data:Array.from(S.signals[n].slice(-show)),
+        borderColor:COLS[n],borderWidth:W[n]*2.5,
+        pointRadius:0,fill:false,tension:0.3});
+    });
+  }
+
+  const opts=JSON.parse(JSON.stringify(baseOpts));
+  opts.animation={duration:300};
+  opts.plugins.legend={display:S.view==='side',
+    labels:{color:'#6080A0',font:{size:8},boxWidth:16,
+      filter:(_,i)=>S.view!=='side'||i%3===0}};
+
+  charts.main=new Chart(document.getElementById('chart-main').getContext('2d'),
+    {type:'line',data:{labels,datasets},options:opts});
+}
+
+// ─── Heatmap ──────────────────────────────────────────────────
+function renderHeatmap(){
+  if(!S.signals)return;
+  destroyChart('heat');
+  const N=S.signals[0].length,show=Math.min(N,120);
+  const labels=S.times.slice(-show);
+  const datasets=FIB.map((f,n)=>{
+    const row=Array.from(S.signals[n].slice(-show));
+    const mx=Math.max(...row.map(Math.abs))||1;
+    return{label:`n=${n}`,data:row,
+      backgroundColor:row.map(v=>{const a=Math.min(0.95,Math.abs(v)/mx*0.85+0.1);
+        return v>0?`rgba(0,245,160,${a})`:`rgba(255,68,102,${a})`;}),
+      borderColor:'transparent',borderWidth:0,
+      barPercentage:1.0,categoryPercentage:1.0};
+  });
+
+  const opts=JSON.parse(JSON.stringify(baseOpts));
+  opts.animation=false;
+  opts.plugins.legend={display:false};
+  opts.plugins.tooltip.callbacks={
+    title:c=>`t=${c[0].label}`,
+    label:c=>` n=${c.datasetIndex} F${FIB[c.datasetIndex]}: ${c.raw.toFixed(4)}`
+  };
+  opts.scales.x.ticks.maxTicksLimit=8;
+  opts.scales.y.stacked=false;
+
+  charts.heat=new Chart(document.getElementById('chart-heatmap').getContext('2d'),
+    {type:'bar',data:{labels,datasets},options:opts});
+}
+
+// ─── Front chart ──────────────────────────────────────────────
+function renderFront(){
+  if(!S.signals)return;
+  destroyChart('front');
+  const N=S.signals[0].length;
+  const offsets=[0,1,3,7,19];
+  const snaps=offsets.map(o=>N-1-o).filter(i=>i>=0);
+  const snapCols=['#FFB800','#00D4FF','#9B6DFF','#00F5A0','#FF4466'];
+  const labels=FIB.map((f,n)=>`n=${n} F${f}`);
+
+  const datasets=snaps.map((si,idx)=>({
+    label:`t-${offsets[idx]}`,
+    data:FIB.map((_,n)=>S.signals[n][si]),
+    borderColor:snapCols[idx],
+    backgroundColor:snapCols[idx]+'22',
+    borderWidth:idx===0?2.5:1,
+    pointRadius:idx===0?5:2,
+    pointBackgroundColor:snapCols[idx],
+    fill:false,tension:0.35,
+  }));
+
+  const opts=JSON.parse(JSON.stringify(baseOpts));
+  opts.animation={duration:200};
+  opts.plugins.legend={labels:{color:'#6080A0',font:{size:9},boxWidth:14}};
+
+  charts.front=new Chart(document.getElementById('chart-front').getContext('2d'),
+    {type:'line',data:{labels,datasets},options:opts});
+}
+
+
+// ─── SIGNAL ENGINE ────────────────────────────────────────────
+let SIG = { entry:null, stop:null, atr:null, dir:null, score:0, consensus:0, macro:0, mom:0 };
+
+function fmt(p){ return p>999?p.toFixed(0):p>1?p.toFixed(3):p.toFixed(5); }
+function pct(a,b){ return ((b-a)/a*100).toFixed(2); }
+
+// ATR-14
+function calcATR(highs,lows,closes,period=14){
+  const tr=[];
+  for(let i=1;i<closes.length;i++){
+    tr.push(Math.max(highs[i]-lows[i], Math.abs(highs[i]-closes[i-1]), Math.abs(lows[i]-closes[i-1])));
+  }
+  let atr=tr.slice(0,period).reduce((a,b)=>a+b,0)/period;
+  for(let i=period;i<tr.length;i++) atr=(atr*13+tr[i])/14;
+  return atr;
+}
+
+// ROC momentum
+function calcROC(closes,period=10){
+  const last=closes.length-1;
+  if(last<period) return 0;
+  return (closes[last]-closes[last-period])/closes[last-period]*100;
+}
+
+function calcSignal(closes,highs,lows,signals,total){
+  const N=closes.length, last=N-1;
+  const price=closes[last];
+  const atr=calcATR(highs,lows,closes,14);
+  const atrPct=atr/price*100;
+  const sv=total[last], prev=total[last-1]||0;
+  const bull=sv>0;
+
+  // Direction
+  const dir=bull?'long':'short';
+
+  // Consensus score (0-1)
+  const agreed=signals.filter((_,n)=>{
+    const v=signals[n][last]; return (bull&&v>0)||(!bull&&v<0);
+  }).length;
+  const consensusScore=agreed/10;
+
+  // Macro filter (n=0..2)
+  const macro=[0,1,2].map(n=>signals[n][last]);
+  const macroAgree=macro.every(v=>v>0)||macro.every(v=>v<0);
+  const macroScore=macroAgree?(macro.reduce((a,v)=>a+v,0)>0&&bull?1:(!macro.reduce((a,v)=>a+v,0)>0&&!bull?1:0.3)):0.2;
+
+  // Signal strength: normalize |sv| vs recent range
+  const recentSig=Array.from(total.slice(-50)).map(Math.abs);
+  const maxSig=Math.max(...recentSig)||1;
+  const sigStr=Math.min(1,Math.abs(sv)/maxSig);
+
+  // Momentum ROC
+  const roc=calcROC(closes,10);
+  const momScore=Math.min(1,Math.abs(roc)/5); // 5% roc = max score
+  const momAgrees=(bull&&roc>0)||(!bull&&roc<0);
+
+  // Zero cross bonus
+  const zeroCross=((prev<=0&&sv>0)||(prev>=0&&sv<0));
+
+  // Total score 0-100
+  const rawScore=(sigStr*30 + consensusScore*35 + macroScore*20 + (momAgrees?momScore*15:0));
+  const score=Math.min(100,rawScore + (zeroCross?15:0));
+
+  // Stop: ATR*1.5 below/above entry
+  const stopDist=atr*1.5;
+  const stop=bull?(price-stopDist):(price+stopDist);
+
+  SIG={entry:price,stop,atr,dir,score,
+       sigStr:sigStr*100,consensusScore:consensusScore*100,
+       macroScore:macroScore*100,momScore:momScore*100,
+       zeroCross,agreed,macroAgree,roc,atrPct};
+
+  return SIG;
+}
+
+function updateSignalUI(){
+  if(!S.closes) return;
+  const sig=calcSignal(S.closes,S.highs||S.closes,S.lows||S.closes,S.signals,S.total);
+  const roi=parseFloat(document.getElementById('roi-input').value)||5;
+  renderSignalUI(sig,roi);
+}
+
+function renderSignalUI(sig,roi){
+  const p=fmt; const {entry,stop,atr,dir,score,atrPct}=sig;
+  const bull=dir==='long';
+
+  // Badge
+  const badge=document.getElementById('sig-badge');
+  const strongEnough=score>=55;
+  const label=!strongEnough?'⏳ ЖДАТЬ':(bull?'▼ SHORT':'▲ LONG');
+  badge.textContent=label;
+  badge.className='signal-badge '+(strongEnough?(bull?'short':'long'):'wait');
+
+  // Entry / Stop
+  document.getElementById('sig-entry').textContent=p(entry);
+  document.getElementById('sig-entry-sub').textContent=`${S.tf} · ${S.sym||''} · текущая цена`;
+  document.getElementById('sig-stop').textContent=p(stop);
+  document.getElementById('sig-stop-sub').textContent=`ATR=${p(atr)} (${atrPct.toFixed(2)}%)`;
+  document.getElementById('sig-atr').textContent=p(atr);
+  document.getElementById('sig-atr-sub').textContent=`${atrPct.toFixed(2)}% от цены`;
+
+  // TP levels using φ-multiples of roi
+  const riskDist=Math.abs(entry-stop);
+  const tp1Dist=entry*roi/100;        // ровно ROI%
+  const tp2Dist=tp1Dist*PHI;           // ROI × φ
+  const tp3Dist=tp1Dist*PHI*PHI;       // ROI × φ²
+
+  const tp1=bull?(entry+tp1Dist):(entry-tp1Dist);
+  const tp2=bull?(entry+tp2Dist):(entry-tp2Dist);
+  const tp3=bull?(entry+tp3Dist):(entry-tp3Dist);
+
+  const roi1=Math.abs(pct(entry,tp1)), roi2=Math.abs(pct(entry,tp2)), roi3=Math.abs(pct(entry,tp3));
+  const rr=riskDist>0?(tp1Dist/riskDist).toFixed(2):'—';
+
+  document.getElementById('sig-rr').textContent=`1 : ${rr}`;
+  document.getElementById('sig-rr-sub').textContent=`риск ${p(riskDist)} / цель ${p(tp1Dist)}`;
+
+  [['tp1',tp1,roi1],['tp2',tp2,roi2],['tp3',tp3,roi3]].forEach(([id,price,r])=>{
+    document.getElementById(`${id}-price`).textContent=p(price);
+    document.getElementById(`${id}-roi`).textContent=`+${parseFloat(r).toFixed(2)}% ROI`;
+    document.getElementById(`${id}-dist`).textContent=`${p(Math.abs(price-entry))} от входа`;
+  });
+
+  // Strength bars
+  const bars=[
+    ['signal', sig.sigStr,  'var(--cyan)'],
+    ['consensus',sig.consensusScore,'var(--mint)'],
+    ['macro',   sig.macroScore,'var(--violet)'],
+    ['mom',     sig.momScore,'var(--gold)'],
+    ['total',   score,score>=70?'var(--mint)':score>=50?'var(--gold)':'var(--red)'],
+  ];
+  bars.forEach(([id,val,col])=>{
+    document.getElementById(`str-${id}`).style.width=val+'%';
+    document.getElementById(`str-${id}`).style.background=col;
+    document.getElementById(`strv-${id}`).textContent=Math.round(val)+'%';
+    document.getElementById(`strv-${id}`).style.color=col;
+  });
+
+  // Log
+  const logLines=[
+    `<span class="${score>=70?'ok':score>=50?'warn':'bad'}">● Скор: ${Math.round(score)}/100 — ${score>=70?'СИЛЬНЫЙ':score>=55?'УМЕРЕННЫЙ':'СЛАБЫЙ'}${score<55?' (ждать)':''}</span>`,
+    `<span class="${sig.agreed>=7?'ok':sig.agreed>=5?'warn':'bad'}">● Консенсус: ${sig.agreed}/10 уровней согласны (${(sig.consensusScore).toFixed(0)}%)</span>`,
+    `<span class="${sig.macroAgree?'ok':'bad'}">● Макро-фильтр: ${sig.macroAgree?'✓ согласован':'✗ разлом — осторожно'}</span>`,
+    `<span class="${Math.abs(sig.roc)>1?'ok':'warn'}">● Momentum ROC-10: ${sig.roc>0?'+':''}{sig.roc.toFixed(2)}% ${sig.roc>0===bull?'✓ подтверждает':'⚠ противоречит'}</span>`,
+    `<span class="${sig.zeroCross?'ok':'warn'}">● Zero cross: ${sig.zeroCross?'✓ СИГНАЛ ПЕРЕСЕЧЕНИЯ':'нет пересечения'}</span>`,
+    `● Вход: ${p(entry)} | Стоп: ${p(stop)} | TP1: ${p(tp1)} | TP2: ${p(tp2)} | TP3: ${p(tp3)}`,
+    `● R/R = 1:${rr} | ROI цель: ${roi}% | TP2: ${parseFloat(roi2).toFixed(2)}% | TP3: ${parseFloat(roi3).toFixed(2)}%`,
+  ];
+  document.getElementById('sig-log').innerHTML=logLines.join('<br>');
+  document.getElementById('sig-updated').textContent=`Обновлено: ${new Date().toLocaleTimeString()} · ${S.tf} · скор ${Math.round(score)}/100`;
+}
+
+function setROI(v){
+  document.getElementById('roi-input').value=v;
+  document.querySelectorAll('.roi-target').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===v));
+  if(SIG.entry) renderSignalUI(SIG, v);
+}
+function recalcROI(){
+  const v=parseFloat(document.getElementById('roi-input').value)||5;
+  document.querySelectorAll('.roi-target').forEach(b=>b.classList.remove('active'));
+  if(SIG.entry) renderSignalUI(SIG, v);
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+initSLevels();
+window.addEventListener('load',()=>setTimeout(loadData,400));
+</script>
+</body>
+</html>
