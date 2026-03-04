@@ -1,35 +1,33 @@
-/**
- * Layout - Основной layout компонент с SSF-2025 Spatial Framework
- * 
- * T104 [US10]: Integrate TemporalAbyss with Layout
- * 
- * Реализует 4 уровня реальности SSF-2025:
- * - Level 0: Temporal Abyss (Background) - фон с частицами времени
- * - Level 1: Substrate (Main Content) - подложка страницы с контентом
- * - Level 2: Control Plane (Navigation) - навигация Orbital Dock
- * - Level 3: Pulse (Indicators) - индикаторы в компонентах
- */
-
 import { Outlet } from 'react-router-dom';
-import { OrbitalDock } from '../spatial/OrbitalDock';
-import { TemporalAbyss } from '../spatial/TemporalAbyss';
+import { Navbar } from './Navbar';
 
 export function Layout() {
   return (
-    <div className="relative w-full min-h-screen" style={{ position: 'relative' }}>
-      {/* T104 [US10]: Level 0: The Temporal Abyss (Background) */}
-      {/* Фон с частицами времени, WebGPU/Canvas fallback, реакция на --sifs-oscillation-speed */}
-      <TemporalAbyss />
-      
-      {/* Level 1: The Substrate (Main Content) */}
-      {/* Подложка страницы с контентом, использует Spatial Presets (Monolith, Orbital, Data Capsule) */}
-      <div className="relative z-10" style={{ position: 'relative' }}>
+    <div
+      className="min-h-screen"
+      style={{
+        background: '#060912',
+        fontFamily: 'DM Sans, system-ui, sans-serif',
+        color: '#f1f5f9',
+      }}
+    >
+      {/* Subtle radial glow at top */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(34,211,238,0.06) 0%, transparent 70%)',
+          zIndex: 0,
+        }}
+      />
+
+      <Navbar />
+
+      <main
+        className="relative"
+        style={{ zIndex: 1, paddingTop: '60px' }}
+      >
         <Outlet />
-      </div>
-      
-      {/* Level 2: The Control Plane (Navigation) */}
-      {/* Навигация Orbital Dock с парящими "островками", вибрация при низкой стабильности */}
-      <OrbitalDock />
+      </main>
     </div>
   );
 }

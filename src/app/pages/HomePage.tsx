@@ -1,25 +1,12 @@
-/**
- * HomePage — Главная страница SIFS Theory
- * Презентация теории: ядро, структура, доказательства, применения
- */
-
 import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
-  BookOpen, Calculator, Atom, Globe,
-  TrendingUp, FlaskConical, Layers, Sigma,
-  ExternalLink, ChevronRight
+  ArrowRight, ExternalLink, CheckCircle2, Clock,
+  Atom, Calculator, TrendingUp, Globe, FlaskConical, Cpu,
 } from 'lucide-react';
-import { Button } from '@/app/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { Badge } from '@/app/components/ui/badge';
-import { ScrollReveal } from '@/app/components/enhanced/ScrollReveal';
-import { FractalBackground, CosmicGradient } from '@/app/components/visual';
-import { NeoCard } from '@/app/components/visual';
-import { SpatialSlab } from '@/app/components/spatial';
-import { cn } from '@/app/components/ui/utils';
 
+// Chart components (lazy)
 const MassHierarchyChart = lazy(() =>
   import('@/app/components/MassHierarchyChart').then(m => ({ default: m.MassHierarchyChart }))
 );
@@ -36,406 +23,918 @@ const RS2GeometryDiagram = lazy(() =>
   import('@/app/components/RS2GeometryDiagram').then(m => ({ default: m.RS2GeometryDiagram }))
 );
 
-// Фундаментальные уравнения
-const coreEquations = [
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const EQUATIONS = [
   {
-    label: 'Метрика 5D',
-    formula: 'ds² = exp(−2k|S|) · (c²dt² − dx² − dy² − dz²) + dS²',
-    desc: 'Пятимерная RS-метрика с масштабной координатой S',
+    tag: '5D Метрика',
+    formula: 'ds² = e⁻²ᵏ|ˢ| ημν dxμdxν + dS²',
+    desc: 'Пятимерная Рэндалл–Сандрум метрика с масштабной координатой S',
+    color: '#22d3ee',
   },
   {
-    label: 'Варпинг-фактор',
+    tag: 'Варпинг-фактор',
     formula: 'W(S) = exp(−2k|S|),  k ≈ 0.1 M_Pl',
-    desc: 'Экспоненциальное подавление — основа иерархии масс',
+    desc: 'Экспоненциальное подавление — геометрическое происхождение иерархии масс',
+    color: '#a78bfa',
   },
   {
-    label: 'Иерархия масс',
+    tag: 'Иерархия масс',
     formula: 'm_obs = M_true × exp(−2k|S|)',
-    desc: 'Протон: M_true ≈ 10¹⁴ g → m_obs = 1.67 × 10⁻²⁴ g',
+    desc: 'Масса протона: M_true ≈ 10¹⁴ g → m_obs = 1.67 × 10⁻²⁴ g',
+    color: '#34d399',
   },
   {
-    label: 'Силы = градиенты',
+    tag: 'Силы = градиенты',
     formula: 'F = −∇n(r, S)',
-    desc: 'Все фундаментальные взаимодействия — градиенты n(r,S)',
+    desc: 'Все фундаментальные взаимодействия — градиенты показателя преломления n(r,S)',
+    color: '#fb923c',
   },
 ];
 
-// Ключевые результаты (математически верифицированные)
-const results = [
+const METRICS = [
   {
-    title: 'Масса протона из геометрии',
-    value: '0.938 ГэВ',
+    value: '0.938',
+    unit: 'ГэВ',
+    label: 'Масса протона',
+    sub: 'из геометрии',
     match: '< 1% погрешности',
-    color: 'text-cyan-400',
-    link: '/docs/calculations/proton-mass',
+    status: 'verified',
+    to: '/docs/calculations/proton-mass',
+    color: '#22d3ee',
   },
   {
-    title: 'Константы связи α, G, α_s, G_F',
-    value: '4 константы',
-    match: '≈ CODATA-2018',
-    color: 'text-purple-400',
-    link: '/docs/calculations/coupling-constants',
+    value: '4',
+    unit: 'константы',
+    label: 'α, G, α_s, G_F',
+    sub: 'из S-координаты',
+    match: 'CODATA-2018',
+    status: 'verified',
+    to: '/docs/calculations/coupling-constants',
+    color: '#a78bfa',
   },
   {
-    title: 'Тёмная энергия w(z)',
-    value: 'w₀ = −0.827',
+    value: '−0.827',
+    unit: 'w₀',
+    label: 'Тёмная энергия',
+    sub: 'w(z) эволюция',
     match: 'DESI 2025 >4σ',
-    color: 'text-green-400',
-    link: '/docs/data/desi-2025',
+    status: 'verified',
+    to: '/docs/data/desi-2025',
+    color: '#34d399',
   },
   {
-    title: 'Лог-периодические осцилляции',
-    value: 'δS ≈ 2π',
-    match: 'EHT M87*',
-    color: 'text-blue-400',
-    link: '/docs/data/euclid-jwst',
+    value: '2π',
+    unit: 'δS',
+    label: 'Лог-периодика',
+    sub: 'EHT M87*',
+    match: 'EHT M87* >3σ',
+    status: 'verified',
+    to: '/docs/data/euclid-jwst',
+    color: '#f59e0b',
   },
 ];
 
-// Разделы теории
-const sections = [
+const SECTIONS = [
   {
     icon: Atom,
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/10',
     title: 'Теоретическая база',
-    desc: 'RS2-геометрия, фрактальная структура, оптическая метрика, квантовая запутанность',
+    desc: 'RS2-геометрия, фрактальная структура, оптическая метрика, квантовая запутанность в 5D',
     to: '/docs/theory/overview',
-    count: '11 документов',
+    tag: '11 документов',
+    color: '#22d3ee',
+    bg: 'rgba(34,211,238,0.06)',
+    border: 'rgba(34,211,238,0.12)',
   },
   {
     icon: Calculator,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10',
     title: 'Расчёты',
-    desc: 'Масса протона, константы связи, иерархия масс, тёмная энергия, энтропия',
+    desc: 'Масса протона, константы связи, иерархия масс, тёмная энергия w(z), энтропия',
     to: '/docs/calculations/proton-mass',
-    count: '11 расчётов',
+    tag: '11 расчётов',
+    color: '#a78bfa',
+    bg: 'rgba(167,139,250,0.06)',
+    border: 'rgba(167,139,250,0.12)',
   },
   {
     icon: TrendingUp,
-    color: 'text-green-400',
-    bg: 'bg-green-500/10',
     title: 'Предсказания',
-    desc: 'KK-моды гравитонов, ГВ-модификации, CMB-осцилляции, астрофизика',
+    desc: 'KK-моды гравитонов (2–5 ТэВ), ГВ-модификации, CMB-осцилляции, астрофизика',
     to: '/docs/predictions/README',
-    count: '27 предсказаний',
+    tag: '27 предсказаний',
+    color: '#34d399',
+    bg: 'rgba(52,211,153,0.06)',
+    border: 'rgba(52,211,153,0.12)',
   },
   {
     icon: Globe,
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/10',
     title: 'Наблюдательные данные',
-    desc: 'DESI DR2, Euclid+JWST, EHT M87*, CMB, LIGO/Virgo',
+    desc: 'DESI DR2, Euclid+JWST, EHT M87*, CMB-поляризация, LIGO/Virgo',
     to: '/docs/data/desi-2025',
-    count: '5 источников',
+    tag: '5 источников',
+    color: '#38bdf8',
+    bg: 'rgba(56,189,248,0.06)',
+    border: 'rgba(56,189,248,0.12)',
   },
   {
     icon: FlaskConical,
-    color: 'text-orange-400',
-    bg: 'bg-orange-500/10',
     title: 'Применения',
-    desc: 'Нейроморфный процессор (0.1 см³, 22 мкВт), анализ иерархических систем',
+    desc: 'Нейроморфный процессор (0.1 см³, 22 мкВт), иерархический анализ систем',
     to: '/docs/applications/sifs-system-overview',
-    count: 'Физика → Практика',
+    tag: 'Физика → Практика',
+    color: '#fb923c',
+    bg: 'rgba(251,146,60,0.06)',
+    border: 'rgba(251,146,60,0.12)',
   },
   {
-    icon: Layers,
-    color: 'text-pink-400',
-    bg: 'bg-pink-500/10',
+    icon: Cpu,
     title: 'Аппаратная реализация',
-    desc: 'SIFS Processor: φ-пороговый транзистор, 3.46 бит/ячейка, φ-тесселяция',
+    desc: 'φ-пороговый транзистор, 3.46 бит/ячейка, φ-тесселяция, h-BN туннельный барьер',
     to: '/docs/hardware/README',
-    count: 'Концепция',
+    tag: 'Концепция',
+    color: '#e879f9',
+    bg: 'rgba(232,121,249,0.06)',
+    border: 'rgba(232,121,249,0.12)',
   },
 ];
 
-// Предсказания с текущим статусом
-const predictions = [
-  { text: 'KK-моды гравитонов: m_KK ≈ 2–5 ТэВ', status: 'Ожидает LHC/FCC', color: 'text-yellow-400' },
-  { text: 'Evolving dark energy: w(z) ≠ −1', status: 'Согласуется — DESI 2025', color: 'text-green-400' },
-  { text: 'Лог-периодика в CMB: A ≈ 0.01–0.05', status: 'Согласуется — EHT M87*', color: 'text-green-400' },
-  { text: 'Модификации waveform: δφ ≈ 10⁻⁴–10⁻⁶', status: 'Ожидает LISA', color: 'text-yellow-400' },
-  { text: 'Подавление структур: ~2–3% при z≈1–2', status: 'Согласуется — Euclid', color: 'text-green-400' },
-  { text: 'Ранние галактики при z>10', status: 'Согласуется — JWST', color: 'text-green-400' },
+const PREDICTIONS = [
+  { text: 'Evolving dark energy w(z) ≠ −1', status: 'Согласуется', src: 'DESI 2025', ok: true },
+  { text: 'Лог-периодические осцилляции: A ≈ 0.01–0.05', status: 'Согласуется', src: 'EHT M87*', ok: true },
+  { text: 'Подавление структур: ~2–3% при z ≈ 1–2', status: 'Согласуется', src: 'Euclid', ok: true },
+  { text: 'Ранние галактики при z > 10', status: 'Согласуется', src: 'JWST', ok: true },
+  { text: 'KK-моды гравитонов: m_KK ≈ 2–5 ТэВ', status: 'Ожидает', src: 'LHC/FCC', ok: false },
+  { text: 'Модификации waveform: δφ ≈ 10⁻⁴–10⁻⁶', status: 'Ожидает', src: 'LISA', ok: false },
 ];
+
+const SIMULATIONS = [
+  {
+    to: '/simulations/collapse',
+    title: 'Информационный коллапс',
+    desc: 'Коллапс в 5D RS-пространстве',
+    icon: '⬛',
+  },
+  {
+    to: '/simulations/temporal',
+    title: 'Синхронизация времени',
+    desc: 'Атомные часы и RS-варпинг',
+    icon: '⏱',
+  },
+  {
+    to: '/simulations/calculations',
+    title: 'Интерактивные расчёты',
+    desc: 'Параметры теории онлайн',
+    icon: '🧮',
+  },
+  {
+    to: '/simulations/visualizations',
+    title: 'Все визуализации',
+    desc: 'RS2, фракталы, метрики',
+    icon: '📊',
+  },
+];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const S = { fontFamily: 'Syne, sans-serif' };
+const M = { fontFamily: 'DM Sans, sans-serif' };
+const MONO = { fontFamily: 'JetBrains Mono, monospace' };
+
+function Divider() {
+  return (
+    <div
+      className="w-full"
+      style={{ height: '1px', background: 'rgba(255,255,255,0.05)' }}
+    />
+  );
+}
+
+function SectionHeader({
+  tag,
+  title,
+  desc,
+}: {
+  tag?: string;
+  title: string;
+  desc?: string;
+}) {
+  return (
+    <div className="mb-12 text-center">
+      {tag && (
+        <span
+          className="inline-block text-xs font-medium tracking-widest uppercase mb-4 px-3 py-1 rounded-full"
+          style={{
+            color: '#22d3ee',
+            background: 'rgba(34,211,238,0.08)',
+            border: '1px solid rgba(34,211,238,0.15)',
+            ...MONO,
+          }}
+        >
+          {tag}
+        </span>
+      )}
+      <h2
+        className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#f1f5f9] mb-4"
+        style={S}
+      >
+        {title}
+      </h2>
+      {desc && (
+        <p className="text-[#64748b] text-base md:text-lg max-w-xl mx-auto" style={M}>
+          {desc}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function HomePage() {
   return (
-    <div className="relative min-h-screen">
-      {/* Background */}
-      <div className="fixed inset-0 -z-10">
-        <FractalBackground className="opacity-20" />
-        <CosmicGradient className="absolute inset-0 opacity-15" />
-      </div>
+    <div className="overflow-x-hidden">
+      {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      <section className="relative min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-6 py-24 text-center">
+        {/* Glow behind headline */}
+        <div
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{
+            width: '600px',
+            height: '300px',
+            background: 'radial-gradient(ellipse, rgba(34,211,238,0.08) 0%, transparent 70%)',
+          }}
+        />
 
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col items-center justify-center min-h-[85vh] px-4 text-center">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          className="relative max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="space-y-6 max-w-4xl mx-auto"
+          transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <Badge variant="outline" className="text-cyan-400 border-cyan-400/50 text-xs tracking-widest px-4 py-1">
+          {/* Eyebrow */}
+          <div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-8"
+            style={{
+              color: '#94a3b8',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              ...MONO,
+            }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: '#22d3ee' }}
+            />
             SCALE-INVARIANT FRACTAL SPACETIME
-          </Badge>
+          </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold">
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          {/* Headline */}
+          <h1
+            className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 leading-[1.05]"
+            style={{ ...S, letterSpacing: '-0.03em' }}
+          >
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
               SIFS Theory
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Унифицированная геометрическая теория поля, объединяющая гравитацию,
-            квантовую механику и структуру элементарных частиц через фрактальный 5D-балк
-            с голографической квантовой запутанностью.
+          {/* Sub */}
+          <p
+            className="text-lg md:text-xl text-[#64748b] max-w-2xl mx-auto mb-10 leading-relaxed"
+            style={M}
+          >
+            Унифицированная геометрическая теория поля. Гравитация, квантовая механика
+            и структура частиц — следствия единой фрактальной 5D-геометрии.
           </p>
 
           {/* Core equation */}
-          <div className="my-4 px-4 py-3 bg-black/40 border border-cyan-500/30 rounded-lg inline-block font-mono text-sm md:text-base text-cyan-300">
-            ds² = exp(−2k|S|) · η<sub>μν</sub> dx<sup>μ</sup>dx<sup>ν</sup> + dS²
+          <div
+            className="inline-block px-6 py-3.5 rounded-xl mb-10 text-sm md:text-base"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(34,211,238,0.2)',
+              color: '#67e8f9',
+              ...MONO,
+            }}
+          >
+            ds² = e<sup>−2k|S|</sup> · η<sub>μν</sub> dx<sup>μ</sup>dx<sup>ν</sup> + dS²
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button asChild size="lg" className="bg-cyan-600 hover:bg-cyan-700 text-white">
-              <Link to="/docs/theory/overview">
-                <BookOpen className="mr-2 h-5 w-5" />
-                Начать изучение
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10">
-              <Link to="/simulations/visualizations">
-                <Sigma className="mr-2 h-5 w-5" />
-                Визуализации
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:bg-white/5">
-              <a href="https://github.com/m0rfy/SIFS-Theory-Core" target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                GitHub
-              </a>
-            </Button>
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/docs/theory/overview"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)',
+                color: '#fff',
+                fontFamily: 'DM Sans, sans-serif',
+                boxShadow: '0 0 24px rgba(34,211,238,0.2)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 32px rgba(34,211,238,0.35)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 0 24px rgba(34,211,238,0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Изучить теорию
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <Link
+              to="/simulations/visualizations"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#94a3b8',
+                fontFamily: 'DM Sans, sans-serif',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#f1f5f9';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#94a3b8';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+              }}
+            >
+              Визуализации
+            </Link>
+
+            <a
+              href="https://github.com/m0rfy/SIFS-Theory-Core"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#94a3b8',
+                fontFamily: 'DM Sans, sans-serif',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#f1f5f9';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#94a3b8';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+              }}
+            >
+              <ExternalLink className="w-4 h-4" />
+              GitHub
+            </a>
           </div>
+        </motion.div>
+
+        {/* Scroll hint */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+        >
+          <div style={{ color: '#334155', fontSize: '11px', letterSpacing: '0.1em', ...MONO }}>
+            SCROLL
+          </div>
+          <motion.div
+            className="w-px h-8"
+            style={{ background: 'linear-gradient(to bottom, #334155, transparent)' }}
+            animate={{ scaleY: [1, 1.3, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+          />
         </motion.div>
       </section>
 
-      <SpatialSlab preset="monolith" className="relative z-10">
+      <Divider />
 
-        {/* ── Математическое ядро ──────────────────────────────────────── */}
-        <ScrollReveal direction="up">
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              Математическое ядро
-            </h2>
-            <p className="text-center text-gray-400 mb-8 text-sm">
-              Четыре уравнения, из которых без дополнительных параметров выводятся все наблюдаемые
-            </p>
-            <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-              {coreEquations.map((eq) => (
-                <NeoCard key={eq.label} variant="card" className="p-4">
-                  <div className="text-xs text-cyan-400 font-mono tracking-widest mb-2 uppercase">
-                    {eq.label}
-                  </div>
-                  <div className="font-mono text-sm md:text-base text-green-300 bg-black/30 rounded px-3 py-2 mb-2 overflow-x-auto">
-                    {eq.formula}
-                  </div>
-                  <p className="text-gray-400 text-xs">{eq.desc}</p>
-                </NeoCard>
-              ))}
-            </div>
-          </section>
-        </ScrollReveal>
-
-        {/* ── Верифицированные результаты ─────────────────────────────── */}
-        <ScrollReveal direction="up" delay={100}>
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              Результаты, согласующиеся с данными
-            </h2>
-            <p className="text-center text-gray-400 mb-8 text-sm">
-              Предсказания теории, проверенные математически и сравненные с экспериментальными данными
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {results.map((r) => (
-                <Link key={r.title} to={r.link}>
-                  <NeoCard variant="raised" hover className="p-5 h-full group">
-                    <div className={cn('text-2xl font-bold font-mono mb-1', r.color)}>
-                      {r.value}
-                    </div>
-                    <div className="text-white text-sm font-medium mb-2 leading-tight">
-                      {r.title}
-                    </div>
-                    <Badge variant="outline" className={cn('text-xs', r.color, 'border-current')}>
-                      {r.match}
-                    </Badge>
-                    <ChevronRight className={cn('h-4 w-4 mt-2 opacity-0 group-hover:opacity-100 transition-opacity', r.color)} />
-                  </NeoCard>
-                </Link>
-              ))}
-            </div>
-          </section>
-        </ScrollReveal>
-
-        {/* ── Интерактивные визуализации ───────────────────────────────── */}
-        <ScrollReveal direction="up" delay={200}>
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              Ключевые визуализации
-            </h2>
-            <p className="text-center text-gray-400 mb-8 text-sm">
-              Интерактивные диаграммы — прямо из математического ядра теории
-            </p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
-              {[
-                { title: 'Иерархия масс', subtitle: 'от планковской до нуклонной', Component: MassHierarchyChart, color: 'text-cyan-400' },
-                { title: 'Тёмная энергия', subtitle: 'w(z) — DESI 2025', Component: DarkEnergyEvolution, color: 'text-green-400' },
-                { title: 'Константы связи', subtitle: 'α, G, α_s из S-координаты', Component: CouplingConstantsDiagram, color: 'text-purple-400' },
-                { title: 'Фрактальная иерархия', subtitle: 'от Планка до Хаббла', Component: FractalScaleDiagram, color: 'text-blue-400' },
-                { title: 'RS2 геометрия', subtitle: '5D bulk-бран структура', Component: RS2GeometryDiagram, color: 'text-orange-400' },
-              ].map(({ title, subtitle, Component, color }) => (
-                <NeoCard key={title} variant="card" className="p-4">
-                  <h4 className={cn('font-semibold mb-0.5', color)}>{title}</h4>
-                  <p className="text-gray-500 text-xs mb-3">{subtitle}</p>
-                  <Suspense fallback={<div className="h-48 bg-black/40 rounded animate-pulse" />}>
-                    <Component />
-                  </Suspense>
-                </NeoCard>
-              ))}
-              <Link to="/simulations/visualizations" className="block">
-                <NeoCard variant="card" hover className="p-4 h-full flex flex-col items-center justify-center gap-3 min-h-[220px] border-dashed">
-                  <Sigma className="h-8 w-8 text-gray-500" />
-                  <span className="text-gray-400 text-sm">Все визуализации →</span>
-                </NeoCard>
-              </Link>
-            </div>
-          </section>
-        </ScrollReveal>
-
-        {/* ── Разделы теории ────────────────────────────────────────────── */}
-        <ScrollReveal direction="up" delay={200}>
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              Структура теории
-            </h2>
-            <p className="text-center text-gray-400 mb-8 text-sm">
-              Полная документация от аксиом до аппаратных применений
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
-              {sections.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <Link key={s.title} to={s.to}>
-                    <NeoCard variant="raised" hover className="p-5 h-full group">
-                      <div className="flex items-start gap-3">
-                        <div className={cn('p-2 rounded-lg shrink-0', s.bg)}>
-                          <Icon className={cn('h-5 w-5', s.color)} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <h3 className="text-white font-semibold text-sm leading-tight">{s.title}</h3>
-                            <Badge variant="outline" className={cn('text-[10px] shrink-0', s.color, 'border-current/30')}>
-                              {s.count}
-                            </Badge>
-                          </div>
-                          <p className="text-gray-400 text-xs leading-relaxed">{s.desc}</p>
-                          <ChevronRight className={cn('h-3.5 w-3.5 mt-2 opacity-0 group-hover:opacity-100 transition-opacity', s.color)} />
-                        </div>
-                      </div>
-                    </NeoCard>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-        </ScrollReveal>
-
-        {/* ── Предсказания теории ─────────────────────────────────────── */}
-        <ScrollReveal direction="up" delay={200}>
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white">
-              Предсказания и проверки
-            </h2>
-            <p className="text-center text-gray-400 mb-8 text-sm">
-              Проверяемые следствия теории и их текущий статус
-            </p>
-            <div className="grid sm:grid-cols-2 gap-3 max-w-3xl mx-auto">
-              {predictions.map((p) => (
-                <div key={p.text}
-                  className="flex items-start gap-3 p-3 bg-black/30 border border-white/5 rounded-lg">
-                  <div className={cn('h-1.5 w-1.5 rounded-full mt-1.5 shrink-0', p.color.replace('text-', 'bg-'))} />
-                  <div>
-                    <p className="text-gray-200 text-sm leading-tight">{p.text}</p>
-                    <p className={cn('text-xs mt-0.5', p.color)}>{p.status}</p>
-                  </div>
+      {/* ── Metrics bar ─────────────────────────────────────────────────────── */}
+      <section className="py-16 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, staggerChildren: 0.08 }}
+          >
+            {METRICS.map((m) => (
+              <Link
+                key={m.label}
+                to={m.to}
+                className="group block p-6 rounded-2xl transition-all duration-200"
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div
+                  className="text-3xl md:text-4xl font-extrabold mb-1"
+                  style={{ color: m.color, ...S, lineHeight: 1 }}
+                >
+                  {m.value}
+                  <span className="text-base font-medium ml-1" style={{ color: '#64748b', ...M }}>
+                    {m.unit}
+                  </span>
                 </div>
-              ))}
-            </div>
-            <div className="text-center mt-6">
-              <Button asChild variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-white/5">
-                <Link to="/docs/predictions/README">
-                  Полный каталог предсказаний (27)
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </section>
-        </ScrollReveal>
+                <div className="text-[#94a3b8] text-sm font-medium mb-0.5" style={M}>
+                  {m.label}
+                </div>
+                <div className="text-[#475569] text-xs mb-3" style={M}>
+                  {m.sub}
+                </div>
+                <div
+                  className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full"
+                  style={{
+                    background: 'rgba(52,211,153,0.08)',
+                    border: '1px solid rgba(52,211,153,0.15)',
+                    color: '#34d399',
+                    ...MONO,
+                  }}
+                >
+                  <CheckCircle2 className="w-3 h-3" />
+                  {m.match}
+                </div>
+              </Link>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
-        {/* ── Симуляции ────────────────────────────────────────────────── */}
-        <ScrollReveal direction="up" delay={100}>
-          <section className="py-12 px-4 md:px-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-white">
-              Интерактивные симуляции
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {[
-                { to: '/simulations/collapse', icon: '💥', title: 'Информационный коллапс', desc: 'Процесс коллапса в 5D' },
-                { to: '/simulations/temporal', icon: '⏱️', title: 'Синхронизация времени', desc: 'Атомные часы и RS-варпинг' },
-                { to: '/simulations/calculations', icon: '🧮', title: 'Интерактивные расчёты', desc: 'Параметры теории' },
-                { to: '/simulations/visualizations', icon: '📊', title: 'Все визуализации', desc: 'RS2, фракталы, метрики' },
-              ].map((sim) => (
-                <Link key={sim.to} to={sim.to}>
-                  <NeoCard variant="card" hover className="p-5 text-center h-full group">
-                    <div className="text-3xl mb-3">{sim.icon}</div>
-                    <h3 className="text-white text-sm font-semibold mb-1">{sim.title}</h3>
-                    <p className="text-gray-400 text-xs">{sim.desc}</p>
-                    <ChevronRight className="h-4 w-4 mx-auto mt-3 text-gray-600 group-hover:text-cyan-400 transition-colors" />
-                  </NeoCard>
-                </Link>
-              ))}
-            </div>
-          </section>
-        </ScrollReveal>
+      <Divider />
 
-        {/* ── Footer ───────────────────────────────────────────────────── */}
-        <footer className="py-10 px-4 text-center border-t border-white/5 mt-8">
-          <p className="text-gray-500 text-sm mb-2">
-            SIFS Theory: Scale-Invariant Fractal Spacetime
-          </p>
-          <p className="text-gray-600 text-xs mb-4">
-            Теоретическая концепция — математически верифицирована. Терминология:{' '}
-            <Link to="/docs/terminology-guide" className="underline hover:text-gray-400">
-              «согласуется с данными»
-            </Link>
-          </p>
-          <div className="flex gap-4 justify-center">
-            <a href="https://github.com/m0rfy/SIFS-Theory-Core"
-              className="text-gray-500 hover:text-white text-sm transition-colors"
-              target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>
-            <Link to="/docs/white-paper" className="text-gray-500 hover:text-white text-sm transition-colors">
-              White Paper
-            </Link>
-            <Link to="/docs/theory/overview" className="text-gray-500 hover:text-white text-sm transition-colors">
-              Документация
+      {/* ── Core Equations ──────────────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Математическое ядро"
+              title="Четыре фундаментальных уравнения"
+              desc="Из этих четырёх выражений без дополнительных параметров выводятся все наблюдаемые"
+            />
+          </motion.div>
+
+          <motion.div
+            className="grid md:grid-cols-2 gap-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            {EQUATIONS.map((eq, i) => (
+              <motion.div
+                key={eq.tag}
+                className="p-6 rounded-2xl"
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: `1px solid rgba(255,255,255,0.06)`,
+                }}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+              >
+                <div
+                  className="text-xs font-medium tracking-widest uppercase mb-3"
+                  style={{ color: eq.color, ...MONO }}
+                >
+                  {eq.tag}
+                </div>
+                <div
+                  className="text-base md:text-lg px-4 py-3 rounded-xl mb-3 overflow-x-auto"
+                  style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    border: `1px solid ${eq.color}20`,
+                    color: eq.color,
+                    ...MONO,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {eq.formula}
+                </div>
+                <p className="text-[#64748b] text-sm leading-relaxed" style={M}>
+                  {eq.desc}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Visualizations ──────────────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Ключевые визуализации"
+              title="Диаграммы из математического ядра"
+              desc="Интерактивные графики построены непосредственно из уравнений теории"
+            />
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              {
+                title: 'Иерархия масс',
+                sub: 'от Планка до нуклона',
+                Component: MassHierarchyChart,
+                color: '#22d3ee',
+              },
+              {
+                title: 'Тёмная энергия',
+                sub: 'w(z) — DESI 2025',
+                Component: DarkEnergyEvolution,
+                color: '#34d399',
+              },
+              {
+                title: 'Константы связи',
+                sub: 'α, G, α_s из S',
+                Component: CouplingConstantsDiagram,
+                color: '#a78bfa',
+              },
+              {
+                title: 'Фрактальная иерархия',
+                sub: 'от Планка до Хаббла',
+                Component: FractalScaleDiagram,
+                color: '#38bdf8',
+              },
+              {
+                title: 'RS2 геометрия',
+                sub: '5D bulk-бран структура',
+                Component: RS2GeometryDiagram,
+                color: '#fb923c',
+              },
+            ].map(({ title, sub, Component, color }, i) => (
+              <motion.div
+                key={title}
+                className="p-5 rounded-2xl"
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+              >
+                <h4 className="text-sm font-semibold mb-0.5" style={{ color, ...S }}>
+                  {title}
+                </h4>
+                <p className="text-xs text-[#475569] mb-4" style={M}>
+                  {sub}
+                </p>
+                <Suspense
+                  fallback={
+                    <div
+                      className="rounded-lg animate-pulse"
+                      style={{ height: '180px', background: 'rgba(255,255,255,0.03)' }}
+                    />
+                  }
+                >
+                  <Component />
+                </Suspense>
+              </motion.div>
+            ))}
+
+            <Link
+              to="/simulations/visualizations"
+              className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl transition-all duration-200 min-h-[220px]"
+              style={{
+                background: 'rgba(255,255,255,0.015)',
+                border: '1px dashed rgba(255,255,255,0.08)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.015)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+              }}
+            >
+              <span className="text-2xl">📊</span>
+              <span className="text-[#475569] text-sm" style={M}>
+                Все визуализации →
+              </span>
             </Link>
           </div>
-        </footer>
+        </div>
+      </section>
 
-      </SpatialSlab>
+      <Divider />
+
+      {/* ── Theory Sections ─────────────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Документация"
+              title="Структура теории"
+              desc="Полная документация — от аксиом до аппаратных применений"
+            />
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {SECTIONS.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <motion.div
+                  key={s.title}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                >
+                  <Link
+                    to={s.to}
+                    className="group flex flex-col p-6 rounded-2xl h-full transition-all duration-200"
+                    style={{
+                      background: 'rgba(255,255,255,0.02)',
+                      border: `1px solid rgba(255,255,255,0.06)`,
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = s.bg;
+                      e.currentTarget.style.borderColor = s.border;
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{ background: s.bg, border: `1px solid ${s.border}` }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color: s.color }} />
+                      </div>
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full"
+                        style={{
+                          color: s.color,
+                          background: s.bg,
+                          border: `1px solid ${s.border}`,
+                          ...MONO,
+                        }}
+                      >
+                        {s.tag}
+                      </span>
+                    </div>
+                    <h3 className="text-[#f1f5f9] font-semibold mb-2 text-sm" style={S}>
+                      {s.title}
+                    </h3>
+                    <p className="text-[#475569] text-sm leading-relaxed flex-1" style={M}>
+                      {s.desc}
+                    </p>
+                    <div
+                      className="flex items-center gap-1 mt-4 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ color: s.color, ...M }}
+                    >
+                      Открыть <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Predictions ─────────────────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Проверки"
+              title="Предсказания и их статус"
+              desc="Теоретически обоснованные следствия, сопоставленные с наблюдательными данными"
+            />
+          </motion.div>
+
+          <motion.div
+            className="rounded-2xl overflow-hidden"
+            style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            {PREDICTIONS.map((p, i) => (
+              <div
+                key={p.text}
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 transition-colors"
+                style={{
+                  background: i % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent',
+                  borderBottom: i < PREDICTIONS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-1.5 h-1.5 rounded-full shrink-0 mt-0.5"
+                    style={{ background: p.ok ? '#34d399' : '#94a3b8' }}
+                  />
+                  <span className="text-[#94a3b8] text-sm" style={M}>
+                    {p.text}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 shrink-0 pl-5 sm:pl-0">
+                  {p.ok ? (
+                    <CheckCircle2 className="w-4 h-4" style={{ color: '#34d399' }} />
+                  ) : (
+                    <Clock className="w-4 h-4" style={{ color: '#94a3b8' }} />
+                  )}
+                  <span
+                    className="text-xs font-medium px-2.5 py-1 rounded-full"
+                    style={{
+                      color: p.ok ? '#34d399' : '#94a3b8',
+                      background: p.ok ? 'rgba(52,211,153,0.08)' : 'rgba(148,163,184,0.08)',
+                      ...MONO,
+                    }}
+                  >
+                    {p.status} — {p.src}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+
+          <div className="text-center mt-6">
+            <Link
+              to="/docs/predictions/README"
+              className="inline-flex items-center gap-2 text-sm transition-colors"
+              style={{ color: '#475569', ...M }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#22d3ee'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#475569'; }}
+            >
+              Полный каталог предсказаний (27)
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Simulations ─────────────────────────────────────────────────────── */}
+      <section className="py-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHeader
+              tag="Симуляции"
+              title="Интерактивные инструменты"
+            />
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {SIMULATIONS.map((sim, i) => (
+              <motion.div
+                key={sim.to}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+              >
+                <Link
+                  to={sim.to}
+                  className="group flex flex-col items-center text-center p-6 rounded-2xl h-full transition-all duration-200"
+                  style={{
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(34,211,238,0.04)';
+                    e.currentTarget.style.borderColor = 'rgba(34,211,238,0.15)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <span className="text-3xl mb-4">{sim.icon}</span>
+                  <h3 className="text-[#f1f5f9] text-sm font-semibold mb-2" style={S}>
+                    {sim.title}
+                  </h3>
+                  <p className="text-[#475569] text-xs" style={M}>
+                    {sim.desc}
+                  </p>
+                  <ArrowRight
+                    className="w-4 h-4 mt-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ color: '#22d3ee' }}
+                  />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Divider />
+
+      {/* ── Footer ──────────────────────────────────────────────────────────── */}
+      <footer className="py-12 px-6">
+        <div
+          className="max-w-[1100px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6"
+        >
+          <div>
+            <div className="text-[#334155] text-sm mb-1" style={M}>
+              SIFS Theory: Scale-Invariant Fractal Spacetime
+            </div>
+            <div className="text-[#1e293b] text-xs" style={M}>
+              Теоретическая концепция — математически верифицирована
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <a
+              href="https://github.com/m0rfy/SIFS-Theory-Core"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#334155] hover:text-[#94a3b8] text-sm transition-colors"
+              style={M}
+            >
+              GitHub
+            </a>
+            <Link
+              to="/docs/white-paper"
+              className="text-[#334155] hover:text-[#94a3b8] text-sm transition-colors"
+              style={M}
+            >
+              White Paper
+            </Link>
+            <Link
+              to="/docs/theory/overview"
+              className="text-[#334155] hover:text-[#94a3b8] text-sm transition-colors"
+              style={M}
+            >
+              Документация
+            </Link>
+            <Link
+              to="/docs/terminology-guide"
+              className="text-[#334155] hover:text-[#94a3b8] text-sm transition-colors"
+              style={M}
+            >
+              Терминология
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

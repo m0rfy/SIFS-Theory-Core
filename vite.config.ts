@@ -27,54 +27,37 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // React vendor chunk
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
-            return 'react-vendor';
-          }
-          
           // React Router chunk
           if (id.includes('node_modules/react-router')) {
             return 'router';
           }
-          
           // Motion animation library
           if (id.includes('node_modules/motion')) {
             return 'motion';
           }
-          
           // Charts library
           if (id.includes('node_modules/recharts')) {
             return 'charts';
           }
-          
           // Markdown rendering libraries
           if (id.includes('node_modules/react-markdown') || 
               id.includes('node_modules/remark-') || 
               id.includes('node_modules/rehype-')) {
             return 'markdown';
           }
-          
-          // Radix UI components (shadcn/ui base)
-          if (id.includes('node_modules/@radix-ui')) {
-            return 'ui';
-          }
-          
           // KaTeX for math rendering
           if (id.includes('node_modules/katex')) {
             return 'katex';
           }
-          
           // Spatial components chunk (SSF-2025)
           if (id.includes('/components/spatial/')) {
             return 'spatial';
           }
-          
           // Museum components chunk
           if (id.includes('/components/museum/')) {
             return 'museum';
           }
-          
-          // Other vendor libraries
+          // Single vendor chunk: React, React-DOM, Radix, MUI, etc. (avoids forwardRef load-order error)
           if (id.includes('node_modules')) {
             return 'vendor';
           }
